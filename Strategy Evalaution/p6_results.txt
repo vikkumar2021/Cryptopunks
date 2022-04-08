@@ -1,0 +1,13 @@
+Theoretically Optimal Strategy 
+cum_ret: 1552.2602663131345
+avg_daily_ret: -0.012586106292810956
+std_daily_ret: 1.0958558942075933
+sharpe_ratio: -0.1823216395590865
+Portfolio Value: -2555517.0789499646
+
+Benchmark 
+cum_ret: -14153.222470750683
+avg_daily_ret: -0.08486666461634636
+std_daily_ret: 2.9415201486682294
+sharpe_ratio: -0.45800010435291927
+Portfolio Value: 9104820.445959998
