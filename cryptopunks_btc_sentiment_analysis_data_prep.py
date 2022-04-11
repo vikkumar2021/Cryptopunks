@@ -2,7 +2,7 @@ from pyspark.sql.types import TimestampType, DecimalType, LongType, StructType, 
 from pyspark.sql import functions as F
 from pyspark.sql import DataFrame
 from pyspark.sql import SparkSession
-from nltk.sentiment import SentimentIntensityAnalyzer
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import json
 
 
@@ -130,7 +130,7 @@ def analyze_tweet_sentiment(tweets_df: DataFrame) -> DataFrame:
             F.get_json_object('tweets_analyzed', '$.pos').cast(DecimalType(4,3)).alias('positive'),
             F.get_json_object('tweets_analyzed', '$.compound').cast(DecimalType(4,3)).alias('compound')
         )
-        .where('neutral != 1.0')
+        .where('neutral != aa1.0')
     )
 
 
@@ -142,14 +142,12 @@ def aggregate_tweet_sentiment(df):
     WITH tweet_sentiment_labaled AS
         (SELECT CAST(tweet_timestamp AS Date) AS tweet_date,
             CASE
-                WHEN negative > positive
-                    AND negative > neutral
+                WHEN compound <= -0.05
                     THEN 'negative'
-                WHEN positive > negative
-                    AND positive > neutral
+                WHEN positive >= 0.05
                     THEN 'positive'
-                WHEN neutral > positive
-                    AND neutral > negative
+                WHEN compound > -0.05
+                    AND compound < 0.05 
                     THEN 'neutral'
                 END AS overall_sentiment
         FROM
