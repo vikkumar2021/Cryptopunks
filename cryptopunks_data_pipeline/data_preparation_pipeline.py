@@ -247,25 +247,28 @@ def run_pipeline(
     so_window: Optional[int] = None,
     so_window_sma: Optional[int] = None,
     obv: Optional[bool] = None,
+    macd: Optional[bool] = None,
     mom_window: Optional[int] = None,
 ) -> PandasDataFrame:
+    """ Run data preparation pipeline. """
     df_price = read_stock_price_data(spark)
 
     # the following parameters must all be passed if either is present
     if any([bollinger_window, bollinger_stdvs]):
         assert all([bollinger_window, bollinger_stdvs])
-        df_price = add_bollinger_bands(df_price, bollinger_window, bollinger_stdvs)
+        df_price = add_bollinger_bands(spark, df_price, bollinger_window, bollinger_stdvs)
     if any([so_window, sma_window]):
         assert all([so_window, sma_window])
-        df_price = add_stochastic_oscillator(df_price, so_window, so_window_sma)
+        df_price = add_stochastic_oscillator(spark, df_price, so_window, so_window_sma)
 
     # transform price data to add indicators
     if sma_window:
-        df_price = add_price_to_SMA_ratio(df_price, sma_window)
+        df_price = add_price_to_SMA_ratio(spark, df_price, sma_window)
     if obv:
-        df_price = add_on_balance_volume(df_price)
+        df_price = add_on_balance_volume(spark, df_price)
     if mom_window:
-        df_price = add_momentum(df_price, mom_window)
+        df_price = add_momentum(spark, df_price, mom_window)
+
 
     # Use aggregated version of the tweets data if it exists, otherwise recompute it
     if os.path.exists(TWEETS_FILE_PATH):
@@ -278,8 +281,9 @@ def run_pipeline(
     df_joined = df_price.join(
         df_agg_sentiment, df_price.TradeDate == df_agg_sentiment.tweet_date, "left"
     )
-    pandas_df = df_joined.toPandas()
-    pandas_df = add_MACD(pandas_df).sort_values(by=["TradeDate"])
+    pandas_df = df_joined.toPandas().sort_values(by=["TradeDate"])
+    if macd:
+        pandas_df = add_MACD(pandas_df)
     print(pandas_df)
     pandas_df.to_csv(os.path.join(CWD, "pipeline_export.csv"))
 
