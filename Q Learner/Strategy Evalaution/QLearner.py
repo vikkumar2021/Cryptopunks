@@ -55,12 +55,12 @@ class QLearner(object):
     """  		  	   		   	 		  		  		    	 		 		   		 		  
     def __init__(  		  	   		   	 		  		  		    	 		 		   		 		  
         self,  		  	   		   	 		  		  		    	 		 		   		 		  
-        num_states=18,
+        num_states=27,
         num_actions=3,
-        alpha=0.1,  		  	   		   	 		  		  		    	 		 		   		 		  
-        gamma=0.5,  		  	   		   	 		  		  		    	 		 		   		 		  
-        rar=0.5,  		  	   		   	 		  		  		    	 		 		   		 		  
-        radr=0.99,  		  	   		   	 		  		  		    	 		 		   		 		  
+        alpha=0.1,
+        gamma=0.9,
+        rar=0.99,
+        radr=0.8,		  	   		   	 		  		  		    	 		 		   		 		  
         dyna=0,  		  	   		   	 		  		  		    	 		 		   		 		  
         verbose=False,  		  	   		   	 		  		  		    	 		 		   		 		  
     ):  		  	   		   	 		  		  		    	 		 		   		 		  

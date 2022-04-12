@@ -61,8 +61,8 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
     end = orders_df.loc[len(orders_df) - 1]['Date']
     tickers = orders_df['Symbol'].unique()
 
-    port_vals = get_data([tickers[0]], pd.date_range(start, end))
-    port_vals.drop(columns=['SPY'], inplace=True)
+    port_vals = get_data([tickers[0]], pd.date_range(start, end), addSPY=False)
+    #port_vals.drop(columns=['SPY'], inplace=True)
 
     for i in range(1, len(tickers)):
         tick = get_data([tickers[i]], pd.date_range(start, end))

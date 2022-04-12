@@ -60,7 +60,7 @@ def main():
     pd.set_option('mode.chained_assignment', None)
 
     symbol = 'BTC'
-    sd = dt.datetime(2014, 9, 20)
+    sd = dt.datetime(2015, 1, 1)
     ed = dt.datetime(2020, 12, 31)
     c = 9.95
     i = 0.005

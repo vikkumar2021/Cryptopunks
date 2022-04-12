@@ -56,7 +56,17 @@ class StrategyLearner(object):
         return "thabibe3"
 
     # constructor  		  	   		   	 		  		  		    	 		 		   		 		  
-    def __init__(self, verbose=False, impact=0.0, commission=0.0):  		  	   		   	 		  		  		    	 		 		   		 		  
+    def __init__(self,
+                 impact=0.0,
+                 commission=0.0,
+                 num_states=27,
+                 num_actions=3,
+                 alpha=0.1,
+                 gamma=0.9,
+                 rar=0.99,
+                 radr=0.8,		  	   		   	 		  		  		    	 		 		   		 		  
+                 dyna=0,  		  	   		   	 		  		  		    	 		 		   		 		  
+                 verbose=False):  		  	   		   	 		  		  		    	 		 		   		 		  
         """  		  	   		   	 		  		  		    	 		 		   		 		  
         Constructor method  		  	   		   	 		  		  		    	 		 		   		 		  
         """  		  	   		   	 		  		  		    	 		 		   		 		  
@@ -66,7 +76,7 @@ class StrategyLearner(object):
         self.learner = ql.QLearner(
         num_states=27,
         num_actions=3,
-        alpha=0.25,
+        alpha=0.1,
         gamma=0.9,
         rar=0.99,
         radr=0.8,
@@ -85,8 +95,8 @@ class StrategyLearner(object):
 
     def add_evidence(self, symbol="BTC", sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000):
 
-        spy = get_data([symbol], pd.date_range(sd, ed))
-        spy.drop(columns=['SPY'], inplace=True)
+        spy = get_data([symbol], pd.date_range(sd, ed), addSPY=False)
+        #spy.drop(columns=['SPY'], inplace=True)
 
         prices = spy.reset_index()
 
@@ -97,7 +107,7 @@ class StrategyLearner(object):
         moment = momentum(spy, window=window1)
         sma = price_sma_ratio(spy, window=window1)
 
-        dfm = pd.concat([bb, sma, so], axis=1)
+        dfm = pd.concat([bb, sma, moment], axis=1)
 
         dfmlist = dfm.values.tolist()
 
@@ -233,8 +243,8 @@ class StrategyLearner(object):
     # this method should use the existing policy and test it against new data
     def testPolicy(self, symbol="BTC", sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000):
 
-        spy = get_data([symbol], pd.date_range(sd, ed))
-        spy.drop(columns=['SPY'], inplace=True)
+        spy = get_data([symbol], pd.date_range(sd, ed), addSPY=False)
+        #spy.drop(columns=['SPY'], inplace=True)
 
         prices = spy.reset_index()
         window1 = 10
@@ -342,41 +352,43 @@ class StrategyLearner(object):
         df1.drop(columns=symbol, inplace=True)
         df1 = df1.set_index('index')
 
-        #print(df1)
-        df['Date'] = dates
-        # df['Price'] = p
-        df = df[df['Shares'] != 0]
-        df['Order'] = 0
-        df['Order'][df['Shares'] > 0] = 'SELL'
-        df['Order'][df['Shares'] < 0] = 'BUY'
-        df['Symbol'] = symbol
-        df['Shares'] = abs(df['Shares'])
-        df = df.reset_index(drop=True)
-
-        gains = compute_portvals(df, start_val=sv, commission=self.commission, impact=self.impact)
-        #print(gains.iloc[-1])
-
-        order = [(1000, prices['index'].loc[0], 'BUY', symbol),
-                 (1000, prices['index'].loc[len(prices) - 1], 'SELL', symbol)]
-
-        dfbench = pd.DataFrame(order, columns=['Shares', 'Date', 'Order', 'Symbol'])
-        benchmark = compute_portvals(dfbench, start_val=sv, commission=self.commission, impact=self.impact)
-
-        benchmark = benchmark.rename(columns={'Sum': 'Benchmark'})
-        gains = gains.rename(columns={'Sum': 'Strategy Learner'})
-
-        gains = gains / gains.iloc[0]
-        benchmark = benchmark / benchmark.iloc[0]
-        
-        print(benchmark.head)
-
-        fig, ax = plt.subplots(dpi=100)
-        gains.plot(color='r', ax=ax)
-        benchmark.plot(color='g', ax=ax)
-        plt.title('Strategy Learner vs Benchmark Portfolio Returns')
-        plt.ylabel('Normalized Portfolio Values')
-        plt.xlabel('Date')
-        plt.savefig('strategylearner_' + symbol + '.png')
+# =============================================================================
+#         #print(df1)
+#         df['Date'] = dates
+#         # df['Price'] = p
+#         df = df[df['Shares'] != 0]
+#         df['Order'] = 0
+#         df['Order'][df['Shares'] < 0] = 'SELL'
+#         df['Order'][df['Shares'] > 0] = 'BUY'
+#         df['Symbol'] = symbol
+#         df['Shares'] = abs(df['Shares'])
+#         df = df.reset_index(drop=True)
+# 
+#         gains = compute_portvals(df, start_val=sv, commission=self.commission, impact=self.impact)
+#         #print(gains.iloc[-1])
+# 
+#         order = [(1000, prices['index'].loc[0], 'BUY', symbol),
+#                  (1000, prices['index'].loc[len(prices) - 1], 'SELL', symbol)]
+# 
+#         dfbench = pd.DataFrame(order, columns=['Shares', 'Date', 'Order', 'Symbol'])
+#         benchmark = compute_portvals(dfbench, start_val=sv, commission=self.commission, impact=self.impact)
+# 
+#         benchmark = benchmark.rename(columns={'Sum': 'Benchmark'})
+#         gains = gains.rename(columns={'Sum': 'Strategy Learner'})
+# 
+#         gains = gains / gains.iloc[0]
+#         benchmark = benchmark / benchmark.iloc[0]
+#         
+#         print(benchmark.head)
+# 
+#         #fig, ax = plt.subplots(dpi=100)
+#         #gains.plot(color='r', ax=ax)
+#         #benchmark.plot(color='g', ax=ax)
+#         #plt.title('Strategy Learner vs Benchmark Portfolio Returns')
+#         #plt.ylabel('Normalized Portfolio Values')
+#         #plt.xlabel('Date')
+#         #plt.savefig('strategylearner_' + symbol + '.png')
+# =============================================================================
 
         return df1
 
@@ -384,16 +396,19 @@ def main():
     pd.set_option('mode.chained_assignment', None)
 
     symbol = 'BTC'
-    sd = dt.datetime(2014, 9, 20)
+    sd = dt.datetime(2018, 1, 1)
     ed = dt.datetime(2020, 12, 31)
 
     SLlearner = StrategyLearner(commission=0, impact=0)
     SLlearner.add_evidence(symbol, sd, ed)
     
     sd1 = dt.datetime(2021, 1, 1)
-    ed = dt.datetime(2022, 3, 1)
+    ed1 = dt.datetime(2022, 3, 31)
+    
+    #sd1 = dt.datetime(2021, 1, 1)
+    #ed1 = dt.datetime(2022, 3, 1)
 
-    SLlearner.testPolicy(symbol, sd1, ed)
+    SLlearner.testPolicy(symbol, sd1, ed1)
 
 if __name__ == "__main__":
     main()
