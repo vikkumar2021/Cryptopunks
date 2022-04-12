@@ -8,8 +8,9 @@ from analyze_tweet_sentiment import save_tweets
 import os
 
 
-PRICE_FILE_PATH = "BTC-USD_2017-2022.csv"
-TWEETS_FILE_PATH = "aggregated_tweet_sentiment.csv"
+CWD = os.path.dirname(os.path.abspath(__file__))
+PRICE_FILE_PATH = os.path.join(CWD, "BTC-USD_2017-2022.csv")
+TWEETS_FILE_PATH = os.path.join(CWD, "aggregated_tweet_sentiment.csv")
 
 
 def create_spark_session():

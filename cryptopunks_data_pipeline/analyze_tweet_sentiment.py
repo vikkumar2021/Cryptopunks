@@ -113,7 +113,7 @@ def aggregate_tweet_sentiment(
     return df_agg
 
 
-def save_tweets(spark: SparkSession, file_path: str) -> None:
+def save_tweets(spark: SparkSession, file_path: str) -> SparkDataFrame:
     df_tweets = read_tweets_data(spark, file_path)
     print(df_tweets.count())
     df_sentiment = analyze_tweet_sentiment(df_tweets)
