@@ -1,3 +1,8 @@
+import sys
+
+sys.path.insert(0,r"C:\Users\tthab\Documents\GitHub\Cryptopunks\cryptopunks_data_pipeline")
+sys.path.insert(0,r"C:\Users\tthab\Documents\GitHub\Cryptopunks")
+
 import datetime as dt
 import numpy as np
 import pandas as pd
@@ -8,8 +13,11 @@ import math
 from ManualLearner import ManualLearner
 from StrategyLearner import StrategyLearner
 import json
-from cryptopunks_data_pipeline import data_preparation_pipeline
+from cryptopunks_data_pipeline import *
+from cryptopunks_data_pipeline.data_preparation_pipeline import run_pipeline 
 import os
+import sys
+from cryptopunks_data_pipeline.data_preparation_pipeline import create_spark_session
   		  	   		   	 		  		  		    	 		 		   		 		  
 
 def author(self):
@@ -44,22 +52,36 @@ def main():
         config = json.load(f)
     
     symbol = config.get("ticker")
+    
     training_sd = config.get("training_sd")
     training_ed = config.get("training_ed")
     test_sd = config.get("test_sd")
     test_ed = config.get("test_ed")
     sv = config.get("sv")
-    sma_window = config.get("sma_window")
+    
+    sma_window1 = config.get("sma_window")
     bollinger_band_sma = config.get("bollinger_band_sma")
     bollinger_band_stdev = config.get("bollinger_band_stdev")
     so_window = config.get("so_window")
     so_window_sma = config.get("so_window_sma")
     obv = config.get("obv")
     mom_window = config.get("mom_window")
+    
     alpha = config.get("alpha")
     gamma = config.get("gamma")
     rar = config.get("rar")
-    radr = config.get("radr")
+    radr = config.get("radr") 
+    
+    spark = create_spark_session()
+    
+    dataframebtc = run_pipeline(spark,
+                    bollinger_window = bollinger_band_sma,
+                    bollinger_stdvs =bollinger_band_stdev,
+                    so_window =so_window,
+                    so_window_sma =so_window_sma,
+                    obv = obv)
+    
+    print(dataframebtc.head)
     
     #Training#
     pd.set_option('mode.chained_assignment', None)
