@@ -71,7 +71,9 @@ def analyze_tweet_sentiment(tweets_df: SparkDataFrame) -> SparkDataFrame:
     )
 
 
-def aggregate_tweet_sentiment(df: SparkDataFrame) -> SparkDataFrame:
+def aggregate_tweet_sentiment(
+    spark: SparkSession, df: SparkDataFrame
+) -> SparkDataFrame:
     """Aggregate sentiment data from individual tweets to a daily level of granularity"""
 
     df.createOrReplaceTempView("tweet_sentiment_unagg")

@@ -63,7 +63,9 @@ def read_aggregated_tweets(spark: SparkSession) -> SparkDataFrame:
     return spark.read.csv(TWEETS_FILE_PATH, header=True, schema=schema)
 
 
-def add_price_to_SMA_ratio(df: SparkDataFrame, window: int) -> SparkDataFrame:
+def add_price_to_SMA_ratio(
+    spark: SparkSession, df: SparkDataFrame, sma_window: int
+) -> SparkDataFrame:
     """Add price to simple moving average ratio"""
 
     df.createOrReplaceTempView("add_price_to_SMA_ratio")
@@ -75,7 +77,7 @@ def add_price_to_SMA_ratio(df: SparkDataFrame, window: int) -> SparkDataFrame:
             AVG(Adj_Close) OVER(
                 PARTITION BY Ticker
                 ORDER BY TradeDate ASC
-                RANGE BETWEEN INTERVAL {window} DAYS PRECEDING AND CURRENT ROW) AS rolling_avg
+                RANGE BETWEEN INTERVAL {sma_window} DAYS PRECEDING AND CURRENT ROW) AS rolling_avg
             FROM add_price_to_SMA_ratio)
 
         SELECT
@@ -89,7 +91,7 @@ def add_price_to_SMA_ratio(df: SparkDataFrame, window: int) -> SparkDataFrame:
 
 
 def add_bollinger_bands(
-    df: SparkDataFrame, bollinger_window: int, bollinger_stdvs: int
+    spark: SparkSession, df: SparkDataFrame, bollinger_window: int, bollinger_stdvs: int
 ) -> SparkDataFrame:
     """Add Bollinger Bands to dataframe"""
 
@@ -121,7 +123,7 @@ def add_bollinger_bands(
 
 
 def add_stochastic_oscillator(
-    df: SparkDataFrame, so_window: int, so_window_sma: int
+    spark: SparkSession, df: SparkDataFrame, so_window: int, so_window_sma: int
 ) -> SparkDataFrame:
     df.createOrReplaceTempView("add_stochastic_oscillator")
     df_transformed = spark.sql(
@@ -161,7 +163,7 @@ def add_stochastic_oscillator(
     )
 
 
-def add_on_balance_volume(df: SparkDataFrame) -> SparkDataFrame:
+def add_on_balance_volume(spark: SparkSession, df: SparkDataFrame) -> SparkDataFrame:
     """
     Add On Balance Volume
     https://www.investopedia.com/terms/o/onbalancevolume.asp
@@ -190,7 +192,7 @@ def add_on_balance_volume(df: SparkDataFrame) -> SparkDataFrame:
     return df_transformed
 
 
-def add_momentum(df: SparkDataFrame, mom_window) -> SparkDataFrame:
+def add_momentum(spark: SparkSession, df: SparkDataFrame, mom_window) -> SparkDataFrame:
     """
     Add Momentum
     """
@@ -237,6 +239,7 @@ def add_MACD(df: PandasDataFrame) -> PandasDataFrame:
 
 
 def run_pipeline(
+    spark: SparkSession,
     sma_window: Optional[int] = None,
     bollinger_window: Optional[int] = None,
     bollinger_stdvs: Optional[int] = None,
@@ -267,7 +270,9 @@ def run_pipeline(
     if os.path.exists(TWEETS_FILE_PATH):
         df_agg_sentiment = read_aggregated_tweets(spark)
     else:
-        df_agg_sentiment = save_tweets("/Users/salmanmukhi/Downloads/BTC_tweets.csv")
+        df_agg_sentiment = save_tweets(
+            spark, "/Users/salmanmukhi/Downloads/BTC_tweets.csv"
+        )
 
     df_joined = df_price.join(
         df_agg_sentiment, df_price.TradeDate == df_agg_sentiment.tweet_date, "left"
@@ -283,6 +288,7 @@ def run_pipeline(
 if __name__ == "__main__":
     spark = create_spark_session()
     run_pipeline(
+        spark,
         sma_window=14,
         bollinger_window=20,
         bollinger_stdvs=2,
