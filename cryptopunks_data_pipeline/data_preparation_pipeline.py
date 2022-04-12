@@ -258,7 +258,7 @@ def run_pipeline(
         assert all([bollinger_window, bollinger_stdvs])
         df_price = add_bollinger_bands(spark, df_price, bollinger_window, bollinger_stdvs)
     if any([so_window, sma_window]):
-        assert all([so_window, sma_window])
+        assert all([so_window, so_window_sma])
         df_price = add_stochastic_oscillator(spark, df_price, so_window, so_window_sma)
 
     # transform price data to add indicators
