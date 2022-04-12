@@ -66,6 +66,7 @@ def main():
     so_window_sma = config.get("so_window_sma")
     obv = config.get("obv")
     mom_window = config.get("mom_window")
+    macd_window = config.get("macd_window")
     
     alpha = config.get("alpha")
     gamma = config.get("gamma")
@@ -75,12 +76,15 @@ def main():
     spark = create_spark_session()
     
     dataframebtc = run_pipeline(spark,
+                    sma_window = sma_window1,
                     bollinger_window = bollinger_band_sma,
                     bollinger_stdvs =bollinger_band_stdev,
                     so_window =so_window,
                     so_window_sma =so_window_sma,
-                    obv = obv)
+                    obv = obv,
+                    mom_window = mom_window)
     
+
     print(dataframebtc.head)
     
     #Training#
@@ -140,8 +144,8 @@ def main():
     df2 = df_to_order(df=df2, symbol=symbol, sd=sd2, ed=ed2)
     dfgains2 = compute_portvals(df2, start_val=sv)
 
-    order = [(1000, sd, 'BUY', symbol),
-             (1000, ed, 'SELL', symbol)]
+    order = [(1000, sd2, 'BUY', symbol),
+             (1000, ed2, 'SELL', symbol)]
     
     dfbench = pd.DataFrame(order, columns=['Shares', 'Date', 'Order', 'Symbol'])
     benchmark = compute_portvals(dfbench, start_val=sv)

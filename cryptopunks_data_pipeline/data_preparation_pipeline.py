@@ -8,8 +8,8 @@ from analyze_tweet_sentiment import save_tweets
 import os
 
 
-PRICE_FILE_PATH = "BTC-USD_2017-2022.csv"
-TWEETS_FILE_PATH = "aggregated_tweet_sentiment.csv"
+PRICE_FILE_PATH = r"C:\Users\tthab\Documents\GitHub\Cryptopunks\cryptopunks_data_pipeline\BTC-USD_2017-2022.csv"
+TWEETS_FILE_PATH = r"C:\Users\tthab\Documents\GitHub\Cryptopunks\cryptopunks_data_pipeline\aggregated_tweet_sentiment.csv"
 
 
 def create_spark_session():
