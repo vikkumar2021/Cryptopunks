@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, url_for
+from cryptopunks_data_pipeline.data_preparation_pipeline import run_pipeline_helper
 
 app = Flask(__name__)
 
@@ -36,6 +37,20 @@ def indicators():
 
     return jsonify(request.args)
 
+@app.route("/indicators_v2")
+def indicators_v2():
+
+    sma_window = int(request.args.get('sma_window', 'Error: Argument not Found'))
+    bollinger_band_sma = int(request.args.get('bollinger_band_sma', 'Error: Argument not Found'))
+    bollinger_band_stdev = int(request.args.get('bollinger_band_stdev', 'Error: Argument not Found'))
+    so_window = int(request.args.get('so_window', 'Error: Argument not Found'))
+    so_window_sma = int(request.args.get('so_window_sma', 'Error: Argument not Found'))
+    obv = bool(request.args.get('obv', 'Error: Argument not Found'))
+    mom_window = int(request.args.get('mom_window', 'Error: Argument not Found'))
+
+    return run_pipeline_helper(sma_window, bollinger_band_sma, bollinger_band_stdev, so_window, so_window_sma, obv, mom_window)
+
+
 '''
 1) To Run the Flask App, simply run the file
 2) On your Local Browser go to following home page: http://127.0.0.1:5000 
@@ -50,5 +65,6 @@ Next Steps -> Take Parameters, pass it to runpipeline() -> Send me json object (
 if __name__ == '__main__':
     with app.test_request_context():
         url = url_for('indicators', ticker = 'BTC', training_sd = 'None', training_ed = '14', test_sd = '3', test_ed = '14', sv='14', sma_window='None',bollinger_band_sma='14', bollinger_band_stdev='3', so_window='14', so_window_sma='14', obv='27', mom_window='None', alpha='0.1', gamma='0.9', rar='0.99', radr='0.88')
-        print(url)
+        url2 = url_for('indicators_v2', sma_window='14', bollinger_band_sma='20', bollinger_band_stdev='2', so_window='14', so_window_sma='3', obv='True', mom_window='14')
+        print(url2)
     app.run(debug=True)
