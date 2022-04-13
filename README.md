@@ -2,6 +2,7 @@
  Crypto Visualization Project
  
  # TODO FRONTEND
+  - [x] Create Flask App to Communicate with BackEnd
   - [ ] Tab1: Graph Indicators -> Price
   - [ ] Tab2: Graph Heatmap -> volume/price
   - [ ] Tab3: Allow user to create custom QLearning/DecisionTree -> Graph results overalayed on Price
