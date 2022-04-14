@@ -101,7 +101,7 @@ class StrategyLearner(object):
     def list_to_string(self,lista):
         return str(lista[0]) + str(lista[1]) + str(lista[2])
 
-    def add_evidence(self, data, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000):
+    def add_evidence(self, data, sd, ed, sv=1000000):
 
         #spy = get_data([symbol], pd.date_range(sd, ed), addSPY=False)
         #spy.drop(columns=['SPY'], inplace=True)
@@ -239,7 +239,7 @@ class StrategyLearner(object):
 
 
     # this method should use the existing policy and test it against new data
-    def testPolicy(self, data, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000):
+    def testPolicy(self, data, sd, ed, sv=1000000):
 
         spy = get_data([symbol], pd.date_range(sd, ed), addSPY=False)
         #spy.drop(columns=['SPY'], inplace=True)
