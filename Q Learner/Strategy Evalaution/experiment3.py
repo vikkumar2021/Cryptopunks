@@ -83,6 +83,7 @@ def main():
                     so_window = so_window,
                     so_window_sma = so_window_sma,
                     obv = obv,
+                    macd = macd_window,
                     mom_window = mom_window)
     
     dataframebtc.to_csv('pipeline.csv')

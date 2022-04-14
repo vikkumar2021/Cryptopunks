@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import json
+import datetime as dt
 
 def categorize_pipeline(df):
     
@@ -51,10 +52,13 @@ def categorize_pipeline(df):
         else:
             newdf[i[0]][newdf[i[0]]>0] = 2
             newdf[i[0]][newdf[i[0]]<=0] = 1
-            
-    print(newdf.head)
     
-    newdf = newdf[newdf['']]
+    sd = dt.datetime(2018, 9, 20)
+    ed = dt.datetime(2020, 12, 31)
+    
+    newdf = newdf[(newdf['TradeDate'] >= sd) & (newdf['TradeDate'] <= ed)]
+    
+    print(newdf.head)
     
     return newdf, combinations
     
