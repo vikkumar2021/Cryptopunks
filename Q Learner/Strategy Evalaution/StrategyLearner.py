@@ -102,18 +102,16 @@ class StrategyLearner(object):
         return str(lista[0]) + str(lista[1]) + str(lista[2])
 
     def add_evidence(self, data, sd, ed, sv=1000000):
+        
+        symbol = 'Adj_Close'
+        
+        #data = data[(data['TradeDate']>=sd) & (data['TradeDate']<=ed)]
+        print(len(data))
 
-        #spy = get_data([symbol], pd.date_range(sd, ed), addSPY=False)
-        #spy.drop(columns=['SPY'], inplace=True)
-        #prices = spy.reset_index()
-
-        df = dfm.values.tolist()
-
-        dfm = dfm.reset_index()
-
-        dates = dfm[['index']].reset_index(drop=True)
-        prices = dates.merge(prices, on='index', how='left')
-
+        dfmlist = data.iloc[:,2:].values.tolist()
+        dates = data.iloc[:,:1]
+        prices = data.iloc[:,:2]
+        
         buyind = []
         sellind = []
 
@@ -240,28 +238,14 @@ class StrategyLearner(object):
 
     # this method should use the existing policy and test it against new data
     def testPolicy(self, data, sd, ed, sv=1000000):
-
-        spy = get_data([symbol], pd.date_range(sd, ed), addSPY=False)
-        #spy.drop(columns=['SPY'], inplace=True)
-
-        prices = spy.reset_index()
-        window1 = 10
-
-        bb = bollinger_bands(spy, window=window1)
-        so = stochastic_oscillator(spy, window=window1)
-        moment = momentum(spy, window=window1)
-        sma = price_sma_ratio(spy, window=window1)
-
-        dfm = pd.concat([bb, sma, moment], axis=1)
+        #data = data[(data['TradeDate']>=sd) & (data['TradeDate']<=ed)]
+        print(len(data))
         
-        print(dfm.head)
+        symbol = 'Adj_Close'
 
-        dfmlist = dfm.values.tolist()
-
-        dfm = dfm.reset_index()
-
-        dates = dfm[['index']].reset_index(drop=True)
-        prices = dates.merge(prices, on='index', how='left')
+        dfmlist = data.iloc[:,2:].values.tolist()
+        dates = data.iloc[:,:1]
+        prices = data.iloc[:,:2]
 
 
         tradesdf = np.zeros(len(dfmlist))
@@ -348,7 +332,7 @@ class StrategyLearner(object):
         df1 = df.copy()
         df1 = df1.join(prices)
         df1.drop(columns=symbol, inplace=True)
-        df1 = df1.set_index('index')
+        df1 = df1.set_index('TradeDate')
 
 # =============================================================================
 #         #print(df1)

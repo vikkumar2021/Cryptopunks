@@ -39,9 +39,9 @@ def categorize_pipeline(df):
         combinations = combinations*i[1]
         onlycols.append(i[0])
     
-    print(collist)
-    print(onlycols)
-    print(combinations)
+    #print(collist)
+    #print(onlycols)
+    #print(combinations)
     
     newdf = df[onlycols]
     for i in collist:
@@ -56,7 +56,17 @@ def categorize_pipeline(df):
     
     newdf['TradeDate'] = pd.to_datetime(newdf['TradeDate'])
     
-    print(newdf.head)
+    
+    newdf = newdf.replace([None], np.nan, regex=True)
+    newdf = newdf.replace(r'^\s*$', np.nan, regex=True)
+    newdf = newdf.dropna()
+    
+    #newdf['Adj_Close'] = newdf['Adj_Close'].round()
+    
+    for i in onlycols[1:]:
+        newdf[i] = newdf[i].astype('int32')
+    
+    newdf = newdf.reset_index(drop=True)
     
     return newdf, combinations
     

@@ -56,17 +56,19 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
     # uTODO: Your code here
     # In the template, instead of computing the value of the portfolio, we just  		  	   		   	 		  		  		    	 		 		   		 		  
     # read in the value of IBM over 6 months
-
-    start = orders_df.loc[0]['Date']
-    end = orders_df.loc[len(orders_df) - 1]['Date']
+    
+    
+    start = orders_df.loc[0]['TradeDate']
+    end = orders_df.loc[len(orders_df) - 1]['TradeDate']
     tickers = orders_df['Symbol'].unique()
 
     port_vals = get_data([tickers[0]], pd.date_range(start, end), addSPY=False)
+    
     #port_vals.drop(columns=['SPY'], inplace=True)
 
     for i in range(1, len(tickers)):
         tick = get_data([tickers[i]], pd.date_range(start, end))
-        tick.drop(columns=['SPY'], inplace=True)
+        #tick.drop(columns=['SPY'], inplace=True)
         port_vals = port_vals.join(tick, how='outer')
 
     port_vals['Cash'] = 1
@@ -79,16 +81,16 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
         trades_df[col] = float(0)
         commission_df[col] = float(0)
         impact_df[col] = float(0)
-
+        
+    symbol = 'Adj_Close'
     for i in range(len(orders_df)):
-        d = orders_df.loc[i]['Date']
+        d = orders_df.loc[i]['TradeDate']
         amount = orders_df.loc[i]['Shares']
-        symbol = orders_df.loc[i]['Symbol']
         if orders_df.loc[i]['Order'] == 'BUY':
             sign = 1
         elif orders_df.loc[i]['Order'] == 'SELL':
             sign = -1
-
+        
         trades_df.loc[d][symbol] = trades_df.loc[d][symbol] + sign * amount
         impact_df.loc[d][symbol] = impact_df.loc[d][symbol] + amount * impact
         commission_df.loc[d][symbol] = commission_df.loc[d][symbol] + commission
@@ -112,8 +114,8 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
         else:
             holdings_df.loc[i] = holdings_df.loc[i - 1] + trades_df2.loc[i]
 
-    holdings_df['Date'] = dates
-    holdings_df = holdings_df.set_index('Date')
+    holdings_df['TradeDate'] = dates
+    holdings_df = holdings_df.set_index('TradeDate')
     #print(holdings_df)
 
     vals = port_vals * holdings_df
@@ -151,14 +153,14 @@ def test_code():
     sv = 1000000
 
     orders_df = pd.read_csv(of, na_values=['nan'])
-    orders_df = orders_df.sort_values(by=['Date'])
+    orders_df = orders_df.sort_values(by=['TradeDate'])
     # Process orders  		  	   		   	 		  		  		    	 		 		   		 		  
     portvals = compute_portvals(orders_file=orders_df, start_val=sv)
 
     # Get portfolio stats  		  	   		   	 		  		  		    	 		 		   		 		  
     # Here we just fake the data. you should use your code from previous assignments.
-    start = orders_df.loc[0]['Date']
-    end = orders_df.loc[len(orders_df) - 1]['Date']
+    start = orders_df.loc[0]['TradeDate']
+    end = orders_df.loc[len(orders_df) - 1]['TradeDate']
 
     spy = get_data(['$SPX'], pd.date_range(start, end))
     spy.drop(columns=['SPY'], inplace=True)

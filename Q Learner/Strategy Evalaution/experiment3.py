@@ -29,7 +29,7 @@ def author(self):
 def df_to_order(df, symbol, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31)):
 
     df = df.reset_index()
-    df = df.rename(columns={'index' : 'Date'})
+    df = df.rename(columns={'index' : 'TradeDate'})
     df = df[df['Shares'] != 0]
     df['Order'] = 0
     df['Order'][df['Shares'] < 0] = 'SELL'
@@ -38,7 +38,7 @@ def df_to_order(df, symbol, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12
     df['Shares'] = abs(df['Shares'])
     df = df.reset_index(drop=True)
     
-    if df['Order'].loc[len(df)-1] > 'BUY':
+    if df['Order'].loc[len(df)-1] == 'BUY':
         lastorder = pd.DataFrame([(ed,1000,'SELL',symbol)], columns=df.columns)
         df = pd.concat([df,lastorder],axis=0)
     else:
@@ -59,9 +59,7 @@ def main():
     training_ed = datetime.strptime(config.get("training_ed"),"%Y-%m-%d")
     test_sd = datetime.strptime(config.get("test_sd"),"%Y-%m-%d")
     test_ed = datetime.strptime(config.get("test_ed"),"%Y-%m-%d")
-    
-    print(training_sd)
-    
+
     sv = config.get("sv")
     
     sma_window1 = config.get("sma_window")
@@ -72,6 +70,7 @@ def main():
     obv = config.get("obv")
     mom_window = config.get("mom_window")
     macd_window = config.get("macd")
+    include_sentiment = config.get("include_sentiment")
     
     alpha = config.get("alpha")
     gamma = config.get("gamma")
@@ -80,7 +79,7 @@ def main():
     
     spark = create_spark_session()
     
-    dataframebtc = run_pipeline(spark,
+    dataframebtc = run_pipeline(spark, include_sentiment=include_sentiment,
                     sma_window = sma_window1,
                     bollinger_window = bollinger_band_sma,
                     bollinger_stdvs =bollinger_band_stdev,
@@ -93,11 +92,6 @@ def main():
     dataframebtc.to_csv('pipeline.csv')
     
     binned_df, combos = bdfcp(dataframebtc)
-    
-    print(dataframebtc.head)
-    
-    print(binned_df.head)
-    print(combos)
     
     #Training#
     pd.set_option('mode.chained_assignment', None)
@@ -117,13 +111,13 @@ def main():
     df1 = SLlearner.testPolicy(binned_df, sd, ed)
     
     df1 = df_to_order(df=df1, symbol=symbol, sd=sd, ed=ed)
-    
+    print(df1)
     dfgains1 = compute_portvals(df1, start_val=sv)
 
-    order = [(1000, sd, 'BUY', symbol),
-             (1000, ed, 'SELL', symbol)]
+    order = [(sd, 1000, 'BUY', symbol),
+             (ed, 1000, 'SELL', symbol)]
     
-    dfbench = pd.DataFrame(order, columns=['Shares', 'Date', 'Order', 'Symbol'])
+    dfbench = pd.DataFrame(order, columns=['TradeDate', 'Shares', 'Order', 'Symbol'])
     benchmark = compute_portvals(dfbench, start_val=sv)
 
     dfgains1['Sum'] = ((dfgains1['Sum'] / dfgains1['Sum'].iloc[0]) - 1)
@@ -136,14 +130,14 @@ def main():
     if plotline:
         for i in range(len(df1)):
             if df1['Order'][i] == 'BUY':
-                ax.axvline(x=df1['Date'][i], color='g')
+                ax.axvline(x=df1['TradeDate'][i], color='g')
             else:
-                ax.axvline(x=df1['Date'][i], color='r')
+                ax.axvline(x=df1['TradeDate'][i], color='r')
                 
     plt.legend(['Strategy Learner', 'Benchmark'])
     plt.title('Portfolio Value Strategy Comparison ')
     plt.ylabel('Normalized Portfolio Values')
-    plt.xlabel('Date')
+    plt.xlabel('TradeDate')
     plt.savefig('experiment3.png')
     
     #Testing#
@@ -156,22 +150,24 @@ def main():
     df2 = SLlearner.testPolicy(binned_df, sd2, ed2)
     
     df2 = df_to_order(df=df2, symbol=symbol, sd=sd2, ed=ed2)
+    print(df2)
+    
     dfgains2 = compute_portvals(df2, start_val=sv)
 
     order = [(1000, sd2, 'BUY', symbol),
              (1000, ed2, 'SELL', symbol)]
     
-    dfbench = pd.DataFrame(order, columns=['Shares', 'Date', 'Order', 'Symbol'])
+    dfbench = pd.DataFrame(order, columns=['Shares', 'TradeDate', 'Order', 'Symbol'])
     benchmark = compute_portvals(dfbench, start_val=sv)
     
     dfgains2['Sum'] = ((dfgains2['Sum'] / dfgains2['Sum'].iloc[0]) - 1)
     benchmark['Sum'] = ((benchmark['Sum'] / benchmark['Sum'].iloc[0])- 1)
     
-    print('Strategy')
-    print(dfgains2.head)
-    print()
-    print('BTC')
-    print(benchmark.head)
+    #print('Strategy')
+    #print(dfgains2.head)
+    #print()
+    #print('BTC')
+    #print(benchmark.head)
     
     
     fig2, ax2 = plt.subplots(dpi=100)
@@ -183,15 +179,18 @@ def main():
     if plotline:
         for i in range(len(df2)):
             if df2['Order'][i] == 'BUY':
-                ax2.axvline(x=df2['Date'][i], color='g')
+                ax2.axvline(x=df2['TradeDate'][i], color='g')
             else:
-                ax2.axvline(x=df2['Date'][i], color='r')
+                ax2.axvline(x=df2['TradeDate'][i], color='r')
     
     plt.legend(['Strategy Learner', 'Benchmark'])
     plt.title('Portfolio Value Strategy Comparison')
     plt.ylabel('Normalized Portfolio Values')
-    plt.xlabel('Date')
+    plt.xlabel('TradeDate')
     plt.savefig('experiment4.png')
+    
+    df2.to_csv('orders.csv')
+    dfgains2.to_csv('gains.csv')
   		  	   		   	 		  		  		    	 		 		   		 		  
 if __name__ == "__main__":
     main()
