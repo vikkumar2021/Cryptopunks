@@ -13,7 +13,6 @@
     "obv" : true,
     "macd" : true,
     "mom_window":14,
-    "macd_sma": 14,
     "alpha":0.1,
     "gamma":0.9,
     "rar":0.99,

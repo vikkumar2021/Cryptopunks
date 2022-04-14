@@ -81,16 +81,16 @@ class StrategyLearner(object):
         rar=0.99,
         radr=0.8,
         dyna=0,
-        verbose=False
+        verbose=False)
         
-        cols = [('bollinger_band_percentage',3),
+        self.cols = [('bollinger_band_percentage',3),
             ('stochastic_oscillator_sma',3),
             ('rsi',3),
-            ("price_to_SMA_ratio", 3)),
+            ("price_to_SMA_ratio", 3),
             ("momentum", 2),
             ('avg_compound_sentiment', 3),
             ('macd', 2)]
-    )
+        
 
     def state_calc(self,stringi):
 
@@ -101,7 +101,7 @@ class StrategyLearner(object):
     def list_to_string(self,lista):
         return str(lista[0]) + str(lista[1]) + str(lista[2])
 
-    def add_evidence(self, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000, data):
+    def add_evidence(self, data, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000):
 
         #spy = get_data([symbol], pd.date_range(sd, ed), addSPY=False)
         #spy.drop(columns=['SPY'], inplace=True)
@@ -239,7 +239,7 @@ class StrategyLearner(object):
 
 
     # this method should use the existing policy and test it against new data
-    def testPolicy(self, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000, data):
+    def testPolicy(self, data, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000):
 
         spy = get_data([symbol], pd.date_range(sd, ed), addSPY=False)
         #spy.drop(columns=['SPY'], inplace=True)

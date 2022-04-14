@@ -18,7 +18,7 @@ from cryptopunks_data_pipeline.data_preparation_pipeline import run_pipeline
 import os
 import sys
 from cryptopunks_data_pipeline.data_preparation_pipeline import create_spark_session
-import dataframe_binning.categorize_pipeline as dfbcp
+from dataframe_binning import categorize_pipeline as bdfcp
   		  	   		   	 		  		  		    	 		 		   		 		  
 
 def author(self):
@@ -67,7 +67,7 @@ def main():
     so_window_sma = config.get("so_window_sma")
     obv = config.get("obv")
     mom_window = config.get("mom_window")
-    macd_window = config.get("macd_window")
+    macd_window = config.get("macd")
     
     alpha = config.get("alpha")
     gamma = config.get("gamma")
@@ -90,6 +90,8 @@ def main():
     
     binned_df, combos = bdfcp(dataframebtc)
     
+    print(dataframebtc.head)
+    
     print(binned_df.head)
     print(combos)
     
@@ -107,8 +109,8 @@ def main():
                                 rar=rar,
                                 radr=radr)
     
-    SLlearner.add_evidence(symbol, sd, ed, binned_df)
-    df1 = SLlearner.testPolicy(symbol, sd, ed, binned_df)
+    SLlearner.add_evidence(binned_df, sd, ed)
+    df1 = SLlearner.testPolicy(binned_df, sd, ed)
     
     df1 = df_to_order(df=df1, symbol=symbol, sd=sd, ed=ed)
     
@@ -147,7 +149,7 @@ def main():
     ed2 = test_ed
     sv2 = sv
 
-    df2 = SLlearner.testPolicy(symbol, sd2, ed2, binned_df)
+    df2 = SLlearner.testPolicy(binned_df, sd2, ed2)
     
     df2 = df_to_order(df=df2, symbol=symbol, sd=sd2, ed=ed2)
     dfgains2 = compute_portvals(df2, start_val=sv)
