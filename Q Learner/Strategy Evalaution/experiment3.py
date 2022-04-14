@@ -19,6 +19,7 @@ import os
 import sys
 from cryptopunks_data_pipeline.data_preparation_pipeline import create_spark_session
 from dataframe_binning import categorize_pipeline as bdfcp
+from datetime import datetime
   		  	   		   	 		  		  		    	 		 		   		 		  
 
 def author(self):
@@ -54,10 +55,13 @@ def main():
     
     symbol = config.get("ticker")
     
-    training_sd = config.get("training_sd")
-    training_ed = config.get("training_ed")
-    test_sd = config.get("test_sd")
-    test_ed = config.get("test_ed")
+    training_sd = datetime.strptime(config.get("training_sd"),"%Y-%m-%d")
+    training_ed = datetime.strptime(config.get("training_ed"),"%Y-%m-%d")
+    test_sd = datetime.strptime(config.get("test_sd"),"%Y-%m-%d")
+    test_ed = datetime.strptime(config.get("test_ed"),"%Y-%m-%d")
+    
+    print(training_sd)
+    
     sv = config.get("sv")
     
     sma_window1 = config.get("sma_window")
