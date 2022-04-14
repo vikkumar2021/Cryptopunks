@@ -14,7 +14,7 @@ def categorize_pipeline(df):
             ('rsi',3),
             ("price_to_SMA_ratio", 3, config.get("sma_threshold")),
             ("momentum", 2, config.get("mom_threshold")),
-            ('avg_compound_sentiment', 3, config.get("sentiment_threshold")),
+            ('avg_compound_sentiment', 3, -1*config.get("sentiment_threshold"), config.get("sentiment_threshold"),
             ('macd', 2)]
     
 # =============================================================================
