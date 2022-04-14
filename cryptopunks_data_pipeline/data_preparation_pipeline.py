@@ -7,7 +7,6 @@ from pyspark.sql import SparkSession
 from analyze_tweet_sentiment import save_tweets
 import os
 
-
 CWD = os.path.dirname(os.path.abspath(__file__))
 PRICE_FILE_PATH = os.path.join(CWD, "BTC-USD_2017-2022.csv")
 TWEETS_FILE_PATH = os.path.join(CWD, "aggregated_tweet_sentiment.csv")
@@ -152,7 +151,7 @@ def add_stochastic_oscillator(
         *,
         (Adj_Close - min_window_price)/(max_window_price - min_window_price) * 100.0 AS stochastic_oscillator
         FROM cte1)
-        
+
         SELECT
         *,
         AVG(stochastic_oscillator) OVER(
@@ -256,6 +255,7 @@ def run_pipeline(
     obv: Optional[bool] = None,
     macd: Optional[bool] = None,
     mom_window: Optional[int] = None,
+    include_sentiment: Optional[bool] = None,
 ) -> PandasDataFrame:
     """Run data preparation pipeline."""
     df_price = read_stock_price_data(spark)
@@ -278,17 +278,17 @@ def run_pipeline(
     if mom_window:
         df_price = add_momentum(spark, df_price, mom_window)
 
-    # Use aggregated version of the tweets data if it exists, otherwise recompute it
-    if os.path.exists(TWEETS_FILE_PATH):
-        df_agg_sentiment = read_aggregated_tweets(spark)
-    else:
-        df_agg_sentiment = save_tweets(
-            spark, "/Users/salmanmukhi/Downloads/BTC_tweets.csv"
+    if include_sentiment:
+        # Use aggregated version of the tweets data if it exists, otherwise recompute it
+        if os.path.exists(TWEETS_FILE_PATH):
+            df_agg_sentiment = read_aggregated_tweets(spark)
+        else:
+            df_agg_sentiment = save_tweets(
+                spark, "/Users/salmanmukhi/Downloads/BTC_tweets.csv"
+            )
+        df_joined = df_price.join(
+            df_agg_sentiment, df_price.TradeDate == df_agg_sentiment.tweet_date, "inner"
         )
-
-    df_joined = df_price.join(
-        df_agg_sentiment, df_price.TradeDate == df_agg_sentiment.tweet_date, "left"
-    )
     pandas_df = df_joined.toPandas().sort_values(by=["TradeDate"])
     if macd:
         pandas_df = add_MACD(pandas_df)
@@ -309,5 +309,6 @@ if __name__ == "__main__":
         so_window_sma=3,
         obv=True,
         mom_window=14,
-        macd=True
+        macd=True,
+        include_sentiment=True,
     )
