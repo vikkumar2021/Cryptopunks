@@ -289,6 +289,9 @@ def run_pipeline(
         df_joined = df_price.join(
             df_agg_sentiment, df_price.TradeDate == df_agg_sentiment.tweet_date, "inner"
         )
+    else:
+        df_joined = df_price
+
     pandas_df = df_joined.toPandas().sort_values(by=["TradeDate"])
     if macd:
         pandas_df = add_MACD(pandas_df)
