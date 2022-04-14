@@ -105,22 +105,29 @@ def add_bollinger_bands(
             AVG(Adj_Close) OVER(
                 PARTITION BY Ticker
                 ORDER BY TradeDate ASC
-                RANGE BETWEEN INTERVAL {bollinger_window} DAYS PRECEDING AND CURRENT ROW) AS bollinger_rolling_avg,
+                RANGE BETWEEN INTERVAL {bollinger_window} DAYS PRECEDING AND CURRENT ROW) AS bollinger_sma,
             STDDEV(Adj_Close) OVER(
                 PARTITION BY Ticker
                 ORDER BY TradeDate ASC
                 RANGE BETWEEN INTERVAL {bollinger_window} DAYS PRECEDING AND CURRENT ROW) AS bollinger_rolling_std
-            FROM add_bollinger_bands)
+            FROM add_bollinger_bands),
+        cte2 AS (
+            SELECT
+            *,
+            (bollinger_sma - (bollinger_rolling_std * {bollinger_stdvs})) AS bollinger_band_lower,
+            (bollinger_sma + (bollinger_rolling_std * {bollinger_stdvs})) AS bollinger_band_upper
+            FROM cte2
+        )
 
         SELECT
-        *,
-        (bollinger_rolling_avg - (bollinger_rolling_std * {bollinger_stdvs})) AS bollinger_band_lower,
-        (bollinger_rolling_avg + (bollinger_rolling_std * {bollinger_stdvs})) AS bollinger_band_upper
-        FROM cte1
+            *,
+            (Adj_Close - bollinger_band_lower)/(bollinger_band_upper - bollinger_band_lower) AS bollinger_band_percentage
+        FROM
+        cte2
         """
     )
 
-    return df_transformed.drop("bollinger_rolling_avg").drop("bollinger_rolling_std")
+    return df_transformed.drop("bollinger_rolling_std")
 
 
 def add_stochastic_oscillator(
@@ -291,34 +298,6 @@ def run_pipeline(
     return pandas_df
 
 
-'''
-Helper Method for API Wrapper with JSON Output
-Created for Testing Purposes
-[Please ping me before deleting]
-'''
-def run_pipeline_helper(
-    sma_window: Optional[int] = None,
-    bollinger_window: Optional[int] = None,
-    bollinger_stdvs: Optional[int] = None,
-    so_window: Optional[int] = None,
-    so_window_sma: Optional[int] = None,
-    obv: Optional[bool] = None,
-    macd: Optional[bool] = None,
-    mom_window: Optional[int] = None,
-):
-    spark = create_spark_session()
-    return run_pipeline(
-        spark,
-        sma_window,
-        bollinger_window,
-        bollinger_stdvs,
-        so_window,
-        so_window_sma,
-        obv,
-        mom_window,
-    ).to_json(indent=3)
-
-
 if __name__ == "__main__":
     spark = create_spark_session()
     run_pipeline(
@@ -330,4 +309,5 @@ if __name__ == "__main__":
         so_window_sma=3,
         obv=True,
         mom_window=14,
+        macd=True
     )
