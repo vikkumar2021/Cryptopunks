@@ -116,7 +116,7 @@ def add_bollinger_bands(
             *,
             (bollinger_sma - (bollinger_rolling_std * {bollinger_stdvs})) AS bollinger_band_lower,
             (bollinger_sma + (bollinger_rolling_std * {bollinger_stdvs})) AS bollinger_band_upper
-            FROM cte2
+            FROM cte1
         )
 
         SELECT
