@@ -8,7 +8,7 @@ def categorize_pipeline(df):
 
         config = json.load(f)
     
-    cols = [('bollinger_band_percentage',3),
+    cols = [('bollinger_band_percentage',3,0,1),
             ('stochastic_oscillator_sma',3, config.get("so_ll"), config.get("so_ul")),
             ('rsi',3),
             ("price_to_SMA_ratio", 3, config.get("sma_threshold")),
