@@ -18,6 +18,7 @@ from cryptopunks_data_pipeline.data_preparation_pipeline import run_pipeline
 import os
 import sys
 from cryptopunks_data_pipeline.data_preparation_pipeline import create_spark_session
+import dataframe_binning.categorize_pipeline as dfbcp
   		  	   		   	 		  		  		    	 		 		   		 		  
 
 def author(self):
@@ -79,13 +80,17 @@ def main():
                     sma_window = sma_window1,
                     bollinger_window = bollinger_band_sma,
                     bollinger_stdvs =bollinger_band_stdev,
-                    so_window =so_window,
-                    so_window_sma =so_window_sma,
+                    so_window = so_window,
+                    so_window_sma = so_window_sma,
                     obv = obv,
                     mom_window = mom_window)
     
-
-    print(dataframebtc.head)
+    dataframebtc.to_csv('pipeline.csv')
+    
+    binned_df, combos = bdfcp(dataframebtc)
+    
+    print(binned_df.head)
+    print(combos)
     
     #Training#
     pd.set_option('mode.chained_assignment', None)
@@ -95,12 +100,14 @@ def main():
     ed = training_ed
     sv = sv
 
-    SLlearner = StrategyLearner(alpha=alpha,
-                 gamma=gamma,
-                 rar=rar,
-                 radr=radr)
-    SLlearner.add_evidence(symbol, sd, ed)
-    df1 = SLlearner.testPolicy(symbol, sd, ed)
+    SLlearner = StrategyLearner(num_states=combos,
+                                alpha=alpha,
+                                gamma=gamma,
+                                rar=rar,
+                                radr=radr)
+    
+    SLlearner.add_evidence(symbol, sd, ed, binned_df)
+    df1 = SLlearner.testPolicy(symbol, sd, ed, binned_df)
     
     df1 = df_to_order(df=df1, symbol=symbol, sd=sd, ed=ed)
     
@@ -139,7 +146,7 @@ def main():
     ed2 = test_ed
     sv2 = sv
 
-    df2 = SLlearner.testPolicy(symbol, sd2, ed2)
+    df2 = SLlearner.testPolicy(symbol, sd2, ed2, binned_df)
     
     df2 = df_to_order(df=df2, symbol=symbol, sd=sd2, ed=ed2)
     dfgains2 = compute_portvals(df2, start_val=sv)

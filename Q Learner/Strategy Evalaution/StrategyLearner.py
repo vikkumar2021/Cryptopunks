@@ -82,6 +82,14 @@ class StrategyLearner(object):
         radr=0.8,
         dyna=0,
         verbose=False
+        
+        cols = [('bollinger_band_percentage',3),
+            ('stochastic_oscillator_sma',3),
+            ('rsi',3),
+            ("price_to_SMA_ratio", 3)),
+            ("momentum", 2),
+            ('avg_compound_sentiment', 3),
+            ('macd', 2)]
     )
 
     def state_calc(self,stringi):
@@ -93,23 +101,13 @@ class StrategyLearner(object):
     def list_to_string(self,lista):
         return str(lista[0]) + str(lista[1]) + str(lista[2])
 
-    def add_evidence(self, symbol="BTC", sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000):
+    def add_evidence(self, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000, data):
 
-        spy = get_data([symbol], pd.date_range(sd, ed), addSPY=False)
+        #spy = get_data([symbol], pd.date_range(sd, ed), addSPY=False)
         #spy.drop(columns=['SPY'], inplace=True)
+        #prices = spy.reset_index()
 
-        prices = spy.reset_index()
-
-        window1 = 10
-
-        bb = bollinger_bands(spy, window=window1)
-        so = stochastic_oscillator(spy, window=window1)
-        moment = momentum(spy, window=window1)
-        sma = price_sma_ratio(spy, window=window1)
-
-        dfm = pd.concat([bb, sma, moment], axis=1)
-
-        dfmlist = dfm.values.tolist()
+        df = dfm.values.tolist()
 
         dfm = dfm.reset_index()
 
@@ -241,7 +239,7 @@ class StrategyLearner(object):
 
 
     # this method should use the existing policy and test it against new data
-    def testPolicy(self, symbol="BTC", sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000):
+    def testPolicy(self, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12, 31), sv=1000000, data):
 
         spy = get_data([symbol], pd.date_range(sd, ed), addSPY=False)
         #spy.drop(columns=['SPY'], inplace=True)
