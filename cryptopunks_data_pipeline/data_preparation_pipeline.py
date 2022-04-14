@@ -291,6 +291,34 @@ def run_pipeline(
     return pandas_df
 
 
+'''
+Helper Method for API Wrapper with JSON Output
+Created for Testing Purposes
+[Please ping me before deleting]
+'''
+def run_pipeline_helper(
+    sma_window: Optional[int] = None,
+    bollinger_window: Optional[int] = None,
+    bollinger_stdvs: Optional[int] = None,
+    so_window: Optional[int] = None,
+    so_window_sma: Optional[int] = None,
+    obv: Optional[bool] = None,
+    macd: Optional[bool] = None,
+    mom_window: Optional[int] = None,
+):
+    spark = create_spark_session()
+    return run_pipeline(
+        spark,
+        sma_window,
+        bollinger_window,
+        bollinger_stdvs,
+        so_window,
+        so_window_sma,
+        obv,
+        mom_window,
+    ).to_json(indent=3)
+
+
 if __name__ == "__main__":
     spark = create_spark_session()
     run_pipeline(
