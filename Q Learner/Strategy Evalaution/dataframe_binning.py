@@ -14,7 +14,7 @@ def categorize_pipeline(df):
             ('rsi',3),
             ("price_to_SMA_ratio", 3, config.get("sma_threshold")),
             ("momentum", 2, config.get("mom_threshold")),
-            ('avg_compound_sentiment', 3, -1*config.get("sentiment_threshold"), config.get("sentiment_threshold"),
+            ('avg_compound_sentiment', 3, -1*config.get("sentiment_threshold"), config.get("sentiment_threshold")),
             ('macd', 2)]
     
 # =============================================================================
@@ -53,10 +53,8 @@ def categorize_pipeline(df):
             newdf[i[0]][newdf[i[0]]>0] = 2
             newdf[i[0]][newdf[i[0]]<=0] = 1
     
-    sd = dt.datetime(2018, 9, 20)
-    ed = dt.datetime(2020, 12, 31)
     
-    newdf = newdf[(newdf['TradeDate'] >= sd) & (newdf['TradeDate'] <= ed)]
+    newdf['TradeDate'] = pd.to_datetime(newdf['TradeDate'])
     
     print(newdf.head)
     
