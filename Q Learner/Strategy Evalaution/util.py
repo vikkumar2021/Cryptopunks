@@ -30,9 +30,11 @@ def get_data(symbol, dates, addSPY=False, colname="Adj_Close"):
     )
 
     df_temp.rename({'Date':'TradeDate'})  
-    df_temp.rename({'Adj Close': 'Adj_Close'})  			  	   		   	 		  		  		    	 
+    df_temp.rename({'Adj Close': 'Adj_Close'})  		
 
-    return df_temp 		  	  
+    df = df.join(df_temp)	  	   		   	 		  		  		    	 
+
+    return df		  	  
  		   	 		  		  		    	 		 		   		 		  
         	   	 		  		  		    	 		 		   		 		  
 def plot_data(df, title="Stock prices", xlabel="Date", ylabel="Price"):  		  	   		   	 		  		  		    	 		 		   		 		  

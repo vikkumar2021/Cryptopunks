@@ -74,39 +74,41 @@ class StrategyLearner(object):
         self.impact = impact  		  	   		   	 		  		  		    	 		 		   		 		  
         self.commission = commission
         self.learner = ql.QLearner(
-        num_states=27,
-        num_actions=3,
-        alpha=0.1,
-        gamma=0.9,
-        rar=0.99,
-        radr=0.8,
-        dyna=0,
+        num_states=num_states,
+        num_actions=num_actions,
+        alpha=alpha,
+        gamma=gamma,
+        rar=rar,
+        radr=radr,
+        dyna=dyna,
         verbose=False)
+
+    def state_calc(self,lista):
         
-        self.cols = [('bollinger_band_percentage',3),
-            ('stochastic_oscillator_sma',3),
-            ('rsi',3),
-            ("price_to_SMA_ratio", 3),
-            ("momentum", 2),
-            ('avg_compound_sentiment', 3),
-            ('macd', 2)]
+        x = len(lista)
+        combos = 3**x
         
-
-    def state_calc(self,stringi):
-
-        state = (int(stringi[0]) * 6 + int(stringi[1]) * 2 + int(stringi[2]))-1
-
+        #print("Combos")
+        #print(combos)
+        
+        state = 0
+        #print(lista)
+        
+        for i in lista:
+            state += i*(combos/3) #(lista[0] * 6 + lista[1] * 2 + lista[2])-1
+            combos = combos/3
+        
+        state = int(state - 1)
+        #print(state)
         return state
-
-    def list_to_string(self,lista):
-        return str(lista[0]) + str(lista[1]) + str(lista[2])
 
     def add_evidence(self, data, sd, ed, sv=1000000):
         
         symbol = 'Adj_Close'
         
-        #data = data[(data['TradeDate']>=sd) & (data['TradeDate']<=ed)]
-        print(len(data))
+        data = data[(data['TradeDate']>=sd) & (data['TradeDate']<=ed)]
+        data=data.reset_index(drop=True)
+        #print(len(data))
 
         dfmlist = data.iloc[:,2:].values.tolist()
         dates = data.iloc[:,:1]
@@ -114,13 +116,14 @@ class StrategyLearner(object):
         
         buyind = []
         sellind = []
-
+        
+        x = sv/prices['Adj_Close'][0]
 
         totalrewardold = -9999
         totalreward = 0
         count1 = 0
         count = 0
-        while (count < 5) & (count1 < 1000):
+        while (count < 5) & (count1 < x):
 
             tradesdf = np.zeros(len(dfmlist))
             impactdf = np.zeros(len(dfmlist))
@@ -150,14 +153,14 @@ class StrategyLearner(object):
 
                     if holdings == 0:
 
-                        action = self.learner.querysetstate(self.state_calc(self.list_to_string(lista)))
+                        action = self.learner.querysetstate(self.state_calc(lista))
 
                         # print(action)
 
                         if (action == 0) & (holdings == 0):
 
-                            tradesdf[i] = 1000
-                            holdings = 1000
+                            tradesdf[i] = x
+                            holdings = x
                             holdingsdf[i] = holdings
                             impactdf[i] = abs(tradesdf[i]) * self.impact
                             commissiondf[i] = self.commission
@@ -165,8 +168,8 @@ class StrategyLearner(object):
 
                         elif (action == 1) & (holdings == 0):
 
-                            tradesdf[i] = -1000
-                            holdings = -1000
+                            tradesdf[i] = -x
+                            holdings = -x
                             holdingsdf[i] = holdings
                             impactdf[i] = abs(tradesdf[i]) * self.impact
                             commissiondf[i] = self.commission
@@ -178,13 +181,13 @@ class StrategyLearner(object):
 
                     else:
 
-                        action = self.learner.query(self.state_calc(self.list_to_string(lista)), reward)
+                        action = self.learner.query(self.state_calc(lista), reward)
                         # print(action)
 
                         if (action == 0) & (holdings < 0):
 
-                            tradesdf[i] = 2000
-                            holdings = holdings + 2000
+                            tradesdf[i] = 2*x
+                            holdings = holdings + 2*x
                             holdingsdf[i] = holdings
                             impactdf[i] = abs(tradesdf[i]) * self.impact
                             commissiondf[i] = self.commission
@@ -192,8 +195,8 @@ class StrategyLearner(object):
 
                         elif (action == 1) & (holdings > 0):
 
-                            tradesdf[i] = -2000
-                            holdings = holdings - 2000
+                            tradesdf[i] = -2*x
+                            holdings = holdings - 2*x
                             holdingsdf[i] = holdings
                             impactdf[i] = abs(tradesdf[i]) * self.impact
                             commissiondf[i] = self.commission
@@ -238,7 +241,8 @@ class StrategyLearner(object):
 
     # this method should use the existing policy and test it against new data
     def testPolicy(self, data, sd, ed, sv=1000000):
-        #data = data[(data['TradeDate']>=sd) & (data['TradeDate']<=ed)]
+        data = data[(data['TradeDate']>=sd) & (data['TradeDate']<=ed)]
+        data=data.reset_index(drop=True)
         print(len(data))
         
         symbol = 'Adj_Close'
@@ -246,7 +250,8 @@ class StrategyLearner(object):
         dfmlist = data.iloc[:,2:].values.tolist()
         dates = data.iloc[:,:1]
         prices = data.iloc[:,:2]
-
+        
+        x = sv/prices['Adj_Close'][0]
 
         tradesdf = np.zeros(len(dfmlist))
         impactdf = np.zeros(len(dfmlist))
@@ -272,14 +277,14 @@ class StrategyLearner(object):
 
                 if holdings == 0:
 
-                    action = self.learner.querysetstate(self.state_calc(self.list_to_string(lista)))
+                    action = self.learner.querysetstate(self.state_calc(lista))
 
                     # print(action)
 
                     if (action == 0) & (holdings == 0):
 
-                        tradesdf[i] = 1000
-                        holdings = 1000
+                        tradesdf[i] = x
+                        holdings = x
                         holdingsdf[i] = holdings
                         impactdf[i] = abs(tradesdf[i]) * self.impact
                         commissiondf[i] = self.commission
@@ -287,8 +292,8 @@ class StrategyLearner(object):
 
                     elif (action == 1) & (holdings == 0):
 
-                        tradesdf[i] = -1000
-                        holdings = -1000
+                        tradesdf[i] = -x
+                        holdings = -x
                         holdingsdf[i] = holdings
                         impactdf[i] = abs(tradesdf[i]) * self.impact
                         commissiondf[i] = self.commission
@@ -300,13 +305,13 @@ class StrategyLearner(object):
 
                 else:
 
-                    action = self.learner.querysetstate(self.state_calc(self.list_to_string(lista)))
+                    action = self.learner.querysetstate(self.state_calc(lista))
                     # print(action)
 
                     if (action == 0) & (holdings < 0):
 
-                        tradesdf[i] = 2000
-                        holdings = holdings + 2000
+                        tradesdf[i] = 2*x
+                        holdings = holdings + 2*x
                         holdingsdf[i] = holdings
                         impactdf[i] = abs(tradesdf[i]) * self.impact
                         commissiondf[i] = self.commission
@@ -314,8 +319,8 @@ class StrategyLearner(object):
 
                     elif (action == 1) & (holdings > 0):
 
-                        tradesdf[i] = -2000
-                        holdings = holdings - 2000
+                        tradesdf[i] = -2*x
+                        holdings = holdings - 2*x
                         holdingsdf[i] = holdings
                         impactdf[i] = abs(tradesdf[i]) * self.impact
                         commissiondf[i] = self.commission

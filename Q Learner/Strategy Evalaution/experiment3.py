@@ -1,4 +1,5 @@
 import sys
+import math
 
 sys.path.insert(0,r"C:\Users\tthab\Documents\GitHub\Cryptopunks\cryptopunks_data_pipeline")
 sys.path.insert(0,r"C:\Users\tthab\Documents\GitHub\Cryptopunks")
@@ -38,13 +39,15 @@ def df_to_order(df, symbol, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12
     df['Shares'] = abs(df['Shares'])
     df = df.reset_index(drop=True)
     
-    if df['Order'].loc[len(df)-1] == 'BUY':
-        lastorder = pd.DataFrame([(ed,1000,'SELL',symbol)], columns=df.columns)
-        df = pd.concat([df,lastorder],axis=0)
-    else:
-        lastorder = pd.DataFrame([(ed,1000,'BUY',symbol)], columns=df.columns)
-        df = pd.concat([df,lastorder],axis=0)
-    df = df.reset_index(drop=True)
+# =============================================================================
+#     if df['Order'].loc[len(df)-1] == 'BUY':
+#         lastorder = pd.DataFrame([(ed,1000,'SELL',symbol)], columns=df.columns)
+#         df = pd.concat([df,lastorder],axis=0)
+#     else:
+#         lastorder = pd.DataFrame([(ed,1000,'BUY',symbol)], columns=df.columns)
+#         df = pd.concat([df,lastorder],axis=0)
+#     df = df.reset_index(drop=True)
+# =============================================================================
     return df
 
 def main():
@@ -92,6 +95,9 @@ def main():
     dataframebtc.to_csv('pipeline.csv')
     
     binned_df, combos = bdfcp(dataframebtc)
+    binned_df = binned_df.dropna().reset_index(drop=True)
+    print(binned_df.head)
+    #print(combos)
     
     #Training#
     pd.set_option('mode.chained_assignment', None)
@@ -107,21 +113,25 @@ def main():
                                 rar=rar,
                                 radr=radr)
     
-    SLlearner.add_evidence(binned_df, sd, ed)
-    df1 = SLlearner.testPolicy(binned_df, sd, ed)
-    
+    SLlearner.add_evidence(binned_df, sd, ed, sv)
+    df1 = SLlearner.testPolicy(binned_df, sd, ed, sv)
     df1 = df_to_order(df=df1, symbol=symbol, sd=sd, ed=ed)
-    print(df1)
+    
     dfgains1 = compute_portvals(df1, start_val=sv)
-
-    order = [(sd, 1000, 'BUY', symbol),
-             (ed, 1000, 'SELL', symbol)]
+    
+    #print(sv/dataframebtc['Adj_Close'][0])
+    order = [(sd, math.floor(sv/dataframebtc['Adj_Close'][dataframebtc['TradeDate']==sd]), 'BUY', symbol),
+             (ed, math.floor(sv/dataframebtc['Adj_Close'][dataframebtc['TradeDate']==sd]), 'SELL', symbol)]
     
     dfbench = pd.DataFrame(order, columns=['TradeDate', 'Shares', 'Order', 'Symbol'])
     benchmark = compute_portvals(dfbench, start_val=sv)
+    #print(benchmark.head)
 
-    dfgains1['Sum'] = ((dfgains1['Sum'] / dfgains1['Sum'].iloc[0]) - 1)
-    benchmark['Sum'] = ((benchmark['Sum'] / benchmark['Sum'].iloc[0])- 1)
+    dfgains1['Sum'] = ((dfgains1['Sum']  / dfgains1['Sum'].iloc[0]))
+    benchmark['Sum'] = ((benchmark['Sum'] / benchmark['Sum'].iloc[0]))
+    
+    #print(dfgains1.head)
+    #print(benchmark.head)
 
     fig, ax = plt.subplots(dpi=100)
     dfgains1.plot(color='g', label='Strategy Learner', ax=ax)
@@ -130,10 +140,11 @@ def main():
     if plotline:
         for i in range(len(df1)):
             if df1['Order'][i] == 'BUY':
-                ax.axvline(x=df1['TradeDate'][i], color='g')
+                ax.axvline(x=df1['TradeDate'][i], color='g',alpha=0.5)
             else:
-                ax.axvline(x=df1['TradeDate'][i], color='r')
-                
+                ax.axvline(x=df1['TradeDate'][i], color='r',alpha=0.5)
+    
+    ax.set_xlim([sd,ed])
     plt.legend(['Strategy Learner', 'Benchmark'])
     plt.title('Portfolio Value Strategy Comparison ')
     plt.ylabel('Normalized Portfolio Values')
@@ -147,21 +158,24 @@ def main():
     ed2 = test_ed
     sv2 = sv
 
-    df2 = SLlearner.testPolicy(binned_df, sd2, ed2)
+    df2 = SLlearner.testPolicy(binned_df, sd2, ed2, sv)
     
     df2 = df_to_order(df=df2, symbol=symbol, sd=sd2, ed=ed2)
-    print(df2)
     
+
     dfgains2 = compute_portvals(df2, start_val=sv)
 
-    order = [(1000, sd2, 'BUY', symbol),
-             (1000, ed2, 'SELL', symbol)]
+    order2 = [(sd2, math.floor(sv/dataframebtc['Adj_Close'][dataframebtc['TradeDate']==sd2]), 'BUY', symbol),
+             (ed2, math.floor(sv/dataframebtc['Adj_Close'][dataframebtc['TradeDate']==sd2]), 'SELL', symbol)]
     
-    dfbench = pd.DataFrame(order, columns=['Shares', 'TradeDate', 'Order', 'Symbol'])
-    benchmark = compute_portvals(dfbench, start_val=sv)
+    dfbench2 = pd.DataFrame(order2, columns=['TradeDate', 'Shares', 'Order', 'Symbol'])
+    benchmark2 = compute_portvals(dfbench2, start_val=sv)
     
-    dfgains2['Sum'] = ((dfgains2['Sum'] / dfgains2['Sum'].iloc[0]) - 1)
-    benchmark['Sum'] = ((benchmark['Sum'] / benchmark['Sum'].iloc[0])- 1)
+    dfgains2['Sum'] = ((dfgains2['Sum'] / dfgains2['Sum'].iloc[0]))
+    benchmark2['Sum'] = ((benchmark2['Sum'] / benchmark2['Sum'].iloc[0]))
+    #print(dfgains2.head)
+    #print(benchmark2.head)
+    
     
     #print('Strategy')
     #print(dfgains2.head)
@@ -174,15 +188,15 @@ def main():
     
     dfgains2.plot(color='g', label='Strategy Learner', ax=ax2)
     
-    benchmark.plot(color='b', label='Benchmark', ax=ax2)
+    benchmark2.plot(color='b', label='Benchmark', ax=ax2)
     plotline = True
     if plotline:
         for i in range(len(df2)):
             if df2['Order'][i] == 'BUY':
-                ax2.axvline(x=df2['TradeDate'][i], color='g')
+                ax2.axvline(x=df2['TradeDate'][i], color='g',alpha=0.5)
             else:
-                ax2.axvline(x=df2['TradeDate'][i], color='r')
-    
+                ax2.axvline(x=df2['TradeDate'][i], color='r',alpha=0.5)
+    ax2.set_xlim([sd2,ed2])
     plt.legend(['Strategy Learner', 'Benchmark'])
     plt.title('Portfolio Value Strategy Comparison')
     plt.ylabel('Normalized Portfolio Values')

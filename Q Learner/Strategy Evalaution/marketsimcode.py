@@ -57,20 +57,12 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
     # In the template, instead of computing the value of the portfolio, we just  		  	   		   	 		  		  		    	 		 		   		 		  
     # read in the value of IBM over 6 months
     
-    
     start = orders_df.loc[0]['TradeDate']
     end = orders_df.loc[len(orders_df) - 1]['TradeDate']
+
     tickers = orders_df['Symbol'].unique()
 
     port_vals = get_data([tickers[0]], pd.date_range(start, end), addSPY=False)
-    
-    #port_vals.drop(columns=['SPY'], inplace=True)
-
-    for i in range(1, len(tickers)):
-        tick = get_data([tickers[i]], pd.date_range(start, end))
-        #tick.drop(columns=['SPY'], inplace=True)
-        port_vals = port_vals.join(tick, how='outer')
-
     port_vals['Cash'] = 1
 
     trades_df = port_vals.copy()
@@ -96,8 +88,10 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
         commission_df.loc[d][symbol] = commission_df.loc[d][symbol] + commission
 
     cost_df = port_vals * trades_df + port_vals * impact_df + commission_df
-
+    #print(cost_df.head)
+    
     trades_df['Cash'] = -1 * cost_df.sum(axis=1)
+    #print(trades_df.head)
 
     holdings_df = port_vals.copy()
     for col in trades_df.columns:
@@ -119,8 +113,9 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
     #print(holdings_df)
 
     vals = port_vals * holdings_df
+    #print(vals.head)
     vals_sum = pd.DataFrame(vals.sum(axis=1), columns=['Sum'])
-
+    #print(vals_sum.head)
     return vals_sum
 
 def stats(df):

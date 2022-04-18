@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Wed Apr 13 20:07:42 PDT 2022:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0180-260a-797e-00001b1ed320 
+Sun Apr 17 20:10:00 PDT 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0180-3aa6-058a-000022b580f8 
 on database directory C:\Users\tthab\Documents\GitHub\Cryptopunks\Q Learner\Strategy Evalaution\metastore_db with class loader sun.misc.Launcher$AppClassLoader@ba8a1dc 
 Loaded from file:/C:/Users/tthab/anaconda3/envs/ml4t/Lib/site-packages/pyspark/jars/derby-10.12.1.1.jar
 java.vendor=Oracle Corporation

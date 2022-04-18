@@ -13,9 +13,9 @@ def categorize_pipeline(df):
             ('stochastic_oscillator_sma',3, config.get("so_ll"), config.get("so_ul")),
             ('rsi',3),
             ("price_to_SMA_ratio", 3, config.get("sma_threshold")),
-            ("momentum", 2, config.get("mom_threshold")),
+            ("momentum", 3, config.get("mom_threshold")),
             ('avg_compound_sentiment', 3, -1*config.get("sentiment_threshold"), config.get("sentiment_threshold")),
-            ('macd', 2)]
+            ('macd', 3)]
     
 # =============================================================================
 #     "sma_threshold" : 0.2,
