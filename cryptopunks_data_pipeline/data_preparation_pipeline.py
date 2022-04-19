@@ -1,3 +1,4 @@
+from typing import Any
 from typing import Optional
 from pandas import DataFrame as PandasDataFrame
 from pyspark.sql.types import *
@@ -256,6 +257,7 @@ def run_pipeline(
     macd: Optional[bool] = None,
     mom_window: Optional[int] = None,
     include_sentiment: Optional[bool] = None,
+    **kwargs: Any,
 ) -> PandasDataFrame:
     """Run data preparation pipeline."""
     df_price = read_stock_price_data(spark)

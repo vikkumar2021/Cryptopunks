@@ -31,12 +31,12 @@ import datetime as dt
 import random
 import numpy as np
 import pandas as pd
-from util import get_data, plot_data
-from marketsimcode import compute_portvals, stats
+from .util import get_data, plot_data
+from .marketsimcode import compute_portvals, stats
 import matplotlib.pyplot as plt
 import math
-from indicators import price_sma_ratio, bollinger_bands, MACD, momentum, stochastic_oscillator
-import QLearner as ql
+from .indicators import price_sma_ratio, bollinger_bands, MACD, momentum, stochastic_oscillator
+from . import QLearner as ql
   		  	   		   	 		  		  		    	 		 		   		 		  
   		  	   		   	 		  		  		    	 		 		   		 		  
 class StrategyLearner(object):

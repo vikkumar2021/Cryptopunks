@@ -7,19 +7,16 @@ sys.path.insert(0,r"C:\Users\tthab\Documents\GitHub\Cryptopunks")
 import datetime as dt
 import numpy as np
 import pandas as pd
-from util import get_data, plot_data
-from marketsimcode import compute_portvals, stats
+from .util import get_data, plot_data
+from .marketsimcode import compute_portvals, stats
 import matplotlib.pyplot as plt
 import math
-from ManualLearner import ManualLearner
-from StrategyLearner import StrategyLearner
+from .ManualLearner import ManualLearner
+from .StrategyLearner import StrategyLearner
 import json
-from cryptopunks_data_pipeline import *
-from cryptopunks_data_pipeline.data_preparation_pipeline import run_pipeline 
 import os
 import sys
-from cryptopunks_data_pipeline.data_preparation_pipeline import create_spark_session
-from dataframe_binning import categorize_pipeline as bdfcp
+from .dataframe_binning import categorize_pipeline as bdfcp
 from datetime import datetime
   		  	   		   	 		  		  		    	 		 		   		 		  
 
@@ -50,51 +47,24 @@ def df_to_order(df, symbol, sd=dt.datetime(2014, 9, 20), ed=dt.datetime(2020, 12
 # =============================================================================
     return df
 
-def main():
-    
-    with open("config_file.json") as f:
+def main(config, dataframebtc):
 
-        config = json.load(f)
-    
-    symbol = config.get("ticker")
-    
+    symbol = config.get("ticker", "BTC")
+
     training_sd = datetime.strptime(config.get("training_sd"),"%Y-%m-%d")
     training_ed = datetime.strptime(config.get("training_ed"),"%Y-%m-%d")
     test_sd = datetime.strptime(config.get("test_sd"),"%Y-%m-%d")
     test_ed = datetime.strptime(config.get("test_ed"),"%Y-%m-%d")
-
-    sv = config.get("sv")
+    sv = int(config.get("sv", 1000000))
     
-    sma_window1 = config.get("sma_window")
-    bollinger_band_sma = config.get("bollinger_band_sma")
-    bollinger_band_stdev = config.get("bollinger_band_stdev")
-    so_window = config.get("so_window")
-    so_window_sma = config.get("so_window_sma")
-    obv = config.get("obv")
-    mom_window = config.get("mom_window")
-    macd_window = config.get("macd")
-    include_sentiment = config.get("include_sentiment")
-    
-    alpha = config.get("alpha")
-    gamma = config.get("gamma")
-    rar = config.get("rar")
-    radr = config.get("radr") 
-    
-    spark = create_spark_session()
-    
-    dataframebtc = run_pipeline(spark, include_sentiment=include_sentiment,
-                    sma_window = sma_window1,
-                    bollinger_window = bollinger_band_sma,
-                    bollinger_stdvs =bollinger_band_stdev,
-                    so_window = so_window,
-                    so_window_sma = so_window_sma,
-                    obv = obv,
-                    macd = macd_window,
-                    mom_window = mom_window)
+    alpha = config.get("alpha", 0.1)
+    gamma = config.get("gamma", 0.9)
+    rar = config.get("rar", 0.99)
+    radr = config.get("radr", 0.8)
     
     #dataframebtc.to_csv('pipeline.csv')
-    
-    binned_df, combos = bdfcp(dataframebtc)
+
+    binned_df, combos = bdfcp(dataframebtc, config)
     
     binned_df = binned_df.dropna().reset_index(drop=True)
     #print(binned_df.head)
@@ -241,7 +211,22 @@ def main():
     dataframebtccopia = dataframebtccopia.merge(df2, on='TradeDate', how='left')
     
     return dataframebtccopia
-    	 		  		  		    	 		 		   		 		  
+
+
 if __name__ == "__main__":
+    CWD = os.path.dirname(os.path.abspath(__file__))
+    pipeline_path = os.path.abspath(os.path.join(CWD, "../../"))
+    sentiment_path = os.path.abspath(os.path.join(CWD, "../../cryptopunks_data_pipeline"))
+    from cryptopunks_data_pipeline.data_preparation_pipeline import run_pipeline
+    from cryptopunks_data_pipeline.data_preparation_pipeline import create_spark_session
+
+    sys.path.insert(0, pipeline_path)
+    sys.path.insert(0, sentiment_path)
+    config_file = os.path.join(CWD, "config_file.json")
+    with open(config_file) as f:
+        config = json.load(f)
+
+    spark = create_spark_session()
+    dataframebtc = run_pipeline(spark, **config)
     df = main()
     print(df.head)

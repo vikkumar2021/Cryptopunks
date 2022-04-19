@@ -3,11 +3,7 @@ import numpy as np
 import json
 import datetime as dt
 
-def categorize_pipeline(df):
-    
-    with open("config_file.json") as f:
-
-        config = json.load(f)
+def categorize_pipeline(df, config):
     
     cols = [('bollinger_band_percentage',3,0,1),
             ('stochastic_oscillator_sma',3, config.get("so_ll"), config.get("so_ul")),

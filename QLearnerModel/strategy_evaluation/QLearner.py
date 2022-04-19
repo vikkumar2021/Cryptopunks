@@ -1,6 +1,6 @@
 """"""  		  	   		   	 		  		  		    	 		 		   		 		  
 """  		  	   		   	 		  		  		    	 		 		   		 		  
-Template for implementing QLearner  (c) 2015 Tucker Balch  		  	   		   	 		  		  		    	 		 		   		 		  
+Template for implementing QLearnerModel  (c) 2015 Tucker Balch  		  	   		   	 		  		  		    	 		 		   		 		  
   		  	   		   	 		  		  		    	 		 		   		 		  
 Copyright 2018, Georgia Institute of Technology (Georgia Tech)  		  	   		   	 		  		  		    	 		 		   		 		  
 Atlanta, Georgia 30332  		  	   		   	 		  		  		    	 		 		   		 		  
