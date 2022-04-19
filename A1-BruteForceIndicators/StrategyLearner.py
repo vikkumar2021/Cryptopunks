@@ -2,12 +2,14 @@
 # mnguyen306
 
 import datetime as dt
-import pandas as pd
-import numpy as np
-from util import get_data, plot_data
 import random
+
+import numpy as np
+import pandas as pd
 import scipy.optimize as spo
 from marketsimcode import marketsim_df
+from util import get_data, plot_data
+
 
 def author():
     return 'mnguyen306'

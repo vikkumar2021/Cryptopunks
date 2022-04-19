@@ -4,9 +4,10 @@ GT User ID: thabibe3 (replace with your User ID)
 GT ID: 902970734 (replace with your GT ID)  		  	   		   	 		  		  		    	 		 		   		 		  
 """  		  	   		   	 		  		  		    	 		 		   		 		  
 
-import pandas as pd  		  	   		   	 		  		  		    	 		 		   		 		  
-from .util import get_data, plot_data
 import matplotlib.pyplot as plt
+import pandas as pd
+
+from .util import get_data, plot_data
 
 
 def author():

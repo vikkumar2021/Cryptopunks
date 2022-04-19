@@ -27,9 +27,9 @@ GT User ID: thabibe3 (replace with your User ID)
 GT ID: 902970734 (replace with your GT ID) 		  	   		   	 		  		  		    	 		 		   		 		  
 """  		  	   		   	 		  		  		    	 		 		   		 		  
 
-import random as rand  		  	   		   	 		  		  		    	 		 		   		 		  
+import random as rand
 
-import numpy as np  		  	   		   	 		  		  		    	 		 		   		 		  
+import numpy as np
 
 
 class QLearner(object):  		  	   		   	 		  		  		    	 		 		   		 		  

@@ -5,11 +5,11 @@ Atlanta, Georgia 30332-0415
 All Rights Reserved  		  	   		   	 		  		  		    	 		 		   		 		  
 """  		  	   		   	 		  		  		    	 		 		   		 		  
   		  	   		   	 		  		  		    	 		 		   		 		  
-import os  		  	   		   	 		  		  		    	 		 		   		 		  
-  		  	   		   	 		  		  		    	 		 		   		 		  
-import pandas as pd  		  	   		   	 		  		  		    	 		 		   		 		  
-  		  	   		   	 		  		  		    	 		 		   		 		  
-  		  	   		   	 		  		  		    	 		 		   		 		  
+import os
+
+import pandas as pd
+
+
 def symbol_to_path(symbol, base_dir=None):  		  	   		   	 		  		  		    	 		 		   		 		  
     """Return CSV file path given ticker symbol."""  		  	   		   	 		  		  		    	 		 		   		 		  
     if base_dir is None:  		  	   		   	 		  		  		    	 		 		   		 		  

@@ -5,9 +5,10 @@ Atlanta, Georgia 30332-0415
 All Rights Reserved  		  	   		   	 		  		  		    	 		 		   		 		  
 """  		  	   		   	 		  		  		    	 		 		   		 		  
   		  	   		   	 		  		  		    	 		 		   		 		  
-import os  		  	   		   	 		  		  		    	 		 		   		 		  
-  		  	   		   	 		  		  		   	 		 		   		 		  
-import pandas as pd  		  	   		   	 		  		  		    	 		 		   		 		  
+import os
+
+import pandas as pd
+
 CWD = os.path.dirname(os.path.abspath(__file__))	  		    	 		 		   		 		  
   		  	   		   	 		  		  		    	 		 		   		 		  
 def symbol_to_path(symbol, base_dir=None):  		  	   		   	 		  		  		    	 		 		   		 		  

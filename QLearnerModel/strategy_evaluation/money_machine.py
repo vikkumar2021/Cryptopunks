@@ -1,23 +1,19 @@
-import sys
-import math
-
-sys.path.insert(0,r"C:\Users\tthab\Documents\GitHub\Cryptopunks\cryptopunks_data_pipeline")
-sys.path.insert(0,r"C:\Users\tthab\Documents\GitHub\Cryptopunks")
-
 import datetime as dt
-import numpy as np
-import pandas as pd
-from .util import get_data, plot_data
-from .marketsimcode import compute_portvals, stats
-import math
-from .ManualLearner import ManualLearner
-from .StrategyLearner import StrategyLearner
 import json
+import math
 import os
 import sys
-from .dataframe_binning import categorize_pipeline as bdfcp
 from datetime import datetime
-  		  	   		   	 		  		  		    	 		 		   		 		  
+
+import numpy as np
+import pandas as pd
+
+from .dataframe_binning import categorize_pipeline as bdfcp
+from .ManualLearner import ManualLearner
+from .marketsimcode import compute_portvals, stats
+from .StrategyLearner import StrategyLearner
+from .util import get_data, plot_data
+
 
 def author(self):
     return "thabibe3"
@@ -216,8 +212,8 @@ if __name__ == "__main__":
     CWD = os.path.dirname(os.path.abspath(__file__))
     pipeline_path = os.path.abspath(os.path.join(CWD, "../../"))
     sentiment_path = os.path.abspath(os.path.join(CWD, "../../cryptopunks_data_pipeline"))
-    from cryptopunks_data_pipeline.data_preparation_pipeline import run_pipeline
-    from cryptopunks_data_pipeline.data_preparation_pipeline import create_spark_session
+    from cryptopunks_data_pipeline.data_preparation_pipeline import (
+        create_spark_session, run_pipeline)
 
     sys.path.insert(0, pipeline_path)
     sys.path.insert(0, sentiment_path)

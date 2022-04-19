@@ -1,13 +1,14 @@
-import pandas as pd
-import numpy as np
 import datetime as dt
 import os
-from util import get_data, plot_data
-#from marketsimcode import marketsim_df
-import StrategyLearner as sl
 
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import scipy.optimize as spo
+#from marketsimcode import marketsim_df
+import StrategyLearner as sl
+from util import get_data, plot_data
+
 
 def assess_porfolio(port_val):
     rfr = 0

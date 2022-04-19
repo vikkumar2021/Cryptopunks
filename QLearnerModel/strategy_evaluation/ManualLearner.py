@@ -28,15 +28,18 @@ GT ID: 902970734 (replace with your GT ID)
 """  		  	   		   	 		  		  		    	 		 		   		 		  
   		  	   		   	 		  		  		    	 		 		   		 		  
 import datetime as dt
+import math
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from .util import get_data, plot_data
+
+from .indicators import (MACD, bollinger_bands, momentum, price_sma_ratio,
+                         stochastic_oscillator)
 from .marketsimcode import compute_portvals, stats
-import matplotlib.pyplot as plt
-import math
-from .indicators import price_sma_ratio, bollinger_bands, MACD, momentum, stochastic_oscillator
-  		  	   		   	 		  		  		    	 		 		   		 		  
-  		  	   		   	 		  		  		    	 		 		   		 		  
+from .util import get_data, plot_data
+
+
 class ManualLearner(object):
     """  		  	   		   	 		  		  		    	 		 		   		 		  
     A strategy learner that can learn a trading policy using the same indicators used in ManualStrategy.  		  	   		   	 		  		  		    	 		 		   		 		  

@@ -1,7 +1,9 @@
-import pandas as pd
-import numpy as np
-import json
 import datetime as dt
+import json
+
+import numpy as np
+import pandas as pd
+
 
 def categorize_pipeline(df, config):
     

@@ -1,10 +1,11 @@
-from pyspark.sql.types import TimestampType, DecimalType, LongType, StructType, StructField, MapType, StringType, DoubleType
-from pyspark.sql import functions as F
-from pyspark.sql import DataFrame
-from pyspark.sql import SparkSession
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import json
 
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import functions as F
+from pyspark.sql.types import (DecimalType, DoubleType, LongType, MapType,
+                               StringType, StructField, StructType,
+                               TimestampType)
 
 PRICE_FILE_PATH = '/Users/salmanmukhi/Downloads/BTC-USD_2017-2022.csv'
 TWEETS_FILE_PATH = '/Users/salmanmukhi/Downloads/BTC_tweets.csv'

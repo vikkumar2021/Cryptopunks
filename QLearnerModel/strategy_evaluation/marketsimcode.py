@@ -27,7 +27,9 @@ GT ID: 902970734 (replace with your GT ID)
 """  		  	   		   	 		  		  		    	 		 		   		 		  
 
 import math
-import pandas as pd  		  	   		   	 		  		  		    	 		 		   		 		  
+
+import pandas as pd
+
 from .util import get_data, plot_data
 
 

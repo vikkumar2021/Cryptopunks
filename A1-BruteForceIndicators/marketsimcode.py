@@ -3,12 +3,14 @@
 # marketsimcode.py
 # An improved version of your marketsim code that accepts a "trades" data frame (instead of a file). 
 
-import pandas as pd
-import numpy as np
 import datetime as dt
 import os
-from util import get_data, plot_data
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from util import get_data, plot_data
+
 
 def author():
     return 'mnguyen306'

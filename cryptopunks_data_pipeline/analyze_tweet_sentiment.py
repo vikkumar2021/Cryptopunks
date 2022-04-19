@@ -1,9 +1,10 @@
-from pyspark.sql import SparkSession
-from pyspark.sql.types import *
-from pyspark.sql import functions as F
-from pyspark.sql import DataFrame as SparkDataFrame
-from nltk.sentiment import SentimentIntensityAnalyzer
 import json
+
+from nltk.sentiment import SentimentIntensityAnalyzer
+from pyspark.sql import DataFrame as SparkDataFrame
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+from pyspark.sql.types import *
 
 
 def read_tweets_data(spark: SparkSession, file_path: str) -> SparkDataFrame:
