@@ -10,8 +10,8 @@ from pyspark.sql.types import *
 from .analyze_tweet_sentiment import save_tweets
 
 CWD = os.path.dirname(os.path.abspath(__file__))
-PRICE_FILE_PATH = os.path.join(CWD, "BTC-USD_2017-2022.csv")
-TWEETS_FILE_PATH = os.path.join(CWD, "aggregated_tweet_sentiment.csv")
+PRICE_FILE_PATH = os.path.join(CWD, "data", "BTC-USD_2017-2022.csv")
+TWEETS_FILE_PATH = os.path.join(CWD, "data", "aggregated_tweet_sentiment.csv")
 
 
 def create_spark_session():
@@ -299,7 +299,7 @@ def run_pipeline(
     if macd:
         pandas_df = add_MACD(pandas_df)
     # print(pandas_df)
-    pandas_df.to_csv(os.path.join(CWD, "pipeline_export.csv"))
+    pandas_df.to_csv(os.path.join(CWD, "data", "pipeline_export.csv"))
 
     return pandas_df
 
