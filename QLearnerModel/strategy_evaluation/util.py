@@ -6,15 +6,15 @@ All Rights Reserved
 """  		  	   		   	 		  		  		    	 		 		   		 		  
   		  	   		   	 		  		  		    	 		 		   		 		  
 import os  		  	   		   	 		  		  		    	 		 		   		 		  
-  		  	   		   	 		  		  		    	 		 		   		 		  
+  		  	   		   	 		  		  		   	 		 		   		 		  
 import pandas as pd  		  	   		   	 		  		  		    	 		 		   		 		  
-  		  	   		   	 		  		  		    	 		 		   		 		  
+CWD = os.path.dirname(os.path.abspath(__file__))	  		    	 		 		   		 		  
   		  	   		   	 		  		  		    	 		 		   		 		  
 def symbol_to_path(symbol, base_dir=None):  		  	   		   	 		  		  		    	 		 		   		 		  
     """Return CSV file path given ticker symbol."""  		  	   		   	 		  		  		    	 		 		   		 		  
     if base_dir is None:  		  	   		   	 		  		  		    	 		 		   		 		  
         base_dir = os.environ.get("MARKET_DATA_DIR", "../data/")  		  	   		   	 		  		  		    	 		 		   		 		  
-    return os.path.join(base_dir, "{}.csv".format(str(symbol)))  		  	   		   	 		  		  		    	 		 		   		 		  
+    return os.path.join(CWD ,"{}.csv".format(str(symbol)))  		  	   		   	 		  		  		    	 		 		   		 		  
   		  	   		   	 		  		  		    	 		 		   		 		  
   		  	   		   	 		  		  		    	 		 		   		 		  
 def get_data(symbol, dates, addSPY=False, colname="Adj_Close"):  		  	   		   	 		  		  		    	 		 		   		 		  
@@ -29,8 +29,8 @@ def get_data(symbol, dates, addSPY=False, colname="Adj_Close"):
         na_values=["nan"],  		  	   		   	 		  		  		    	 		 		   		 		  
     )
 
-    df_temp.rename({'Date':'TradeDate'})  
-    df_temp.rename({'Adj Close': 'Adj_Close'})  		
+    df_temp = df_temp.rename(columns = {'Date':'TradeDate'})  
+    df_temp = df_temp.rename(columns = {'Adj Close': 'Adj_Close'})  		
 
     df = df.join(df_temp)	  	   		   	 		  		  		    	 
 

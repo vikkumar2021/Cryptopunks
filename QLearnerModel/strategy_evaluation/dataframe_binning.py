@@ -6,17 +6,17 @@ import datetime as dt
 def categorize_pipeline(df, config):
     
     cols = [('bollinger_band_percentage',3,0,1),
-            ('stochastic_oscillator_sma',3, config.get("so_ll"), config.get("so_ul")),
+            ('stochastic_oscillator_sma',3, float(config.get("so_ll")), float(config.get("so_ul"))),
             ('rsi',3),
-            ("price_to_SMA_ratio", 3, config.get("sma_threshold")),
-            ("momentum", 3, config.get("mom_threshold")),
-            ('avg_compound_sentiment', 3, -1*config.get("sentiment_threshold"), config.get("sentiment_threshold")),
+            ("price_to_SMA_ratio", 3, float(config.get("sma_threshold"))),
+            ("momentum", 3, float(config.get("mom_threshold"))),
+            ('avg_compound_sentiment', 3, -1*float(config.get("sentiment_threshold")), float(config.get("sentiment_threshold"))),
             ('macd', 3)]
     
 # =============================================================================
 #     "sma_threshold" : 0.2,
 #     "so_ul" : 80,
-#     "so_ll" : 20,
+#     "so_ll" : 20
 #     "mom_threshold" : 0.2,
 #     "sentiment_threshold": 0.3
 # =============================================================================

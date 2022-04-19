@@ -9,7 +9,6 @@ import numpy as np
 import pandas as pd
 from .util import get_data, plot_data
 from .marketsimcode import compute_portvals, stats
-import matplotlib.pyplot as plt
 import math
 from .ManualLearner import ManualLearner
 from .StrategyLearner import StrategyLearner
@@ -57,10 +56,10 @@ def main(config, dataframebtc):
     test_ed = datetime.strptime(config.get("test_ed"),"%Y-%m-%d")
     sv = int(config.get("sv", 1000000))
     
-    alpha = config.get("alpha", 0.1)
-    gamma = config.get("gamma", 0.9)
-    rar = config.get("rar", 0.99)
-    radr = config.get("radr", 0.8)
+    alpha = float(config.get("alpha", 0.1))
+    gamma = float(config.get("gamma", 0.9))
+    rar = float(config.get("rar", 0.99))
+    radr = float(config.get("radr", 0.8))
     
     #dataframebtc.to_csv('pipeline.csv')
 
