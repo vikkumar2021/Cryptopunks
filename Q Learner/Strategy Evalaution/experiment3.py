@@ -95,6 +95,7 @@ def main():
     dataframebtc.to_csv('pipeline.csv')
     
     binned_df, combos = bdfcp(dataframebtc)
+    
     binned_df = binned_df.dropna().reset_index(drop=True)
     print(binned_df.head)
     #print(combos)
