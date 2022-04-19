@@ -1,7 +1,9 @@
 from flask import Flask, request, url_for
 
 from cryptopunks_data_pipeline.data_preparation_pipeline import (
-    create_spark_session, run_pipeline)
+    create_spark_session,
+    run_pipeline,
+)
 from QLearnerModel.strategy_evaluation.money_machine import main
 
 app = Flask(__name__)
@@ -25,10 +27,9 @@ def run_qlearner() -> dict:
 
 
 """
-1) To Run the Flask App, simply run the file
-2) On your Local Browser go to following home page: http://127.0.0.1:5000 
-3) To view parameters being passed, go to following page:
-http://127.0.0.1:5000/run_qlearner?sma_window=14&bollinger_window=20&bollinger_stdvs=2&so_window=14&so_window_sma=3&obv=True&mom_window=14
+1) To Run the Flask App, run this script
+2) To test Flask is running, go to following URL in your browser: http://127.0.0.1:5000
+3) To trigger the Q-learner, go to the URL printed on the console output
 """
 if __name__ == "__main__":
     config_dict = {
@@ -60,5 +61,6 @@ if __name__ == "__main__":
 
     with app.test_request_context():
         url2 = url_for("run_qlearner", **config_dict)
+        print('TRIGGER Q-LEAERNER BY CLICKING THIS URL:')
         print(f"http://127.0.0.1:5000/{url2}")
     app.run(debug=True)
