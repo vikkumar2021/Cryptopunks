@@ -92,11 +92,12 @@ def main():
                     macd = macd_window,
                     mom_window = mom_window)
     
-    dataframebtc.to_csv('pipeline.csv')
+    #dataframebtc.to_csv('pipeline.csv')
     
     binned_df, combos = bdfcp(dataframebtc)
+    
     binned_df = binned_df.dropna().reset_index(drop=True)
-    print(binned_df.head)
+    #print(binned_df.head)
     #print(combos)
     
     #Training#
@@ -133,23 +134,25 @@ def main():
     #print(dfgains1.head)
     #print(benchmark.head)
 
-    fig, ax = plt.subplots(dpi=100)
-    dfgains1.plot(color='g', label='Strategy Learner', ax=ax)
-    benchmark.plot(color='b', label='Benchmark', ax=ax)
-    plotline = True
-    if plotline:
-        for i in range(len(df1)):
-            if df1['Order'][i] == 'BUY':
-                ax.axvline(x=df1['TradeDate'][i], color='g',alpha=0.5)
-            else:
-                ax.axvline(x=df1['TradeDate'][i], color='r',alpha=0.5)
-    
-    ax.set_xlim([sd,ed])
-    plt.legend(['Strategy Learner', 'Benchmark'])
-    plt.title('Portfolio Value Strategy Comparison ')
-    plt.ylabel('Normalized Portfolio Values')
-    plt.xlabel('TradeDate')
-    plt.savefig('experiment3.png')
+# =============================================================================
+#     fig, ax = plt.subplots(dpi=100)
+#     dfgains1.plot(color='g', label='Strategy Learner', ax=ax)
+#     benchmark.plot(color='b', label='Benchmark', ax=ax)
+#     plotline = True
+#     if plotline:
+#         for i in range(len(df1)):
+#             if df1['Order'][i] == 'BUY':
+#                 ax.axvline(x=df1['TradeDate'][i], color='g',alpha=0.5)
+#             else:
+#                 ax.axvline(x=df1['TradeDate'][i], color='r',alpha=0.5)
+#     
+#     ax.set_xlim([sd,ed])
+#     plt.legend(['Strategy Learner', 'Benchmark'])
+#     plt.title('Portfolio Value Strategy Comparison ')
+#     plt.ylabel('Normalized Portfolio Values')
+#     plt.xlabel('TradeDate')
+#     plt.savefig('experiment3.png')
+# =============================================================================
     
     #Testing#
     
@@ -173,6 +176,8 @@ def main():
     
     dfgains2['Sum'] = ((dfgains2['Sum'] / dfgains2['Sum'].iloc[0]))
     benchmark2['Sum'] = ((benchmark2['Sum'] / benchmark2['Sum'].iloc[0]))
+
+    
     #print(dfgains2.head)
     #print(benchmark2.head)
     
@@ -184,27 +189,29 @@ def main():
     #print(benchmark.head)
     
     
-    fig2, ax2 = plt.subplots(dpi=100)
-    
-    dfgains2.plot(color='g', label='Strategy Learner', ax=ax2)
-    
-    benchmark2.plot(color='b', label='Benchmark', ax=ax2)
-    plotline = True
-    if plotline:
-        for i in range(len(df2)):
-            if df2['Order'][i] == 'BUY':
-                ax2.axvline(x=df2['TradeDate'][i], color='g',alpha=0.5)
-            else:
-                ax2.axvline(x=df2['TradeDate'][i], color='r',alpha=0.5)
-    ax2.set_xlim([sd2,ed2])
-    plt.legend(['Strategy Learner', 'Benchmark'])
-    plt.title('Portfolio Value Strategy Comparison')
-    plt.ylabel('Normalized Portfolio Values')
-    plt.xlabel('TradeDate')
-    plt.savefig('experiment4.png')
-    
-    df2.to_csv('orders.csv')
-    dfgains2.to_csv('gains.csv')
+# =============================================================================
+#     fig2, ax2 = plt.subplots(dpi=100)
+#     
+#     dfgains2.plot(color='g', label='Strategy Learner', ax=ax2)
+#     
+#     benchmark2.plot(color='b', label='Benchmark', ax=ax2)
+#     plotline = True
+#     if plotline:
+#         for i in range(len(df2)):
+#             if df2['Order'][i] == 'BUY':
+#                 ax2.axvline(x=df2['TradeDate'][i], color='g',alpha=0.5)
+#             else:
+#                 ax2.axvline(x=df2['TradeDate'][i], color='r',alpha=0.5)
+#     ax2.set_xlim([sd2,ed2])
+#     plt.legend(['Strategy Learner', 'Benchmark'])
+#     plt.title('Portfolio Value Strategy Comparison')
+#     plt.ylabel('Normalized Portfolio Values')
+#     plt.xlabel('TradeDate')
+#     plt.savefig('experiment4.png')
+#     
+#     df2.to_csv('orders.csv')
+#     dfgains2.to_csv('gains.csv')
+# =============================================================================
   		  	   		   	 		  		  		    	 		 		   		 		  
 if __name__ == "__main__":
     main()
