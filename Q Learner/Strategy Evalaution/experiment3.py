@@ -128,8 +128,8 @@ def main():
     benchmark = compute_portvals(dfbench, start_val=sv)
     #print(benchmark.head)
 
-    dfgains1['Sum'] = ((dfgains1['Sum']  / dfgains1['Sum'].iloc[0]))
-    benchmark['Sum'] = ((benchmark['Sum'] / benchmark['Sum'].iloc[0]))
+    #dfgains1['Sum'] = ((dfgains1['Sum']  / dfgains1['Sum'].iloc[0]))
+    #benchmark['Sum'] = ((benchmark['Sum'] / benchmark['Sum'].iloc[0]))
     
     #print(dfgains1.head)
     #print(benchmark.head)
@@ -174,8 +174,8 @@ def main():
     dfbench2 = pd.DataFrame(order2, columns=['TradeDate', 'Shares', 'Order', 'Symbol'])
     benchmark2 = compute_portvals(dfbench2, start_val=sv)
     
-    dfgains2['Sum'] = ((dfgains2['Sum'] / dfgains2['Sum'].iloc[0]))
-    benchmark2['Sum'] = ((benchmark2['Sum'] / benchmark2['Sum'].iloc[0]))
+    #dfgains2['Sum'] = ((dfgains2['Sum'] / dfgains2['Sum'].iloc[0]))
+    #benchmark2['Sum'] = ((benchmark2['Sum'] / benchmark2['Sum'].iloc[0]))
 
     
     #print(dfgains2.head)
@@ -212,6 +212,36 @@ def main():
 #     df2.to_csv('orders.csv')
 #     dfgains2.to_csv('gains.csv')
 # =============================================================================
-  		  	   		   	 		  		  		    	 		 		   		 		  
+    
+    dataframebtccopia = dataframebtc.copy()
+    
+    dfgains1 = dfgains1.rename_axis('TradeDate').reset_index()
+    dfgains1 = dfgains1.rename(columns={'Sum':'Training QL'})
+    
+    benchmark = benchmark.rename_axis('TradeDate').reset_index()
+    benchmark = benchmark.rename(columns={'Sum':'Training Benchmark'})
+    
+    dfgains2 = dfgains2.rename_axis('TradeDate').reset_index()
+    dfgains2 = dfgains2.rename(columns={'Sum':'Testing QL'})
+    
+    benchmark2 = benchmark2.rename_axis('TradeDate').reset_index()
+    benchmark2 = benchmark2.rename(columns={'Sum':'Testing Benchmark'})
+    
+    df1 = df1[['TradeDate','Order']]
+    df1 = df1.rename(columns={'Order':'Testing Orders'})
+    
+    df2 = df2[['TradeDate','Order']]
+    df2 = df2.rename(columns={'Order':'Training Orders'})
+    
+    dataframebtccopia = dataframebtccopia.merge(dfgains1, on='TradeDate', how='left')
+    dataframebtccopia = dataframebtccopia.merge(benchmark, on='TradeDate', how='left')
+    dataframebtccopia = dataframebtccopia.merge(dfgains2, on='TradeDate', how='left')
+    dataframebtccopia = dataframebtccopia.merge(benchmark2, on='TradeDate', how='left')
+    dataframebtccopia = dataframebtccopia.merge(df1, on='TradeDate', how='left')
+    dataframebtccopia = dataframebtccopia.merge(df2, on='TradeDate', how='left')
+    
+    return dataframebtccopia
+    	 		  		  		    	 		 		   		 		  
 if __name__ == "__main__":
-    main()
+    df = main()
+    print(df.head)
