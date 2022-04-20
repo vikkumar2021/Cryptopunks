@@ -39,7 +39,8 @@ const svg = d3.select("div#container").append("svg")
 
 //-----------------------------DATA-----------------------------//
 const timeConv = d3.timeParse("%d-%b-%Y");
-const dataset = d3.csv("data2.csv");
+//const timeConv = d3.timeParse("%Y-%m-%d");
+const dataset = d3.csv("data3.csv");
 dataset.then(function(data) {
     var slices = data.columns.slice(1).map(function(id) {
         return {
@@ -83,6 +84,7 @@ const line = d3.line()
 
 let id = 0;
 const ids = function () {
+    console.log("line-"+id)
     return "line-"+id++;
 }
 //-------------------------2. DRAWING---------------------------//
@@ -109,7 +111,8 @@ const lines = svg.selectAll("lines")
     .append("g");
 
     lines.append("path")
-    .attr("class", ids)
+    //.attr("class", ids)
+    .attr("class", "line-2")
     .attr("d", function(d) { return line(d.values); });
 
     lines.append("text")
