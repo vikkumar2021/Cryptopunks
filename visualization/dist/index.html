@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-color">
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Adaptive tabs</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'><link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+<!-- partial:index.partial.html -->
+<nav class="bg-color">Cryptocurrency Portfolio Manangement</nav>
+
+<section class="wrapper">
+	<ul class="tabs">
+		<li class="active">Indicators Visualization</li>
+		<li>Q-Learner Algorithm</li>
+		<li>Grid Search Algorithm</li>
+	</ul>
+
+	<ul class="tab__content">
+		<li class="active">
+			<div class="content__wrapper">
+				<h2 class="text-color">Pick a color</h2>
+				
+				<ul class="colors">
+					<li data-color="#2ecc71"></li>
+					<li data-color="#D64A4B"></li>
+					<li data-color="#8e44ad"></li>
+					<li class="active-color" data-color="#46a1de"></li>
+					<li data-color="#bdc3c7"></li>
+				</ul>
+			</div>
+		</li>
+		<li>
+			<div class="content__wrapper">
+				<h2 class="text-color">Same as Grid Search, will add it later</h2>
+
+
+
+			</div>
+		</li>
+		<li>
+			<div class="content__wrapper">
+				<div id="show">
+					<h1>Select up to 3 indicators</h1>
+					<input type="checkbox" id="c1" name="cc" />
+					<label for="c1"><span></span>Simple Moving Average (SMA)</label>
+					<p>
+					<input type="checkbox" id="c2" name="cc" />
+					<label for="c2"><span></span>Relative Strength Index (RSI)</label>
+					<p>
+						<input type="checkbox" id="c3" name="cc" />
+						<label for="c2"><span></span>Bollinger Band (BB)</label>
+					<p>
+						<input type="checkbox" id="c4" name="cc" />
+						<label for="c2"><span></span>Twitter Sentiment (SEN)</label>											
+				</div>
+				<p><br/>
+				<div id="lookback">
+					<h1>Select number of lookback days</h1>
+
+					<input type="radio" id="r1" name="rr" />
+					<label for="r1"><span></span>5 days</label>
+					<p>
+					<input type="radio" id="r2" name="rr" />
+					<label for="r2"><span></span>10 days</label>
+					<p>
+					<input type="radio" id="r2" name="rr" />
+					<label for="r2"><span></span>20 days</label>
+					<p>
+					<input type="radio" id="r2" name="rr" />
+					<label for="r2"><span></span>30 days</label>
+				</div>
+				<p><br/>
+
+				<div class="chart-container">
+					<div class="chart-container-header">
+						<h2>BTC Price</h2>
+					</div>
+					<div class="line-chart">
+						<canvas id="chart1"></canvas>
+					</div>
+				</div>
+
+				<p><br/>
+				<div class="chart-container">
+					<div class="chart-container-header">
+						<h2>Benchmark vs Grid Search Profolio Value</h2>
+					</div>
+					<div class="line-chart">
+						<canvas id="chart"></canvas>
+					</div>
+				</div>
+
+				<p><br/>
+
+
+
+				<p>Created by Mindy</p>
+			</div>
+		</li>
+	</ul>
+</section>
+
+<footer>By Cryptopunk</footer>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script><script  src="./script.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js'></script><script  src="./script.js"></script>
+  <script src='https://www.google.com/jsapi'></script><script  src="./script.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.1.0/snap.svg-min.js'></script>
+  <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/85781/chartist-0.0.2.min.js'></script><script  src="./script.js"></script>
+
+</body>
+</html>
