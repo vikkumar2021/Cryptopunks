@@ -1,4 +1,4 @@
-from flask import Flask, request, url_for
+from flask import Flask, request, url_for, render_template, jsonify
 
 from cryptopunks_data_pipeline.data_preparation_pipeline import (
     create_spark_session,
@@ -12,7 +12,8 @@ spark = create_spark_session()
 
 @app.route("/")
 def index() -> str:
-    return "CSE-6242: Cryptopunks Project Flask API"
+    example_embed = "CSE-6242: Cryptopunks Project Flask API"
+    return render_template("index.html", embed=example_embed)
 
 
 @app.route("/run_qlearner")
@@ -23,7 +24,7 @@ def run_qlearner() -> dict:
     print(input_df)
     output_df = main(config=config, dataframebtc=input_df)
 
-    return output_df.to_dict()
+    return jsonify(output_df.fillna(0).to_dict())
 
 
 """
@@ -61,6 +62,6 @@ if __name__ == "__main__":
 
     with app.test_request_context():
         url2 = url_for("run_qlearner", **config_dict)
-        print('TRIGGER Q-LEAERNER BY CLICKING THIS URL:')
+        print("TRIGGER Q-LEAERNER BY CLICKING THIS URL:")
         print(f"http://127.0.0.1:5000/{url2}")
     app.run(debug=True)
