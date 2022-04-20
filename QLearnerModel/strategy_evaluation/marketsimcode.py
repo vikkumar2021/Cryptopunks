@@ -68,13 +68,9 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
     port_vals["Cash"] = 1
 
     trades_df = port_vals.copy()
-    commission_df = port_vals.copy()
-    impact_df = port_vals.copy()
 
     for col in trades_df.columns:
         trades_df[col] = float(0)
-        commission_df[col] = float(0)
-        impact_df[col] = float(0)
 
     symbol = "Adj_Close"
     for i in range(len(orders_df)):
@@ -85,11 +81,9 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
         elif orders_df.loc[i]["Order"] == "SELL":
             sign = -1
 
-        trades_df.loc[d][symbol] = trades_df.loc[d][symbol] + sign * amount
-        impact_df.loc[d][symbol] = impact_df.loc[d][symbol] + amount * impact
-        commission_df.loc[d][symbol] = commission_df.loc[d][symbol] + commission
+        trades_df[symbol][d] = trades_df[symbol][d] + sign * amount
 
-    cost_df = port_vals * trades_df + port_vals * impact_df + commission_df
+    cost_df = port_vals * trades_df
     # print(cost_df.head)
 
     trades_df["Cash"] = -1 * cost_df.sum(axis=1)
