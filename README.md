@@ -33,7 +33,7 @@
 `cd ~/Downloads/Cryptopunks/`
 
 
-3. Build a Docker image named cryptopunks-app using the following command. Please note this image is about ~2GB large.
+3. Build a Docker image named cryptopunks-app using the following command on the command line. Please note this image is about ~2GB large but it can be deleted later as described on step 4. In the event of an error, ensure that buildKit is set to True on your Docker installation. [This link](https://stackoverflow.com/questions/64221861/an-error-failed-to-solve-with-frontend-dockerfile-v0) may be helpful.
 
 `docker build --tag cryptopunks-app .`
 
