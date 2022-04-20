@@ -1,0 +1,14 @@
+{
+  "name": "bb9db69914e816cb",
+  "main": "bb9db69914e816cb@1236.js",
+  "version": "1236.0.0",
+  "homepage": "https://observablehq.com/d/bb9db69914e816cb",
+  "author": {
+    "name": "sssantos",
+    "url": "https://observablehq.com/@sssantos"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
