@@ -38,9 +38,11 @@ const svg = d3.select("div#container").append("svg")
     .classed("svg-content", true);
 
 //-----------------------------DATA-----------------------------//
+
+
 const timeConv = d3.timeParse("%d-%b-%Y");
 //const timeConv = d3.timeParse("%Y-%m-%d");
-const dataset = d3.csv("data3.csv");
+const dataset = d3.csv("data2.csv");
 dataset.then(function(data) {
     var slices = data.columns.slice(1).map(function(id) {
         return {
