@@ -16,6 +16,12 @@ def index() -> str:
     return render_template("index.html", embed=example_embed)
 
 
+@app.route("/d3_test")
+def d3_test() -> str:
+    example_embed = "Test D3"
+    return render_template("interactive.html", embed=example_embed)
+
+
 @app.route("/run_qlearner")
 def run_qlearner() -> dict:
     config = request.args.to_dict()
