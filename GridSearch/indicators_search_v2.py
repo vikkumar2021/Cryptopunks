@@ -3,6 +3,7 @@ from datetime import datetime
 import math
 import pandas as pd
 
+
 from . import StrategyLearner_v2 as sl
 
 
@@ -23,55 +24,61 @@ def compute_portvals_2(orders_df, dataframebtc, start_val=100000):
     syms = orders_df.Symbol.unique()  # find unique symbols
     syms = syms.tolist()
     cols = syms + ["CASH"]  # add a column CASH at the end
-    start_date = orders_df.index[0]  # 1st date in the order
-    end_date = orders_df.index[-1]  # last date in the order
-    dates = pd.date_range(start_date, end_date)
+
     df_prices_all = dataframebtc
     df_prices = df_prices_all[["Adj_Close"]]
     df_prices = df_prices.rename(columns={"Adj_Close": "BTC"})
     df_prices.fillna(method="ffill", inplace=True)
-    df_prices.fillna(method="bfill", inplace=True)
+    df_prices.fillna(method="bfill", inplace=True)   
 
-    df_trade = pd.DataFrame(index=df_prices.index, columns=cols)
-    df_trade = df_trade.fillna(0)
+    if len(orders_df["Order"]) == 0:
+        df_trade = pd.DataFrame(index=df_prices.index, columns=cols)
+        df_trade = df_trade.fillna(0)
+        df_trade['value'] =start_val
+        portval1_df = df_trade.reset_index()
+        portval1_df = df_trade.rename(columns={"index": "TradeDate", 0: "value"})
+        return portval1_df
+    else:
+        df_trade = pd.DataFrame(index=df_prices.index, columns=cols)
+        df_trade = df_trade.fillna(0)
+        commission = 0
+        impact = 0
+        for i, row in orders_df.iterrows():  # go through each order
+            if row.Order == "BUY":
+                df_trade.loc[i][row.Symbol] = df_trade.loc[i][row.Symbol] + row.Shares
+                df_trade.loc[i]["CASH"] = (
+                    df_trade.loc[i]["CASH"]
+                    - (row.Shares * ((1 + impact) * df_prices.loc[i][row.Symbol]))
+                    - (commission)
+                )
+            else:  # order is SELL
+                df_trade.loc[i][row.Symbol] = df_trade.loc[i][row.Symbol] - row.Shares
+                df_trade.loc[i]["CASH"] = (
+                    df_trade.loc[i]["CASH"]
+                    + (row.Shares * ((1 - impact) * df_prices.loc[i][row.Symbol]))
+                    - (commission)
+                )
 
-    commission = 0
-    impact = 0
-    for i, row in orders_df.iterrows():  # go through each order
-        if row.Order == "BUY":
-            df_trade.loc[i][row.Symbol] = df_trade.loc[i][row.Symbol] + row.Shares
-            df_trade.loc[i]["CASH"] = (
-                df_trade.loc[i]["CASH"]
-                - (row.Shares * ((1 + impact) * df_prices.loc[i][row.Symbol]))
-                - (commission)
-            )
-        else:  # order is SELL
-            df_trade.loc[i][row.Symbol] = df_trade.loc[i][row.Symbol] - row.Shares
-            df_trade.loc[i]["CASH"] = (
-                df_trade.loc[i]["CASH"]
-                + (row.Shares * ((1 - impact) * df_prices.loc[i][row.Symbol]))
-                - (commission)
-            )
+        df_holding = pd.DataFrame(index=df_prices.index, columns=cols)
+        df_holding = df_holding.fillna(0)
+        df_holding = df_trade.cumsum()
+        df_holding["CASH"] = df_holding["CASH"] + start_val
+        # print ('\ndf_holding = ', df_holding)
+        df_value = pd.DataFrame(index=df_prices.index, columns=cols)
+        for i, row in df_holding.iterrows():
+            for sym in syms:
+                df_value.loc[i][sym] = row[sym] * df_prices.loc[i][sym]
 
-    df_holding = pd.DataFrame(index=df_prices.index, columns=cols)
-    df_holding = df_holding.fillna(0)
-    df_holding = df_trade.cumsum()
-    df_holding["CASH"] = df_holding["CASH"] + start_val
-    # print ('\ndf_holding = ', df_holding)
-    df_value = pd.DataFrame(index=df_prices.index, columns=cols)
-    for i, row in df_holding.iterrows():
-        for sym in syms:
-            df_value.loc[i][sym] = row[sym] * df_prices.loc[i][sym]
+        df_value["CASH"] = df_holding["CASH"]
+        # print ('\ndf_value', df_value)
 
-    df_value["CASH"] = df_holding["CASH"]
-    # print ('\ndf_value', df_value)
+        portvals = df_value.sum(axis=1)
+        # print ('\nportvals = ', portvals)
+        portval1_df = pd.DataFrame(portvals)
+        portval1_df = portval1_df.reset_index()
+        portval1_df = portval1_df.rename(columns={"index": "TradeDate", 0: "value"})
 
-    portvals = df_value.sum(axis=1)
-    # print ('\nportvals = ', portvals)
-    portval1_df = pd.DataFrame(portvals)
-    portval1_df = portval1_df.reset_index()
-    portval1_df = portval1_df.rename(columns={"index": "TradeDate", 0: "value"})
-    return portval1_df
+        return portval1_df
 
 
 def run_logic(config, dataframebtc_input):
