@@ -5,3 +5,4 @@ flask==2.1.1
 numpy==1.22.3
 matplotlib==3.5.1
 scipy==1.8.0
+flask-cors==3.0.10

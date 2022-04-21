@@ -9,9 +9,8 @@ COPY --from=py3 / /
 WORKDIR /python-docker
 
 COPY requirements.txt requirements.txt
+#Added flask-cors to Disable CORS on Server-Side
 RUN pip3 install -r requirements.txt
-#Added This to Disable CORS on Server-Side
-RUN pip3 install -U flask-cors
 
 COPY . .
 
