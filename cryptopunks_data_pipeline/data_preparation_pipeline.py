@@ -276,12 +276,12 @@ def run_pipeline(
     # transform price data to add indicators
     if sma_window:
         df_price = add_price_to_SMA_ratio(spark, df_price, sma_window)
-    if obv:
+    if bool(obv):
         df_price = add_on_balance_volume(spark, df_price)
     if mom_window:
         df_price = add_momentum(spark, df_price, mom_window)
 
-    if include_sentiment:
+    if bool(include_sentiment):
         # Use aggregated version of the tweets data if it exists, otherwise recompute it
         if os.path.exists(TWEETS_FILE_PATH):
             df_agg_sentiment = read_aggregated_tweets(spark)
@@ -296,7 +296,7 @@ def run_pipeline(
         df_joined = df_price
 
     pandas_df = df_joined.toPandas().sort_values(by=["TradeDate"])
-    if macd:
+    if bool(macd):
         pandas_df = add_MACD(pandas_df)
     # print(pandas_df)
     pandas_df.to_csv(os.path.join(CWD, "data", "pipeline_export.csv"))
