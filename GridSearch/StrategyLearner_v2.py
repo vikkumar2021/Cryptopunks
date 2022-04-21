@@ -16,7 +16,13 @@ def get_sharpe_ratio(threshold, *params):
     # print ('threshold in get_sharpe_ratio = ', threshold)
     # print ('len params = ', len(params))
 
-    sma, bbp, rsi, normed, symbol_str, impact = params
+    sma, bbp, rsi, normed, symbol_str, impact, dataframebtc = params
+    sma = sma.reset_index()
+    sma = sma.rename(columns={"index": "TradeDate"})
+    bbp = bbp.reset_index()
+    bbp = bbp.rename(columns={"index": "TradeDate"})
+    rsi = rsi.reset_index()
+    rsi = rsi.rename(columns={"index": "TradeDate"})
 
     Date = []
     Symbol = []
@@ -116,6 +122,8 @@ def get_sharpe_ratio(threshold, *params):
     df["Shares"] = Shares
 
     order = df
+
+
     syms = order.Symbol.unique()  # find unique symbols
     syms = syms.tolist()
     cols = syms + ["CASH"]  # add a column CASH at the end
@@ -125,8 +133,12 @@ def get_sharpe_ratio(threshold, *params):
     dates = pd.date_range(sd, ed)
 
     commission = 0
-    df_prices_all = get_data(syms, dates, addSPY=False)  # automatically adds SPY
-    df_prices = df_prices_all[syms]  # only portfolio symbols
+    #df_prices_all = get_data(syms, dates, addSPY=False)  # automatically adds SPY
+    #df_prices = df_prices_all[syms]  # only portfolio symbols
+
+    df_prices_all = dataframebtc
+    df_prices = df_prices_all[["Adj_Close"]]
+    df_prices = df_prices.rename(columns={"Adj_Close": "BTC"})
     df_prices.fillna(method="ffill", inplace=True)
     df_prices.fillna(method="bfill", inplace=True)
     df_trade = pd.DataFrame(index=df_prices.index, columns=cols)
@@ -177,16 +189,7 @@ def get_sharpe_ratio(threshold, *params):
     # print("TH , last day portval = ", threshold, portvals[-1])
     # print("ORDERS = ", Order)
     return -portvals[-1]
-    return (-1) * cr
-    daily_rets = (portvals / portvals.shift(1)) - 1
-    daily_rets = daily_rets[1:]
-    avg_daily_ret = daily_rets.mean()
-    std_daily_ret = daily_rets.std()
-    sharpe_ratio = np.sqrt(252) * daily_rets.mean() / std_daily_ret
 
-    print(-1) * sharpe_ratio
-    return (-1) * sharpe_ratio
-    # return '123456789'
 
 
 class StrategyLearner(object):
@@ -258,26 +261,28 @@ class StrategyLearner(object):
         print(
             "********************* Add Evidence Computing RSI  ************************"
         )
-        rsi = normed.copy()
-        for day in range(normed.shape[0]):
-            for sym in symbol:
-                up_gain = 0
-                down_loss = 0
-                for prev_day in range(day - lookback + 1, day + 1):
-                    delta = normed.loc[prev_day, sym] - normed.loc[prev_day - 1, sym]
-                    if delta >= 0:
-                        up_gain = up_gain + delta
-                    else:
-                        down_loss = down_loss - delta
-                if down_loss == 0:
-                    rsi.loc[day, sym] = 100
-                else:
-                    rs = (up_gain / lookback) / (down_loss / lookback)
-                    rsi.loc[day, sym] = 100 - (100 / (1 + rs))
+        rsi = 100*bbp.copy()
+
+        # rsi = normed.copy()
+        # for day in range(normed.shape[0]):
+        #     for sym in symbol:
+        #         up_gain = 0
+        #         down_loss = 0
+        #         for prev_day in range(day - lookback + 1, day + 1):
+        #             delta = normed.loc[prev_day, sym] - normed.loc[prev_day - 1, sym]
+        #             if delta >= 0:
+        #                 up_gain = up_gain + delta
+        #             else:
+        #                 down_loss = down_loss - delta
+        #         if down_loss == 0:
+        #             rsi.loc[day, sym] = 100
+        #         else:
+        #             rs = (up_gain / lookback) / (down_loss / lookback)
+        #             rsi.loc[day, sym] = 100 - (100 / (1 + rs))
 
         # initial_threshold =[0.95, 0.3, 35, 1.05, 1, 65, 1, 1]
         initial_threshold = [0.95, 0.3, 1.05, 1]
-        params = (sma_ratio, bbp, rsi, normed, symbol_str, self.impact)
+        params = (sma_ratio, bbp, rsi, normed, symbol_str, self.impact, input_df)
         # aaa = get_sharpe_ratio(initial_threshold, *params)
         # print 'aaa  -->  '  , aaa
 
@@ -359,22 +364,32 @@ class StrategyLearner(object):
         print(
             "********************* Test Policy Computing RSI  ************************"
         )
-        rsi = normed.copy()
-        for day in range(normed.shape[0]):
-            for sym in symbol:
-                up_gain = 0
-                down_loss = 0
-                for prev_day in range(day - lookback + 1, day + 1):
-                    delta = normed.loc[prev_day, sym] - normed.loc[prev_day - 1, sym]
-                    if delta >= 0:
-                        up_gain = up_gain + delta
-                    else:
-                        down_loss = down_loss - delta
-                if down_loss == 0:
-                    rsi.loc[day, sym] = 100
-                else:
-                    rs = (up_gain / lookback) / (down_loss / lookback)
-                    rsi.loc[day, sym] = 100 - (100 / (1 + rs))
+
+        rsi = 100*bbp.copy()
+
+        # rsi = normed.copy()
+        # for day in range(normed.shape[0]):
+        #     for sym in symbol:
+        #         up_gain = 0
+        #         down_loss = 0
+        #         for prev_day in range(day - lookback + 1, day + 1):
+        #             delta = normed.loc[prev_day, sym] - normed.loc[prev_day - 1, sym]
+        #             if delta >= 0:
+        #                 up_gain = up_gain + delta
+        #             else:
+        #                 down_loss = down_loss - delta
+        #         if down_loss == 0:
+        #             rsi.loc[day, sym] = 100
+        #         else:
+        #             rs = (up_gain / lookback) / (down_loss / lookback)
+        #             rsi.loc[day, sym] = 100 - (100 / (1 + rs))
+
+        sma = sma.reset_index()
+        sma = sma.rename(columns={"index": "TradeDate"})
+        bbp = bbp.reset_index()
+        bbp = bbp.rename(columns={"index": "TradeDate"})
+        rsi = rsi.reset_index()
+        rsi = rsi.rename(columns={"index": "TradeDate"})
 
         Date = []
         Symbol = []
@@ -384,6 +399,7 @@ class StrategyLearner(object):
         BUY = []
         orders = []
         holdings = {sym: 0 for sym in symbol}
+        sym = symbol_str
         for day in range(lookback + 1, normed.shape[0]):
 
             if (
