@@ -9,6 +9,7 @@ from QLearnerModel.strategy_evaluation.money_machine import main
 from GridSearch.indicators_search_v2 import run_logic
 
 
+
 app = Flask(__name__)
 cors = CORS(app)
 spark = create_spark_session()
@@ -33,6 +34,7 @@ def run_qlearner() -> dict:
     input_df = run_pipeline(spark, **config)
     print(input_df)
     output_df = main(config=config, dataframebtc=input_df)
+
 
     return jsonify(output_df.fillna(0).to_dict('records'))
 

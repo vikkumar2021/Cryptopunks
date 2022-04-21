@@ -18,9 +18,12 @@
 <body>
 <div id="container" class="svg-container"></div>
 <script>
+<<<<<<< Updated upstream
 //------------------------1. PREPARATION------------------------//
 //-----------------------------SVG------------------------------//
 
+=======
+>>>>>>> Stashed changes
 
 const width = 960;
 const height = 500;
@@ -41,6 +44,7 @@ const svg = d3.select("div#container").append("svg")
 
 //-----------------------------DATA-----------------------------//
 
+<<<<<<< Updated upstream
 var params = {
         "ticker": "BTC",
         "training_sd": "2017-05-01",
@@ -158,6 +162,140 @@ var params = {
         .text(function(d) { return ("Serie ") + d.id; });
 
         });
+=======
+var url = "http://127.0.0.1:5001/run_qlearner?ticker=BTC&training_sd=2017-05-01&training_ed=2018-05-01&test_sd=2018-05-02&test_ed=2019-02-01&sv=500000&sma_window=14&bollinger_band_sma=14&bollinger_band_stdev=3&so_window=14&so_window_sma=14&obv=False&macd=True&include_sentiment=False&mom_window=14&alpha=0.1&gamma=0.9&rar=0.99&radr=0.8&sma_threshold=0.2&so_ul=80&so_ll=20&mom_threshold=0.2&sentiment_threshold=0.3";
+console.log(url);
+
+var dataset2 = fetch(url)
+    .then(response => response.json())
+    .then(function(data) {
+
+    //console.log(data)
+
+    var parseDate = d3.time.format("%Y-%m-%d").parse;
+    var dataset5 = data.map(function(d) {
+    return {
+      date: parseDate(d[0]),
+      close: d[1]
+        };
+    });
+
+
+    const timeConv = d3.timeParse("%a, -%m-%d");
+    console.log(data[0])
+    var slices = data.map(function (id) {
+        return {id: id}
+    });
+    //console.log(dataset3)
+    //console.log(slices)
+
+
+
+    //const timeConv = d3.timeParse("%d-%b-%Y");
+    //const timeConv = d3.timeParse("%a, -%m-%d");
+    //const dataset = d3.csv("data2.csv");
+    var dataset3 = function(data) {
+        var slices = data.columns.slice(1).map(function (id) {
+            return {
+                id: id,
+                values: data.map(function (d) {
+                    return {
+                        date: timeConv(d.TradeDate),
+                        measurement: +d[id]
+                    };
+                })
+            };
+        });
+        //console.log(dataset3)
+        console.log(slices)
+
+        //----------------------------SCALES----------------------------//
+        const xScale = d3.scaleTime().range([0, width]);
+        const yScale = d3.scaleLinear().rangeRound([height, 0]);
+        xScale.domain(d3.extent(data, function (d) {
+            return timeConv(d.date)
+        }));
+        yScale.domain([(0), d3.max(slices, function (c) {
+            return d3.max(c.values, function (d) {
+                return d.measurement + 4;
+            });
+        })
+        ]);
+
+        //-----------------------------AXES-----------------------------//
+        const yaxis = d3.axisLeft()
+            .ticks((slices[0].values).length)
+            .scale(yScale);
+
+        const xaxis = d3.axisBottom()
+            .ticks(d3.timeDay.every(1))
+            .tickFormat(d3.timeFormat('%b %d'))
+            .scale(xScale);
+
+        //----------------------------LINES-----------------------------//
+        const line = d3.line()
+            .x(function (d) {
+                return xScale(d.date);
+            })
+            .y(function (d) {
+                return yScale(d.measurement);
+            });
+
+        let id = 0;
+        const ids = function () {
+            console.log("line-" + id)
+            return "line-" + id++;
+        }
+        //-------------------------2. DRAWING---------------------------//
+        //-----------------------------AXES-----------------------------//
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xaxis);
+
+        svg.append("g")
+            .attr("class", "axis")
+            .call(yaxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("dy", ".75em")
+            .attr("y", 6)
+            .style("text-anchor", "end")
+            .text("Frequency");
+
+        //----------------------------LINES-----------------------------//
+        const lines = svg.selectAll("lines")
+            .data(slices)
+            .enter()
+            .append("g");
+
+        lines.append("path")
+            //.attr("class", ids)
+            .attr("class", "line-2")
+            .attr("d", function (d) {
+                return line(d.values);
+            });
+
+        lines.append("text")
+            .attr("class", "serie_label")
+            .datum(function (d) {
+                return {
+                    id: d.id,
+                    value: d.values[d.values.length - 1]
+                };
+            })
+            .attr("transform", function (d) {
+                return "translate(" + (xScale(d.value.date) + 10)
+                    + "," + (yScale(d.value.measurement) + 5) + ")";
+            })
+            .attr("x", 5)
+            .text(function (d) {
+                return ("Serie ") + d.id;
+            });
+
+        //});
+    }
+>>>>>>> Stashed changes
     });
 </script>
 </body>
