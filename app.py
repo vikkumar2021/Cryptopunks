@@ -34,6 +34,7 @@ def run_qlearner() -> dict:
 
     return jsonify(output_df.fillna(0).to_dict())
 
+
 @app.route("/run_gridsearch")
 def run_gridsearch() -> dict:
     config = request.args.to_dict()
@@ -82,4 +83,4 @@ if __name__ == "__main__":
         url2 = url_for("run_qlearner", **config_dict)
         print("TRIGGER Q-LEAERNER BY CLICKING THIS URL:")
         print(f"http://127.0.0.1:5000/{url2}")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)
