@@ -296,13 +296,12 @@ def run_pipeline(
         df_joined = df_price
 
     pandas_df = df_joined.toPandas().sort_values(by=["TradeDate"])
-<<<<<<< Updated upstream
-    if bool(macd):
-=======
-    #Added Below
+    # Added Below
     pandas_df = pandas.to_datetime(pandas_df['TradeDate'], format='%Y-%m-%d')
+
+
+
     if macd:
->>>>>>> Stashed changes
         pandas_df = add_MACD(pandas_df)
     # print(pandas_df)
     pandas_df.to_csv(os.path.join(CWD, "data", "pipeline_export.csv"))
