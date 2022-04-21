@@ -63,8 +63,8 @@ if __name__ == "__main__":
         "test_ed": "2019-02-01",
         "sv": 500000,
         "sma_window": 14,
-        "bollinger_band_sma": 14,
-        "bollinger_band_stdev": 3,
+        "bollinger_window": 14,
+        "bollinger_stdvs": 3,
         "so_window": 14,
         "so_window_sma": 14,
         "obv": False,
@@ -83,11 +83,19 @@ if __name__ == "__main__":
     }
 
     with app.test_request_context():
-        # url2 = url_for("run_qlearner", **config_dict)
-        # print("TRIGGER Q-LEAERNER BY CLICKING THIS URL:")
 
-        url2 = url_for("run_gridsearch", **config_dict)
-        print("TRIGGER run_gridsearch BY CLICKING THIS URL:")
+        # Q-Learner Method
+        url2 = url_for("run_qlearner", **config_dict)
+        print("TRIGGER Q-LEAERNER BY CLICKING THIS URL:")
+        print(f"http://127.0.0.1:5000{url2}")
+        app.run(debug=True, host="0.0.0.0", port=5000)
 
-        print(f"http://127.0.0.1:5005/{url2}")
-    app.run(debug=True, host="0.0.0.0", port=5005)
+        # Grid Search Method
+        # url2 = url_for("run_gridsearch", **config_dict)
+        # print("TRIGGER run_gridsearch BY CLICKING THIS URL:")
+        # print(f"http://127.0.0.1:5005/{url2}")
+        # app.run(debug=True, host="0.0.0.0", port=5005)
+
+
+
+
