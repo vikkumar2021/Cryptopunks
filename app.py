@@ -32,7 +32,7 @@ def run_qlearner() -> dict:
     print(input_df)
     output_df = main(config=config, dataframebtc=input_df)
 
-    return jsonify(output_df.fillna(0).to_dict())
+    return jsonify(output_df.fillna(0).to_dict('records'))
 
 
 @app.route("/run_gridsearch")
