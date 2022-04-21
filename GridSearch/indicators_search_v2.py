@@ -85,8 +85,10 @@ def run_logic(config, dataframebtc_input):
 
     symbol = config.get("ticker", "BTC")
     sd = datetime.strptime(config.get("training_sd"), "%Y-%m-%d")
+    sd_raw = config.get("training_sd")
     ed = datetime.strptime(config.get("training_ed"), "%Y-%m-%d")
     sd2 = datetime.strptime(config.get("test_sd"), "%Y-%m-%d")
+    sd_raw2 = config.get("test_sd")
     ed2 = datetime.strptime(config.get("test_ed"), "%Y-%m-%d")
     sv = int(config.get("sv", 1000000))
 
@@ -97,9 +99,11 @@ def run_logic(config, dataframebtc_input):
 
     dates = pd.date_range(sd, ed)
     dataframebtc = pd.DataFrame(index=dates)
-    dataframebtc = dataframebtc.join(dataframebtc_input)
+    df_indexDate = dataframebtc_input.set_index('TradeDate')
 
+    dataframebtc = dataframebtc.join(df_indexDate)
     learner = sl.StrategyLearner(verbose=False, impact=0)
+    
     learner.addEvidence(input_df=dataframebtc, symbol=symbol, sd=sd, ed=ed, sv=sv)
     df_trades = learner.testPolicy(
         input_df=dataframebtc, symbol=symbol, sd=sd, ed=ed, sv=sv
@@ -108,7 +112,7 @@ def run_logic(config, dataframebtc_input):
     print("END TRADE")
 
     # TRAIN - IM SAMPLE
-    portval1_df = compute_portvals_2(df_trades, dataframebtc_input, start_val=100000)
+    portval1_df = compute_portvals_2(df_trades, df_indexDate, start_val=100000)
     portval1_df = portval1_df.rename(columns={"value": "TrainGridSearch"})
     df2order = df_to_order(df=df_trades, symbol=symbol, sd=sd, ed=ed)
     df2order = df2order[["TradeDate", "Order"]]
@@ -117,13 +121,13 @@ def run_logic(config, dataframebtc_input):
     order = [
         (
             sd,
-            math.floor(sv / dataframebtc.loc[sd]["Adj_Close"]),
+            math.floor(sv / dataframebtc_input["Adj_Close"][dataframebtc_input["TradeDate"] == sd]),
             "BUY",
             symbol,
         ),
         (
             ed,
-            math.floor(sv / dataframebtc.loc[sd]["Adj_Close"]),
+            math.floor(sv / dataframebtc_input["Adj_Close"][dataframebtc_input["TradeDate"] == sd]),
             "SELL",
             symbol,
         ),
@@ -131,13 +135,15 @@ def run_logic(config, dataframebtc_input):
 
     dfbench = pd.DataFrame(order, columns=["TradeDate", "Shares", "Order", "Symbol"])
     dfbench = dfbench.set_index("TradeDate")
-    benchmark1 = compute_portvals_2(dfbench, dataframebtc_input, start_val=100000)
+    benchmark1 = compute_portvals_2(dfbench, df_indexDate, start_val=100000)
     benchmark1 = benchmark1.rename(columns={"value": "TrainBenchmark"})
 
     df = dataframebtc_input.reset_index()
     df = df.rename(columns={"index": "TradeDate"})
 
-    dataframebtccopia = df.copy()
+    dataframebtccopia = dataframebtc_input.copy()
+    print ('\nDEBUG df2order = ', df2order.head())
+    print ('\nDEBUG dataframebtccopia = ', dataframebtccopia.head())
     dataframebtccopia = dataframebtccopia.merge(df2order, on="TradeDate", how="left")
     dataframebtccopia = dataframebtccopia.merge(portval1_df, on="TradeDate", how="left")
     dataframebtccopia = dataframebtccopia.merge(benchmark1, on="TradeDate", how="left")
@@ -149,12 +155,13 @@ def run_logic(config, dataframebtc_input):
 
     dates = pd.date_range(sd2, ed2)
     dataframebtc2 = pd.DataFrame(index=dates)
-    dataframebtc2 = dataframebtc2.join(dataframebtc_input)
+    dataframebtc2 = dataframebtc2.join(df_indexDate)
+  
     df_trades2 = learner.testPolicy(
         input_df=dataframebtc2, symbol=symbol, sd=sd2, ed=ed2, sv=sv
     )
 
-    portval2_df = compute_portvals_2(df_trades2, dataframebtc_input, start_val=100000)
+    portval2_df = compute_portvals_2(df_trades2, df_indexDate, start_val=100000)
     portval2_df = portval2_df.rename(columns={"value": "TestGridSearch"})
     df2order2 = df_to_order(df=df_trades2, symbol=symbol, sd=sd, ed=ed)
     df2order2 = df2order2[["TradeDate", "Order"]]
@@ -163,13 +170,13 @@ def run_logic(config, dataframebtc_input):
     order2 = [
         (
             sd2,
-            math.floor(sv / dataframebtc2.loc[sd2]["Adj_Close"]),
+            math.floor(sv / dataframebtc_input["Adj_Close"][dataframebtc_input["TradeDate"] == sd2]),
             "BUY",
             symbol,
         ),
         (
             ed2,
-            math.floor(sv / dataframebtc2.loc[sd2]["Adj_Close"]),
+            math.floor(sv / dataframebtc_input["Adj_Close"][dataframebtc_input["TradeDate"] == sd2]),
             "SELL",
             symbol,
         ),
@@ -177,7 +184,7 @@ def run_logic(config, dataframebtc_input):
 
     dfbench2 = pd.DataFrame(order2, columns=["TradeDate", "Shares", "Order", "Symbol"])
     dfbench2 = dfbench2.set_index("TradeDate")
-    benchmark2 = compute_portvals_2(dfbench2, dataframebtc_input, start_val=100000)
+    benchmark2 = compute_portvals_2(dfbench2, df_indexDate, start_val=100000)
     benchmark2 = benchmark2.rename(columns={"value": "TestBenchmark"})
 
     dataframebtccopia = dataframebtccopia.merge(df2order2, on="TradeDate", how="left")
