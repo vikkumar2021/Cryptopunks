@@ -7,6 +7,7 @@ from cryptopunks_data_pipeline.data_preparation_pipeline import (
 from QLearnerModel.strategy_evaluation.money_machine import main
 from GridSearch.indicators_search_v2 import run_logic
 
+
 app = Flask(__name__)
 spark = create_spark_session()
 
@@ -39,7 +40,7 @@ def run_gridsearch() -> dict:
     print(f"running pipeline using config: {config}")
     input_df = run_pipeline(spark, **config)
     print(input_df)
-    output_df = run_logic(config=config, dataframebtc=input_df)
+    output_df = run_logic(config=config, dataframebtc_input=input_df)
 
     return jsonify(output_df.fillna(0).to_dict())
 
@@ -81,4 +82,4 @@ if __name__ == "__main__":
         url2 = url_for("run_qlearner", **config_dict)
         print("TRIGGER Q-LEAERNER BY CLICKING THIS URL:")
         print(f"http://127.0.0.1:5000/{url2}")
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

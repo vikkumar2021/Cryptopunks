@@ -7,8 +7,9 @@ import random
 import numpy as np
 import pandas as pd
 import scipy.optimize as spo
-from marketsimcode import marketsim_df
-from util import get_data
+from .marketsimcode import marketsim_df
+from .util import get_data
+
 
 def get_sharpe_ratio(threshold, *params):
 
@@ -31,9 +32,9 @@ def get_sharpe_ratio(threshold, *params):
     for day in range(lookback + 1, normed.shape[0]):
 
         if (
-            (sma.ix[day, syms[0]] < threshold[0])
-            and (bbp.ix[day, syms[0]] < threshold[1])
-            and (rsi.ix[day, syms[0]] < 100 * threshold[1])
+            (sma.loc[day, syms[0]] < threshold[0])
+            and (bbp.loc[day, syms[0]] < threshold[1])
+            and (rsi.loc[day, syms[0]] < 100 * threshold[1])
             and (-1000 <= holdings[syms[0]] < 1000)
         ):
             if holdings[syms[0]] < 1000:  # stock oversold but index is not oversold
@@ -50,9 +51,9 @@ def get_sharpe_ratio(threshold, *params):
                 Symbol.append(symbol_str)
                 Order.append("BUY")
         elif (
-            (sma.ix[day, syms[0]] > threshold[2])
-            and (bbp.ix[day, syms[0]] > threshold[3])
-            and (rsi.ix[day, syms[0]] > 100 * threshold[3])
+            (sma.loc[day, syms[0]] > threshold[2])
+            and (bbp.loc[day, syms[0]] > threshold[3])
+            and (rsi.loc[day, syms[0]] > 100 * threshold[3])
             and (-1000 <= holdings[syms[0]] <= 1000)
         ):  # stock overbought but index is not overbought
             if holdings[syms[0]] > -1000:
@@ -69,8 +70,8 @@ def get_sharpe_ratio(threshold, *params):
                 Symbol.append(symbol_str)
                 Order.append("SELL")
         elif (
-            (sma.ix[day, syms[0]] >= (threshold[2]))
-            and (sma.ix[day - 1, syms[0]] < (threshold[2]))
+            (sma.loc[day, syms[0]] >= (threshold[2]))
+            and (sma.loc[day - 1, syms[0]] < (threshold[2]))
             and (-1000 < holdings[syms[0]] <= 1000)
             and (-1000 <= holdings[syms[0]] <= 1000)
         ):  # crossed SMA upwards and hold long
@@ -88,8 +89,8 @@ def get_sharpe_ratio(threshold, *params):
             Symbol.append(symbol_str)
             Order.append("SELL")
         elif (
-            (sma.ix[day, syms[0]] <= (threshold[0]))
-            and (sma.ix[day - 1, syms[0]] > (threshold[0]))
+            (sma.loc[day, syms[0]] <= (threshold[0]))
+            and (sma.loc[day - 1, syms[0]] > (threshold[0]))
             and (-1000 <= holdings[syms[0]] < 1000)
         ):  # crossed SMA downwards and hold short
             # print '4444 '
@@ -143,8 +144,8 @@ def get_sharpe_ratio(threshold, *params):
                 - (row.Shares * ((1 + impact) * df_prices.loc[i][row.Symbol]))
                 - (commission)
             )
-            # df_trade.ix[i,row.Symbol] += row.Shares
-            # df_trade.ix[i, 'CASH'] -= (row.Shares * ((1+impact)*df_prices.ix[i,row.Symbol])) - (commission)
+            # df_trade.loc[i,row.Symbol] += row.Shares
+            # df_trade.loc[i, 'CASH'] -= (row.Shares * ((1+impact)*df_prices.loc[i,row.Symbol])) - (commission)
         else:  # order is SELL
             df_trade.loc[i][row.Symbol] = df_trade.loc[i][row.Symbol] - row.Shares
             df_trade.loc[i]["CASH"] = (
@@ -152,8 +153,8 @@ def get_sharpe_ratio(threshold, *params):
                 + (row.Shares * ((1 - impact) * df_prices.loc[i][row.Symbol]))
                 - (commission)
             )
-            # df_trade.ix[i,row.Symbol] -= row.Shares
-            # df_trade.ix[i,'CASH'] +=(row.Shares * ((1-impact)*df_prices.ix[i,row.Symbol])) - (commission)
+            # df_trade.loc[i,row.Symbol] -= row.Shares
+            # df_trade.loc[i,'CASH'] +=(row.Shares * ((1-impact)*df_prices.loc[i,row.Symbol])) - (commission)
     df_holding = pd.DataFrame(index=df_prices.index, columns=cols)
     df_holding = df_holding.fillna(0)
     df_holding = df_trade.cumsum()
@@ -166,7 +167,7 @@ def get_sharpe_ratio(threshold, *params):
     for i, row in df_holding.iterrows():
         for sym in syms:
             # df_value.loc[i][sym] = row[sym] * df_prices.loc[i][sym]
-            df_value.ix[i, sym] = row[sym] * df_prices.ix[i, sym]
+            df_value.loc[i, sym] = row[sym] * df_prices.loc[i, sym]
     df_value["CASH"] = df_holding["CASH"]
     # print df_value
     portvals = df_value.sum(axis=1)
@@ -219,10 +220,10 @@ class StrategyLearner(object):
         symbol_str = symbol
         symbol = [symbol]
         dates = pd.date_range(sd, ed)
-        #prices_all = get_data(symbol, dates, addSPY=False)
+        # prices_all = get_data(symbol, dates, addSPY=False)
         prices_all = input_df
-        prices = prices_all[['Adj_Close']]
-        prices = prices.rename(columns={"Adj_Close": 'BTC'})
+        prices = prices_all[["Adj_Close"]]
+        prices = prices.rename(columns={"Adj_Close": "BTC"})
         prices.fillna(method="ffill", inplace=True)
         prices.fillna(method="bfill", inplace=True)
         normed = prices / prices.values[0, :]
@@ -240,7 +241,7 @@ class StrategyLearner(object):
         sma.values[lookback:, :] = (
             sma.values[lookback:, :] - sma.values[:-lookback, :]
         ) / lookback
-        sma.ix[:lookback, :] = np.nan
+        sma.iloc[:lookback, :] = np.nan
         sma_ratio = normed / sma
 
         print(
@@ -263,16 +264,16 @@ class StrategyLearner(object):
                 up_gain = 0
                 down_loss = 0
                 for prev_day in range(day - lookback + 1, day + 1):
-                    delta = normed.ix[prev_day, sym] - normed.ix[prev_day - 1, sym]
+                    delta = normed.loc[prev_day, sym] - normed.loc[prev_day - 1, sym]
                     if delta >= 0:
                         up_gain = up_gain + delta
                     else:
                         down_loss = down_loss - delta
                 if down_loss == 0:
-                    rsi.ix[day, sym] = 100
+                    rsi.loc[day, sym] = 100
                 else:
                     rs = (up_gain / lookback) / (down_loss / lookback)
-                    rsi.ix[day, sym] = 100 - (100 / (1 + rs))
+                    rsi.loc[day, sym] = 100 - (100 / (1 + rs))
 
         # initial_threshold =[0.95, 0.3, 35, 1.05, 1, 65, 1, 1]
         initial_threshold = [0.95, 0.3, 1.05, 1]
@@ -286,7 +287,7 @@ class StrategyLearner(object):
             slice(0.55, 1.11, 0.3),  # SELL SMA  0.55 0.85 1.15
             slice(0.58, 0.81, 0.2),
         ]  # SELL BBP-RSI  0.58, 0.78
-        print ('\n\n\n HERE ----> ', min(sma_ratio))
+        print("\n\n\n HERE ----> ", min(sma_ratio))
         rranges = [
             slice(0.6, 1.01, 0.4),  #  SMA  RATIO
             slice(-0.2, 1.21, 0.4),  # BUY
@@ -320,9 +321,9 @@ class StrategyLearner(object):
         symbol_str = symbol
         symbol = [symbol]
         dates = pd.date_range(sd, ed)
-        prices_all = input_df #get_data(symbol, dates, addSPY=False)
-        prices = prices_all[['Adj_Close']]
-        prices = prices.rename(columns={"Adj_Close": 'BTC'})
+        prices_all = input_df  # get_data(symbol, dates, addSPY=False)
+        prices = prices_all[["Adj_Close"]]
+        prices = prices.rename(columns={"Adj_Close": "BTC"})
         prices.fillna(method="ffill", inplace=True)
         prices.fillna(method="bfill", inplace=True)
         normed = prices / prices.values[0, :]
@@ -340,7 +341,7 @@ class StrategyLearner(object):
         sma.values[lookback:, :] = (
             sma.values[lookback:, :] - sma.values[:-lookback, :]
         ) / lookback
-        sma.ix[:lookback, :] = np.nan
+        sma.loc[:lookback, :] = np.nan
         # sma_ratio = normed/sma
         sma = normed / sma
 
@@ -364,16 +365,16 @@ class StrategyLearner(object):
                 up_gain = 0
                 down_loss = 0
                 for prev_day in range(day - lookback + 1, day + 1):
-                    delta = normed.ix[prev_day, sym] - normed.ix[prev_day - 1, sym]
+                    delta = normed.loc[prev_day, sym] - normed.loc[prev_day - 1, sym]
                     if delta >= 0:
                         up_gain = up_gain + delta
                     else:
                         down_loss = down_loss - delta
                 if down_loss == 0:
-                    rsi.ix[day, sym] = 100
+                    rsi.loc[day, sym] = 100
                 else:
                     rs = (up_gain / lookback) / (down_loss / lookback)
-                    rsi.ix[day, sym] = 100 - (100 / (1 + rs))
+                    rsi.loc[day, sym] = 100 - (100 / (1 + rs))
 
         Date = []
         Symbol = []
@@ -386,9 +387,9 @@ class StrategyLearner(object):
         for day in range(lookback + 1, normed.shape[0]):
 
             if (
-                (sma.ix[day, sym] < self.threshold[0])
-                and (bbp.ix[day, sym] < self.threshold[1])
-                and (rsi.ix[day, sym] < 100 * self.threshold[1])
+                (sma.loc[day, sym] < self.threshold[0])
+                and (bbp.loc[day, sym] < self.threshold[1])
+                and (rsi.loc[day, sym] < 100 * self.threshold[1])
             ):
                 if holdings[sym] < 1000:  # stock oversold but index is not oversold
                     if holdings[sym] == 0:
@@ -405,9 +406,9 @@ class StrategyLearner(object):
                     print("RULE 1, BUY at ", normed.index[day], holdings[sym])
 
             elif (
-                (sma.ix[day, sym] > self.threshold[2])
-                and (bbp.ix[day, sym] > self.threshold[3])
-                and (rsi.ix[day, sym] > 100 * self.threshold[3])
+                (sma.loc[day, sym] > self.threshold[2])
+                and (bbp.loc[day, sym] > self.threshold[3])
+                and (rsi.loc[day, sym] > 100 * self.threshold[3])
             ):  # stock overbought but index is not overbought
                 if holdings[sym] > -1000:
                     if holdings[sym] == 0:
@@ -424,8 +425,8 @@ class StrategyLearner(object):
 
                     print("RULE 2, SELL at ", normed.index[day], holdings[sym])
             elif (
-                (sma.ix[day, sym] >= (self.threshold[2]))
-                and (sma.ix[day - 1, sym] < (self.threshold[2]))
+                (sma.loc[day, sym] >= (self.threshold[2]))
+                and (sma.loc[day - 1, sym] < (self.threshold[2]))
                 and (-1000 < holdings[sym] <= 1000)
             ):  # crossed SMA upwards and hold long
                 if holdings[sym] == 0:
@@ -442,8 +443,8 @@ class StrategyLearner(object):
 
                 print("RULE 3, SELL at ", normed.index[day], holdings[sym])
             elif (
-                (sma.ix[day, sym] <= (self.threshold[0]))
-                and (sma.ix[day - 1, sym] > (self.threshold[0]))
+                (sma.loc[day, sym] <= (self.threshold[0]))
+                and (sma.loc[day - 1, sym] > (self.threshold[0]))
                 and (-1000 <= holdings[sym] < 1000)
             ):  # crossed SMA downwards and hold short
                 if holdings[sym] == 0:
@@ -500,7 +501,7 @@ class StrategyLearner(object):
         sma.values[lookback:, :] = (
             sma.values[lookback:, :] - sma.values[:-lookback, :]
         ) / lookback
-        sma.ix[:lookback, :] = np.nan
+        sma.loc[:lookback, :] = np.nan
         sma_ratio = normed / sma
 
         print(
@@ -523,16 +524,16 @@ class StrategyLearner(object):
                 up_gain = 0
                 down_loss = 0
                 for prev_day in range(day - lookback + 1, day + 1):
-                    delta = normed.ix[prev_day, sym] - normed.ix[prev_day - 1, sym]
+                    delta = normed.loc[prev_day, sym] - normed.loc[prev_day - 1, sym]
                     if delta >= 0:
                         up_gain = up_gain + delta
                     else:
                         down_loss = down_loss - delta
                 if down_loss == 0:
-                    rsi.ix[day, sym] = 100
+                    rsi.loc[day, sym] = 100
                 else:
                     rs = (up_gain / lookback) / (down_loss / lookback)
-                    rsi.ix[day, sym] = 100 - (100 / (1 + rs))
+                    rsi.loc[day, sym] = 100 - (100 / (1 + rs))
 
         Date = []
         Symbol = []
@@ -545,9 +546,9 @@ class StrategyLearner(object):
         for day in range(lookback + 1, normed.shape[0]):
 
             if (
-                (sma.ix[day, sym] < self.threshold[0])
-                and (bbp.ix[day, sym] < self.threshold[1])
-                and (rsi.ix[day, sym] < 100 * self.threshold[1])
+                (sma.loc[day, sym] < self.threshold[0])
+                and (bbp.loc[day, sym] < self.threshold[1])
+                and (rsi.loc[day, sym] < 100 * self.threshold[1])
             ):
                 if holdings[sym] < 1000:  # stock oversold but index is not oversold
                     if holdings[sym] == 0:
@@ -564,9 +565,9 @@ class StrategyLearner(object):
                     print("RULE 1, BUY at ", normed.index[day], holdings[sym])
 
             elif (
-                (sma.ix[day, sym] > self.threshold[2])
-                and (bbp.ix[day, sym] > self.threshold[3])
-                and (rsi.ix[day, sym] > 100 * self.threshold[3])
+                (sma.loc[day, sym] > self.threshold[2])
+                and (bbp.loc[day, sym] > self.threshold[3])
+                and (rsi.loc[day, sym] > 100 * self.threshold[3])
             ):  # stock overbought but index is not overbought
                 if holdings[sym] > -1000:
                     if holdings[sym] == 0:
@@ -583,8 +584,8 @@ class StrategyLearner(object):
 
                     print("RULE 2, SELL at ", normed.index[day], holdings[sym])
             elif (
-                (sma.ix[day, sym] >= (self.threshold[2] - 0.05))
-                and (sma.ix[day - 1, sym] < (self.threshold[2] - 0.05))
+                (sma.loc[day, sym] >= (self.threshold[2] - 0.05))
+                and (sma.loc[day - 1, sym] < (self.threshold[2] - 0.05))
                 and (-1000 < holdings[sym] <= 1000)
             ):  # crossed SMA upwards and hold long
                 if holdings[sym] == 0:
@@ -601,8 +602,8 @@ class StrategyLearner(object):
 
                 print("RULE 3, SELL at ", normed.index[day], holdings[sym])
             elif (
-                (sma.ix[day, sym] <= (self.threshold[0] + 0.05))
-                and (sma.ix[day - 1, sym] > (self.threshold[0] + 0.05))
+                (sma.loc[day, sym] <= (self.threshold[0] + 0.05))
+                and (sma.loc[day - 1, sym] > (self.threshold[0] + 0.05))
                 and (-1000 <= holdings[sym] < 1000)
             ):  # crossed SMA downwards and hold short
                 if holdings[sym] == 0:

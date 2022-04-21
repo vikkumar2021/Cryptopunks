@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def symbol_to_path(symbol, base_dir=None):
     """Return CSV file path given ticker symbol."""
     if base_dir is None:
@@ -178,7 +179,6 @@ def plot_buy_sell(orders):
     plt.legend()
     plt.title("BTC price, Buys and Sells Orders")
     plt.show()
-
 
 
 def compute_portvals(orders_df, start_val=100000):

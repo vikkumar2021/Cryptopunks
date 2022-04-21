@@ -9,7 +9,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from util import get_data, plot_data
+from .util import get_data, plot_data
 
 
 def author():
