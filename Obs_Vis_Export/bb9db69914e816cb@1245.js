@@ -29,7 +29,7 @@ d3.scaleLinear()
     .range([height - margin.bottom, margin.top])
 )}
 
-function _12(md){return(
+function _13(md){return(
 md`<b>Interactive component: Select viewing window`
 )}
 
@@ -115,7 +115,7 @@ function _update(chart,timeframe){return(
 chart.update(timeframe)
 )}
 
-function _16(md){return(
+function _17(md){return(
 md`---
 
 ## Appendix`
@@ -152,12 +152,12 @@ export default function define(runtime, observer) {
   main.variable(observer("gains_data")).define("gains_data", ["FileAttachment"], _gains_data);
   main.variable(observer("x")).define("x", ["d3","data","margin","width"], _x);
   main.variable(observer("y")).define("y", ["d3","data","height","margin"], _y);
-  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["md"], _13);
   main.variable(observer("viewof timeframe")).define("viewof timeframe", ["Inputs"], _timeframe);
   main.variable(observer("timeframe")).define("timeframe", ["Generators", "viewof timeframe"], (G, _) => G.input(_));
   main.variable(observer("chart")).define("chart", ["d3","width","height","x","y","data","xAxis","yAxis"], _chart);
   main.variable(observer("update")).define("update", ["chart","timeframe"], _update);
-  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("xAxis")).define("xAxis", ["x","height","margin","d3","width"], _xAxis);
   main.variable(observer("yAxis")).define("yAxis", ["margin","d3","y","height"], _yAxis);
   main.variable(observer("height")).define("height", _height);
