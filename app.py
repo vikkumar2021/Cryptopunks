@@ -1,4 +1,5 @@
 from flask import Flask, request, url_for, render_template, jsonify
+from flask_cors import CORS
 
 from cryptopunks_data_pipeline.data_preparation_pipeline import (
     create_spark_session,
@@ -9,6 +10,7 @@ from GridSearch.indicators_search_v2 import run_logic
 
 
 app = Flask(__name__)
+cors = CORS(app)
 spark = create_spark_session()
 
 

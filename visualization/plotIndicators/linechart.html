@@ -20,6 +20,8 @@
 <script>
 //------------------------1. PREPARATION------------------------//
 //-----------------------------SVG------------------------------//
+
+
 const width = 960;
 const height = 500;
 const margin = 5;
@@ -38,6 +40,16 @@ const svg = d3.select("div#container").append("svg")
     .classed("svg-content", true);
 
 //-----------------------------DATA-----------------------------//
+const options = {
+  method: 'GET',
+  mode: 'no-cors'
+};
+var url = "http://127.0.0.1:5001/run_qlearner?ticker=BTC&training_sd=2017-05-01&training_ed=2018-05-01&test_sd=2018-05-02&test_ed=2019-02-01&sv=500000&sma_window=14&bollinger_band_sma=14&bollinger_band_stdev=3&so_window=14&so_window_sma=14&obv=False&macd=True&include_sentiment=False&mom_window=14&alpha=0.1&gamma=0.9&rar=0.99&radr=0.8&sma_threshold=0.2&so_ul=80&so_ll=20&mom_threshold=0.2&sentiment_threshold=0.3";
+console.log(url);
+
+fetch(url)
+    .then(response => response.json())
+    .then(data => console.log(data));
 
 
 const timeConv = d3.timeParse("%d-%b-%Y");
