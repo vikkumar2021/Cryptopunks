@@ -42,6 +42,7 @@ def run_gridsearch() -> dict:
     config = request.args.to_dict()
     print(f"running pipeline using config: {config}")
     input_df = run_pipeline(spark, **config)
+    print(list(input_df.columns))
     print(input_df)
     output_df = run_logic(config=config, dataframebtc_input=input_df)
 
@@ -82,7 +83,19 @@ if __name__ == "__main__":
     }
 
     with app.test_request_context():
+
+        # Q-Learner Method
         url2 = url_for("run_qlearner", **config_dict)
         print("TRIGGER Q-LEAERNER BY CLICKING THIS URL:")
         print(f"http://127.0.0.1:5000{url2}")
-    app.run(debug=True, host="0.0.0.0", port=5000)
+        app.run(debug=True, host="0.0.0.0", port=5000)
+
+        # Grid Search Method
+        # url2 = url_for("run_gridsearch", **config_dict)
+        # print("TRIGGER run_gridsearch BY CLICKING THIS URL:")
+        # print(f"http://127.0.0.1:5005/{url2}")
+        # app.run(debug=True, host="0.0.0.0", port=5005)
+
+
+
+
