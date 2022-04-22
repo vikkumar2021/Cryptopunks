@@ -204,30 +204,32 @@ def main(config, dataframebtc):
 
     dataframebtccopia = dataframebtc.copy()
 
+    # training
     dfgains1 = dfgains1.rename_axis("TradeDate").reset_index()
-    dfgains1 = dfgains1.rename(columns={"Sum": "training_ql"})
-
+    dfgains1 = dfgains1.rename(columns={"Sum": "QL"})
     benchmark = benchmark.rename_axis("TradeDate").reset_index()
-    benchmark = benchmark.rename(columns={"Sum": "training_benchmark"})
+    benchmark = benchmark.rename(columns={"Sum": "benchmark"})
+    df1 = df1[["TradeDate", "Order"]].rename(columns={"Order": "orders"})
 
+    train_df = dfgains1.merge(benchmark, on="TradeDate", how="left")
+    train_df = train_df.merge(df1, on="TradeDate", how="left")
+    train_df['test_or_train'] = 'train'
+
+    # testing
     dfgains2 = dfgains2.rename_axis("TradeDate").reset_index()
-    dfgains2 = dfgains2.rename(columns={"Sum": "testing_ql"})
-
+    dfgains2 = dfgains2.rename(columns={"Sum": "QL"})
     benchmark2 = benchmark2.rename_axis("TradeDate").reset_index()
-    benchmark2 = benchmark2.rename(columns={"Sum": "testing_benchmark"})
+    benchmark2 = benchmark2.rename(columns={"Sum": "benchmark"})
+    df2 = df2[["TradeDate", "Order"]].rename(columns={"Order": "orders"})
 
-    df1 = df1[["TradeDate", "Order"]]
-    df1 = df1.rename(columns={"Order": "training_orders"})
+    test_df = dfgains2.merge(benchmark2, on="TradeDate", how="left")
+    test_df = test_df.merge(df2, on="TradeDate", how="left")
+    test_df['test_or_train'] = 'test'
 
-    df2 = df2[["TradeDate", "Order"]]
-    df2 = df2.rename(columns={"Order": "testing_orders"})
+    test_train_df = pd.concat([train_df, test_df], axis=0)
+    dataframebtccopia = test_train_df.merge(dataframebtccopia, on="TradeDate", how="inner")
 
-    dataframebtccopia = dataframebtccopia.merge(dfgains1, on="TradeDate", how="left")
-    dataframebtccopia = dataframebtccopia.merge(benchmark, on="TradeDate", how="left")
-    dataframebtccopia = dataframebtccopia.merge(dfgains2, on="TradeDate", how="left")
-    dataframebtccopia = dataframebtccopia.merge(benchmark2, on="TradeDate", how="left")
-    dataframebtccopia = dataframebtccopia.merge(df1, on="TradeDate", how="left")
-    dataframebtccopia = dataframebtccopia.merge(df2, on="TradeDate", how="left")
+    # change TradeDate back to string so Flask jsonify doesn't use bad datetime format
     dataframebtccopia['TradeDate'] = dataframebtccopia["TradeDate"].dt.strftime('%Y-%m-%d')
 
     return dataframebtccopia
