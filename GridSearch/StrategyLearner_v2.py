@@ -256,11 +256,10 @@ class StrategyLearner(object):
         step_3 = round(((max_3 - min_3)/ 3), 3)/2
 
         rranges = [
-            slice(min_1, mid_1, step_1),  #  SMA  RATIO
-            slice(min_2, mid_2, step_2),  # BUY
-            slice(mid_1, max_1, step_1),  # SELL SMA
-            slice(mid_2, max_2, step_2),  #  SELL BBP-RSI
-        ] 
+         slice(-0.31743839421422201, 0.162, 0.160),
+         slice(-0.3637347457782, 0.431, 0.265),
+         slice(0.162, 0.64165430406962668, 0.160),
+         slice(0.431, 1.2266714932757, 0.265) ]
 
         threshold_brute = spo.brute(
             get_sharpe_ratio, rranges, args=params, full_output=True, finish=None

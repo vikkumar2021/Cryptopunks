@@ -39,5 +39,6 @@ if __name__ == "__main__":
     print(f"running pipeline using config: {config}")
     input_df = run_pipeline(spark, **config)
     print(input_df)
-    output_df = main(config=config, dataframebtc=input_df)
+    #output_df = main(config=config, dataframebtc=input_df)
+    output_df = run_logic(config=config, dataframebtc_input=input_df)
     print(output_df)
