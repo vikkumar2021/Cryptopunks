@@ -228,6 +228,7 @@ def main(config, dataframebtc):
     dataframebtccopia = dataframebtccopia.merge(benchmark2, on="TradeDate", how="left")
     dataframebtccopia = dataframebtccopia.merge(df1, on="TradeDate", how="left")
     dataframebtccopia = dataframebtccopia.merge(df2, on="TradeDate", how="left")
+    dataframebtccopia['TradeDate'] = dataframebtccopia["TradeDate"].dt.strftime('%Y-%m-%d')
 
     return dataframebtccopia
 
