@@ -1,0 +1,14 @@
+{
+  "name": "bca29a93b0f85ef9",
+  "main": "bca29a93b0f85ef9@2537.js",
+  "version": "2537.0.0",
+  "homepage": "https://observablehq.com/d/bca29a93b0f85ef9",
+  "author": {
+    "name": "Tommy T. Habibe Burgos",
+    "url": "https://observablehq.com/@65174b1f37c590eb"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
