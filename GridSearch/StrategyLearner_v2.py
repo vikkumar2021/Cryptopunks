@@ -12,7 +12,7 @@ from .util import get_data
 
 
 def get_sharpe_ratio(threshold, *params):
-    indicator_1, indicator_2, indicator_3, normed, symbol_str, impact, dataframebtc = params
+    indicator_1, indicator_2, indicator_3, normed, symbol_str, impact, dataframebtc, num_shares = params
     #sma, bbp, rsi, normed, symbol_str, impact, dataframebtc = params
     Date = []
     Symbol = []
@@ -23,88 +23,89 @@ def get_sharpe_ratio(threshold, *params):
     orders = []
     syms = [symbol_str]
     holdings = {sym: 0 for sym in syms}
-    lookback = 10
-    num_order = 0
-    for day in range(lookback + 1, normed.shape[0]):
-        if (
-            (indicator_1[day] < threshold[0])
-            or (indicator_2[day] < threshold[1])
-            or (indicator_3[day] < 100 * threshold[1])
-            and (-1000 <= holdings[syms[0]] < 1000)
-        ):
-            if holdings[syms[0]] < 1000:  # stock oversold but index is not oversold
-                # print ('1111 ')
-                if holdings[syms[0]] == 0:
-                    holdings[syms[0]] = holdings[syms[0]] + 1000
-                    Shares.append(1000)
-                else:  # hold = -1000
-                    holdings[syms[0]] = holdings[syms[0]] + 2000
-                    Shares.append(2000)
 
-                orders.append([normed.index[day].date(), syms[0], "BUY", 1000])
-                Date.append(normed.index[day])
-                Symbol.append(symbol_str)
-                Order.append("BUY")
-        elif (
-            (indicator_1[day] > threshold[2])
-            or (indicator_2[day] > threshold[3])
-            or (indicator_3[day] > 100 * threshold[3])
-            and (-1000 <= holdings[syms[0]] <= 1000)
-        ):  # stock overbought but index is not overbought
-            if holdings[syms[0]] > -1000:
-                # print ('2222 ')
+
+
+    for day in range(1, normed.shape[0]):
+            if (
+                (indicator_1[day] < threshold[0])
+                or (indicator_2[day] < threshold[1])
+                or (indicator_3[day] < threshold[1])
+                and (-num_shares <= holdings[syms[0]] < num_shares)
+            ):
+                if holdings[syms[0]] < num_shares:  # stock oversold but index is not oversold
+                    # print ('1111 ')
+                    if holdings[syms[0]] == 0:
+                        holdings[syms[0]] = holdings[syms[0]] + num_shares
+                        Shares.append(num_shares)
+                    else:  # hold = -1000
+                        holdings[syms[0]] = holdings[syms[0]] + num_shares*2
+                        Shares.append(num_shares*2)
+
+                    orders.append([normed.index[day].date(), syms[0], "BUY", num_shares])
+                    Date.append(normed.index[day])
+                    Symbol.append(symbol_str)
+                    Order.append("BUY")
+            elif (
+                (indicator_1[day] > threshold[2])
+                or (indicator_2[day] > threshold[3])
+                or (indicator_3[day] > threshold[3])
+                and (-num_shares <= holdings[syms[0]] <= num_shares)
+            ):  # stock overbought but index is not overbought
+                if holdings[syms[0]] > -num_shares:
+                    # print ('2222 ')
+                    if holdings[syms[0]] == 0:
+                        holdings[syms[0]] = holdings[syms[0]] - num_shares
+                        Shares.append(num_shares)
+                    else:
+                        holdings[syms[0]] = holdings[syms[0]] - num_shares*2
+                        Shares.append(num_shares*2)
+
+                    orders.append([normed.index[day].date(), syms[0], "SELL", num_shares])
+                    Date.append(normed.index[day])
+                    Symbol.append(symbol_str)
+                    Order.append("SELL")
+            elif (
+                (indicator_1[day] >= (threshold[2]))
+                or (indicator_1[day-1] < (threshold[2]))
+                and (-num_shares < holdings[syms[0]] <= num_shares)
+                and (-num_shares <= holdings[syms[0]] <= num_shares)
+            ):  # crossed SMA upwards and hold long
+                # print ('3333 ')
                 if holdings[syms[0]] == 0:
-                    holdings[syms[0]] = holdings[syms[0]] - 1000
-                    Shares.append(1000)
+                    holdings[syms[0]] = holdings[syms[0]] - num_shares
+                    Shares.append(num_shares)
+
                 else:
-                    holdings[syms[0]] = holdings[syms[0]] - 2000
-                    Shares.append(2000)
+                    holdings[syms[0]] = holdings[syms[0]] - num_shares*2
+                    Shares.append(num_shares*2)
 
-                orders.append([normed.index[day].date(), syms[0], "SELL", 1000])
+                orders.append([normed.index[day].date(), syms[0], "SELL", num_shares])
                 Date.append(normed.index[day])
                 Symbol.append(symbol_str)
                 Order.append("SELL")
-        elif (
-            (indicator_1[day] >= (threshold[2]))
-            or (indicator_1[day-1] < (threshold[2]))
-            and (-1000 < holdings[syms[0]] <= 1000)
-            and (-1000 <= holdings[syms[0]] <= 1000)
-        ):  # crossed SMA upwards and hold long
-            # print ('3333 ')
-            if holdings[syms[0]] == 0:
-                holdings[syms[0]] = holdings[syms[0]] - 1000
-                Shares.append(1000)
+            elif (
+                (indicator_1[day] <= (threshold[0]))
+                or (indicator_1[day-1] > (threshold[0]))
+                and (-num_shares <= holdings[syms[0]] < num_shares)
+            ):  # crossed SMA downwards and hold short
+                # print '4444 '
+                if holdings[syms[0]] == 0:
 
-            else:
-                holdings[syms[0]] = holdings[syms[0]] - 2000
-                Shares.append(2000)
+                    holdings[syms[0]] = holdings[syms[0]] + num_shares
+                    Shares.append(num_shares)
+                else:
+                    holdings[syms[0]] = holdings[syms[0]] + num_shares*2
+                    Shares.append(num_shares*2)
 
-            orders.append([normed.index[day].date(), syms[0], "SELL", 1000])
-            Date.append(normed.index[day])
-            Symbol.append(symbol_str)
-            Order.append("SELL")
-        elif (
-            (indicator_1[day] <= (threshold[0]))
-            or (indicator_1[day-1] > (threshold[0]))
-            and (-1000 <= holdings[syms[0]] < 1000)
-        ):  # crossed SMA downwards and hold short
-            # print '4444 '
-            if holdings[syms[0]] == 0:
-
-                holdings[syms[0]] = holdings[syms[0]] + 1000
-                Shares.append(1000)
-            else:
-                holdings[syms[0]] = holdings[syms[0]] + 2000
-                Shares.append(2000)
-
-            orders.append([normed.index[day].date(), syms[0], "BUY", 1000])
-            Date.append(normed.index[day])
-            Symbol.append(symbol_str)
-            Order.append("BUY")
+                orders.append([normed.index[day].date(), syms[0], "BUY", num_shares])
+                Date.append(normed.index[day])
+                Symbol.append(symbol_str)
+                Order.append("BUY")
 
     #    print "NUM ORDERS => ", len(Order)
     if len(Order) == 0:
-        return 1000
+        return 10
 
     df = pd.DataFrame({"Symbol": Symbol}, index=Date)
     df["Order"] = Order
@@ -122,8 +123,6 @@ def get_sharpe_ratio(threshold, *params):
     dates = pd.date_range(sd, ed)
 
     commission = 0
-    #df_prices_all = get_data(syms, dates, addSPY=False)  # automatically adds SPY
-    #df_prices = df_prices_all[syms]  # only portfolio symbols
 
     df_prices_all = dataframebtc
     df_prices = df_prices_all[["Adj_Close"]]
@@ -159,7 +158,7 @@ def get_sharpe_ratio(threshold, *params):
     df_holding = pd.DataFrame(index=df_prices.index, columns=cols)
     df_holding = df_holding.fillna(0)
     df_holding = df_trade.cumsum()
-    start_val = 10000
+    start_val = 500000
     df_holding["CASH"] = df_holding["CASH"] + start_val
     # print df_holding
     #    print 'holding < -1000', (df_holding[symbol_str]<-1000).any()
@@ -204,11 +203,9 @@ class StrategyLearner(object):
         sd=dt.datetime(2008, 1, 1),
         ed=dt.datetime(2009, 1, 1),
         sv=10000,
+        num_shares=10
     ):
 
-        risk_free_rate = 0.0
-        sample_freq = 252
-        lookback = 10
         symbol_str = symbol
         symbol = [symbol]
         dates = pd.date_range(sd, ed)
@@ -230,12 +227,11 @@ class StrategyLearner(object):
 
         sma_ratio = input_df['price_to_SMA_ratio']
         bbp = input_df['momentum']
-        rsi = input_df['MACD']
+        rsi = input_df['rolling_avg']
 
 
         initial_threshold = [0.95, 0.3, 1.05, 1]
-        params = (sma_ratio, bbp, rsi, normed, symbol_str, self.impact, input_df)
-        # aaa = get_sharpe_ratio(initial_threshold, *params)
+        params = (sma_ratio, bbp, rsi, normed, symbol_str, self.impact, input_df, num_shares)
 
         rranges = [
             slice(0.6, 1.01, 0.4),  #  SMA  RATIO
@@ -259,6 +255,7 @@ class StrategyLearner(object):
         sd=dt.datetime(2010, 1, 1),
         ed=dt.datetime(2011, 12, 31),
         sv=100000,
+        num_shares=10
     ):
 
         risk_free_rate = 0.0
@@ -282,9 +279,9 @@ class StrategyLearner(object):
         print("********************* Test Policy ************************")
 
 
-        indicator_1 = input_df['MACD']
+        indicator_1 = input_df['price_to_SMA_ratio']
         indicator_2 = input_df['momentum']
-        indicator_3 = input_df['price_to_SMA_ratio']
+        indicator_3 = input_df['rolling_avg']
 
         Date = []
         Symbol = []
@@ -296,79 +293,79 @@ class StrategyLearner(object):
         holdings = {sym: 0 for sym in symbol}
         syms = [symbol_str]
 
-        for day in range(lookback + 1, normed.shape[0]):
+        for day in range(1, normed.shape[0]):
                 if (
                     (indicator_1[day] < self.threshold[0])
                     or (indicator_2[day] < self.threshold[1])
-                    or (indicator_3[day] < 100 * self.threshold[1])
-                    and (-1000 <= holdings[syms[0]] < 1000)
+                    or (indicator_3[day] < self.threshold[1])
+                    and (-num_shares <= holdings[syms[0]] < num_shares)
                 ):
-                    if holdings[syms[0]] < 1000:  # stock oversold but index is not oversold
+                    if holdings[syms[0]] < 10:  # stock oversold but index is not oversold
                         # print ('1111 ')
                         if holdings[syms[0]] == 0:
-                            holdings[syms[0]] = holdings[syms[0]] + 1000
-                            Shares.append(1000)
+                            holdings[syms[0]] = holdings[syms[0]] + num_shares
+                            Shares.append(num_shares)
                         else:  # hold = -1000
-                            holdings[syms[0]] = holdings[syms[0]] + 2000
-                            Shares.append(2000)
+                            holdings[syms[0]] = holdings[syms[0]] + num_shares*2
+                            Shares.append(num_shares*2)
 
-                        orders.append([normed.index[day].date(), syms[0], "BUY", 1000])
+                        orders.append([normed.index[day].date(), syms[0], "BUY", num_shares])
                         Date.append(normed.index[day])
                         Symbol.append(symbol_str)
                         Order.append("BUY")
                 elif (
                     (indicator_1[day] > self.threshold[2])
                     or (indicator_2[day] > self.threshold[3])
-                    or (indicator_3[day] > 100 * self.threshold[3])
-                    and (-1000 <= holdings[syms[0]] <= 1000)
+                    or (indicator_3[day] > self.threshold[3])
+                    and (-num_shares <= holdings[syms[0]] <= num_shares)
                 ):  # stock overbought but index is not overbought
-                    if holdings[syms[0]] > -1000:
+                    if holdings[syms[0]] > -num_shares:
                         # print ('2222 ')
                         if holdings[syms[0]] == 0:
-                            holdings[syms[0]] = holdings[syms[0]] - 1000
-                            Shares.append(1000)
+                            holdings[syms[0]] = holdings[syms[0]] - num_shares
+                            Shares.append(num_shares)
                         else:
-                            holdings[syms[0]] = holdings[syms[0]] - 2000
-                            Shares.append(2000)
+                            holdings[syms[0]] = holdings[syms[0]] - num_shares*2
+                            Shares.append(num_shares*2)
 
-                        orders.append([normed.index[day].date(), syms[0], "SELL", 1000])
+                        orders.append([normed.index[day].date(), syms[0], "SELL", num_shares])
                         Date.append(normed.index[day])
                         Symbol.append(symbol_str)
                         Order.append("SELL")
                 elif (
                     (indicator_1[day] >= (self.threshold[2]))
                     or (indicator_1[day-1] < (self.threshold[2]))
-                    and (-1000 < holdings[syms[0]] <= 1000)
-                    and (-1000 <= holdings[syms[0]] <= 1000)
+                    and (-num_shares < holdings[syms[0]] <= num_shares)
+                    and (-num_shares <= holdings[syms[0]] <= num_shares)
                 ):  # crossed SMA upwards and hold long
                     # print ('3333 ')
                     if holdings[syms[0]] == 0:
-                        holdings[syms[0]] = holdings[syms[0]] - 1000
-                        Shares.append(1000)
+                        holdings[syms[0]] = holdings[syms[0]] - num_shares
+                        Shares.append(num_shares)
 
                     else:
-                        holdings[syms[0]] = holdings[syms[0]] - 2000
-                        Shares.append(2000)
+                        holdings[syms[0]] = holdings[syms[0]] - num_shares*2
+                        Shares.append(num_shares*2)
 
-                    orders.append([normed.index[day].date(), syms[0], "SELL", 1000])
+                    orders.append([normed.index[day].date(), syms[0], "SELL", num_shares])
                     Date.append(normed.index[day])
                     Symbol.append(symbol_str)
                     Order.append("SELL")
                 elif (
                     (indicator_1[day] <= (self.threshold[0]))
                     or (indicator_1[day-1] > (self.threshold[0]))
-                    and (-1000 <= holdings[syms[0]] < 1000)
+                    and (-num_shares <= holdings[syms[0]] < num_shares)
                 ):  # crossed SMA downwards and hold short
                     # print '4444 '
                     if holdings[syms[0]] == 0:
 
-                        holdings[syms[0]] = holdings[syms[0]] + 1000
-                        Shares.append(1000)
+                        holdings[syms[0]] = holdings[syms[0]] + num_shares
+                        Shares.append(num_shares)
                     else:
-                        holdings[syms[0]] = holdings[syms[0]] + 2000
-                        Shares.append(2000)
+                        holdings[syms[0]] = holdings[syms[0]] + num_shares*2
+                        Shares.append(num_shares*2)
 
-                    orders.append([normed.index[day].date(), syms[0], "BUY", 1000])
+                    orders.append([normed.index[day].date(), syms[0], "BUY", num_shares])
                     Date.append(normed.index[day])
                     Symbol.append(symbol_str)
                     Order.append("BUY")

@@ -1,5 +1,23 @@
 <body>
     <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+    <script  type="text/javascript" src="static/lib/Chart.min.js"></script>
+
+    <div id="lookback">
+        <h1>Select number of lookback days</h1>
+
+        <input type="radio" id="r1" name="rr" />
+        <label for="r1"><span></span>5 days</label>
+        <p>
+        <input type="radio" id="r2" name="rr" />
+        <label for="r2"><span></span>10 days</label>
+        <p>
+        <input type="radio" id="r2" name="rr" />
+        <label for="r2"><span></span>20 days</label>
+        <p>
+        <input type="radio" id="r2" name="rr" />
+        <label for="r2"><span></span>30 days</label>
+    </div>
+
     <script>
 
         // Margins
@@ -8,6 +26,7 @@
           , height = 500 - margin.top - margin.bottom; // Use the window's height
 
         // Date Parse
+        const formatTime = d3.timeFormat("%B %d, %Y");
         var parseTime = d3.timeParse('%Y-%m-%d');
 
         // Model/Pipeline Parameters
@@ -43,7 +62,8 @@
         }).join('&');
         console.log(queryString);
 
-        var url = "/run_qlearner?" + queryString
+        //var url = "/run_qlearner?" + queryString
+        var url = "/run_gridsearch?" + queryString
         console.log(url);
 
         fetch(url)
@@ -51,19 +71,195 @@
           return response.json();
         }).then(function (data) {
 
-            console.log(data);
+            console.log('OUTPUT DATA = ', data);
 
-            var dates_arr = data.map(function(d) { return parseTime(d.TradeDate);})
-            console.log(dates_arr);
-            date_min = d3.min(dates_arr)
-            date_max = d3.max(dates_arr)
+            var parseTime = d3.timeParse('%Y-%m-%d');
+            var dates_arr = data.map(function(d) { return formatTime(parseTime(d.TradeDate));})
 
-            var scaleX = d3.scaleTime().domain([date_min, date_max])
-              .range([margin.left, width - margin.left - margin.right])
+            var price_arr = data.map(function(d) { return d.Adj_Close;})
+            var TrainBenchmark = data.map(function(d) { return d.TrainBenchmark;})
+            var TrainGridSearch = data.map(function(d) { return d.TrainGridSearch;})
+            
+
+            var chart   = document.getElementById('chart1').getContext('2d'),
+            gradient = chart.createLinearGradient(0, 0, 0, 900);
+            gradient.addColorStop(0, 'rgba( 50, 250, 50, 0.32)');
+            gradient.addColorStop(0.3, 'rgba( 50, 250, 50, 0.1)');
+            gradient.addColorStop(1, 'rgba( 50, 250, 50, 0)');
+
+            var data  = {
+                labels:dates_arr,
+                datasets: [{
+                        label: 'Price',
+                        backgroundColor: gradient,
+                        pointBackgroundColor: '#0a8c05',
+                        borderWidth: 2,
+                        borderColor: '#0a8c05',
+                        data:price_arr
+                    }]
+            };
+
+            var options = {
+                responsive: true,
+                maintainAspectRatio: true,
+                animation: {
+                    easing: 'easeInOutQuad',
+                    duration: 520
+                },
+                scales: {
+                    yAxes: [{
+                ticks: {
+                    fontColor: '#5e6a81'
+                },
+                        gridLines: {
+                            color: 'rgba(200, 200, 200, 0.08)',
+                            lineWidth: 1
+                        }
+                    }],
+                xAxes:[{
+                ticks: {
+                    fontColor: '#5e6a81'
+                }
+                }]
+                },
+                elements: {
+                    line: {
+                        tension: 0.4
+                    }
+                },
+                legend: {
+                    display: false
+                },
+                point: {
+                    backgroundColor: '#00c7d6'
+                },
+                tooltips: {
+                    titleFontFamily: 'Poppins',
+                    backgroundColor: 'rgba(0,0,0,0.4)',
+                    titleFontColor: 'white',
+                    caretSize: 5,
+                    cornerRadius: 2,
+                    xPadding: 10,
+                    yPadding: 10
+                }
+            };
+            var chartInstance = new Chart(chart, {
+                type: 'line',
+                data: data,
+                    options: options
+            });
+
+
+        // BENCHMARK vs TRAIN GRID SEARCH PORTVALS
+        var chart    = document.getElementById('chart2').getContext('2d'),
+
+        gradient = chart.createLinearGradient(0, 0, 0, 900);
+        gradient.addColorStop(0, 'rgba( 250, 50, 50, 0.32)');
+        gradient.addColorStop(0.3, 'rgba( 250, 50, 50, 0.1)');
+        gradient.addColorStop(1, 'rgba( 250, 50, 50, 0)');
+
+        gradient2 = chart.createLinearGradient(0, 0, 0, 900);
+        gradient2.addColorStop(0, 'rgba(0, 199, 214, 0.32)');
+        gradient2.addColorStop(0.3, 'rgba(0, 199, 214, 0.1)');
+        gradient2.addColorStop(1, 'rgba(0, 199, 214, 0)');
+
+
+        var data  = {
+            labels: dates_arr,
+            datasets: [{
+                    label: 'Applications',
+                    backgroundColor: gradient,
+                    pointBackgroundColor: '#00c7d6',
+                    borderWidth: 2,
+                    borderColor: '#961205',
+                    data: TrainBenchmark
+                },
+                {
+                    label: 'Applications2',
+                    backgroundColor: gradient2,
+                    pointBackgroundColor: '#e8b4d6',
+                    borderWidth: 2,
+                    borderColor: '#331ab1',
+                    data: TrainGridSearch
+                }]
+        };
+
+        var options = {
+            responsive: true,
+            maintainAspectRatio: true,
+            animation: {
+                easing: 'easeInOutQuad',
+                duration: 520
+            },
+            scales: {
+                yAxes: [{
+            ticks: {
+                fontColor: '#5e6a81'
+            },
+                    gridLines: {
+                        color: 'rgba(200, 200, 200, 0.08)',
+                        lineWidth: 1
+                    }
+                }],
+            xAxes:[{
+            ticks: {
+                fontColor: '#5e6a81'
+            }
+            }]
+            },
+            elements: {
+                line: {
+                    tension: 0.4
+                }
+            },
+            legend: {
+                display: false
+            },
+            point: {
+                backgroundColor: '#00c7d6'
+            },
+            tooltips: {
+                titleFontFamily: 'Poppins',
+                backgroundColor: 'rgba(0,0,0,0.4)',
+                titleFontColor: 'white',
+                caretSize: 5,
+                cornerRadius: 2,
+                xPadding: 10,
+                yPadding: 10
+            }
+        };
+
+        var chartInstance = new Chart(chart, {
+            type: 'line',
+            data: data,
+                options: options
+        });
 
         });
 
     </script>
+
+    <p><br/>
+    <div class="chart-container">
+        <div class="chart-container-header">
+            <h2>BTC Price</h2>
+        </div>
+        <div class="line-chart">
+            <canvas id="chart1"></canvas>
+        </div>
+    </div>
+
+    <p><br/>
+    <div class="chart-container">
+        <div class="chart-container-header">
+            <h2>Benchmark vs Grid Search Profolio Value</h2>
+        </div>
+        <div class="line-chart">
+            <canvas id="chart2"></canvas>
+        </div>
+    </div>
+    <!-- <script  type="text/javascript" src="static/lib/scripts.js"></script> -->
+
 <h1> Python Fetch Example</h1>
 <p id='embed'>{{embed}}</p>
 <p id='mylog'/>
