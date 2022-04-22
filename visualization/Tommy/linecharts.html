@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<style>
+path.lines {
+	fill:  none;
+	stroke: #000000;
+}
+/*path.lines-b {
+	fill:  none;
+	stroke: #000000;
+}
+path.lines-c-1 {
+	fill:  none;
+	stroke: #000000;
+}
+path.lines-c-2 {
+	fill:  none;
+	stroke: #000000;
+}*/
+</style>
+<head>
+  <title>Line Charts</title>
+  <meta charset="utf-8">
+
+  <script type="text/javascript" src="../lib/d3.v5.min.js"></script>
+</head>
+
+<body>
+  <div id='signature'>thabibe3</div>
+  <script>
+
+	var margin = {top:50, right:50, bottom:50, left:50}
+	var width =  900 - margin.left - margin.right
+	var height = 500 - margin.top - margin.bottom
+
+	var parseDate = d3.timeParse("%Y-%m-%d")
+
+	var boardata = d3.csv("boardgame_ratings.csv")
+
+	boardata.then(function(data){
+
+		var dic = data.columns.slice(1).filter(function(m){return m.match(/count/)}).map(function(c) {
+			return {
+				key: c.split("=")[0],
+				val: data.map(function(d){
+					return{
+						date: parseDate(d.date),
+						v: +d[c]
+					};
+				})
+			};
+		});
+
+		var dicr = data.columns.slice(1).filter(function(m){return m.match(/rank/)}).map(function(c) {
+			return {
+				key: c.split("=")[0],
+				valr: data.map(function(d){
+					return{
+						date: parseDate(d.date),
+						r: +d[c]
+					};
+				})
+			};
+		});
+
+	console.log(data)
+	console.log(dic)
+	console.log(dicr)
+
+
+	// Scales
+	var dmax = d3.max(data, function(d){return parseDate(d.date)})
+	var dmin = d3.min(data, function(d){return parseDate(d.date)})
+
+	console.log(dmin)
+	console.log(dmax)
+
+	var scaleDate = d3.scaleTime().domain([dmin,dmax]).range([margin.left,width-margin.right]);
+
+	var max = d3.max(dic,function(d){ return d3.max(d.val, function(f){ return f.v})});
+
+	console.log(max)
+
+	var scaleNumCount = d3.scaleLinear().domain([0,max]).range([height-margin.bottom,margin.top]);
+	var scaleNumCountSqrt = d3.scaleSqrt().domain([0,max]).range([height-margin.bottom,margin.top]);
+	var scaleNumCountLog = d3.scaleLog().domain([1,max]).range([height-margin.bottom,margin.top]);
+
+	//
+
+	var svg1 = d3.select("body")
+		.append("svg")
+		.attr("id","svg-a")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom);
+
+	svg1.append("text")
+    .attr("id","title-a")
+    .attr("x",((width/2)+margin.left))
+    .attr("y",(margin.top/2))
+    .style("text-anchor","middle")
+    .text("Number of Ratings 2016-2020");
+		
+	var plota = svg1.append("g")
+		.attr("id","plot-a")
+		.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+	var xaxis = plota.append("g")
+		.attr("id","x-axis-a")
+		.attr("class","x axis")
+		.attr("transform","translate(0," + (height - margin.bottom)  + ")")
+		.call(d3.axisBottom(scaleDate).tickFormat(d3.timeFormat('%b %y')));
+	
+	xaxis.append("text")
+    .attr("id","x-axis label")
+    .attr("transform",
+          "translate(" + (width/2) + " ," + 
+                         (height) + ")")
+    .style("text-anchor","middle")
+    .text("Month");
+
+  var yaxis = plota.append("g")
+    .attr("id","y-axis-a")
+    .attr("class","y axis")
+    .attr("transform","translate(" + (margin.left) + ",0)")
+    .call(d3.axisLeft(scaleNumCount).ticks(10))
+    .attr("class", "axis");
+   
+  yaxis.append("text")
+   	.attr("id","y-axis label")
+   	.attr("transform", "rotate(-90)")
+    .attr("y", -margin.left/2)
+    .attr("x", -(height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor","middle")
+    .text("Num of Ratings");
+
+  var line = d3.line()
+  .x(function(d) {return scaleDate(d.date)})
+  .y(function(d) {return scaleNumCount(d.v)});
+
+  var lines = plota.append("g")
+  	.attr("id","lines-a")
+  	.selectAll("lines")
+    .data(dic)
+    .enter();
+
+  lines.append("path")
+	  .attr("class","lines")
+	  .attr("d", function(d) { return line(d.val)})
+	  .style("stroke",function(d,i){return d3.schemeCategory10[i]});
+
+  lines.append("text")
+  .attr("class","label")
+  .datum(function(d) {
+    return{
+      key: d.key,
+      val: d.val[d.val.length - 1]
+    };
+  })
+  .attr("transform", function(m) {return "translate(" + (scaleDate(m.val.date) + 5) + "," + (scaleNumCount(m.val.v) + 5) + ")";})
+  .attr("x",5)
+  .style("font-size",10)
+  .text(function(m) {return m.key})
+  .style("stroke",function(d,i){return d3.schemeCategory10[i]});
+
+
+  /////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+
+  var svg2 = d3.select("body")
+    .append("svg")
+    .attr("id","svg-b")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
+
+  svg2.append("text")
+    .attr("id","title-b")
+    .attr("transform",
+          "translate(" + ((width/2)+margin.left) + "," + (margin.top/2) + ")")
+    .style("text-anchor","middle")
+    .text("Number of Ratings 2016-2020 with Rankings");
+
+  var plotb = svg2.append("g")
+    .attr("id","plot-b")
+    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+  plotb.append("g")
+    .attr("id","x-axis-b")
+    .attr("class","x axis")
+    .attr("transform","translate(0," + (height - margin.bottom)  + ")")
+    .call(d3.axisBottom(scaleDate).tickFormat(d3.timeFormat('%b %y')));
+  
+  plotb.append("text")
+    .attr("id","x-axis-b label")
+    .attr("transform",
+          "translate(" + (width/2) + " ," + 
+                         (height) + ")")
+    .style("text-anchor","middle")
+    .text("Month");
+
+  plotb.append("g")
+    .attr("id","y-axis-b")
+    .attr("class","y axis")
+    .attr("transform","translate(" + (margin.left) + ",0)")
+    .call(d3.axisLeft(scaleNumCount).ticks(10))
+    .attr("class", "axis");
+   
+  plotb.append("text")
+    .attr("id","y-axis-b label")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -margin.left/2)
+    .attr("x", -(height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor","middle")
+    .text("Num of Ratings");
+
+  var line = d3.line()
+  .x(function(d) {return scaleDate(d.date)})
+  .y(function(d) {return scaleNumCount(d.v)});
+
+  var lines = plotb.append("g")
+  	.attr("id","lines-b")
+  	.selectAll("lines")
+    .data(dic)
+    .enter();
+
+  lines.append("path")
+	  .attr("class","lines")
+	  .attr("d", function(d) { return line(d.val)})
+	  .style("stroke",function(d,i){return d3.schemeCategory10[i]});
+
+
+  lines.append("text")
+  .attr("class","label2")
+  .datum(function(d) {
+    return{
+      key: d.key,
+      val: d.val[d.val.length - 1]
+    };
+  })
+  .attr("transform", function(m) {return "translate(" + (scaleDate(m.val.date) + 5) + "," + (scaleNumCount(m.val.v) + 5) + ")";})
+  .attr("x",5)
+  .style("font-size",10)
+  .text(function(m) {return m.key})
+  .style("stroke",function(d,i){return d3.schemeCategory10[i]});
+
+
+	var gameslist = ["Catan", "Dominion", "Codenames", "Terraforming Mars", "Gloomhaven","Magic: The Gathering","Dixit","Monopoly"]
+  var games = ["Catan", "Codenames", "Terraforming Mars", "Gloomhaven"]
+
+  var circle = plotb.append("g")
+        .attr("id","symbols-b");
+
+  for (i in dic){
+  	var game = gameslist[i]
+  	if(d3.set(games).has(game)){
+      for (j in dic[i].val){
+      	if((j+1)%3==0 & j != 0){
+
+	        circle.append("circle")
+	        	.attr("class","circle")
+		        .attr("cx",scaleDate(dic[i].val[j].date))
+		        .attr("cy",scaleNumCount(dic[i].val[j].v))
+		        .attr("r",10)
+		        .style("stroke",d3.schemeCategory10[i])
+		        .style("fill",d3.schemeCategory10[i])
+	      	
+	      	circle.append("text")
+		        .style("text-anchor","middle")
+		        .style("alignment-baseline","central")
+		        .style("stroke","white")
+		        .style("font-size",10)
+		        .style("font-family", "Arial")
+		        .style("font-weight", 1)
+		        .attr("x",scaleDate(dic[i].val[j].date))
+		        .attr("y",scaleNumCount(dic[i].val[j].v))
+		        .text(dicr[i].valr[j].r);
+
+	      	}
+	      }
+	    }
+    }
+
+  /////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+
+  var svg3 = d3.select("body")
+		.append("svg")
+		.attr("id","svg-c-1")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom);
+
+	svg3.append("text")
+      .attr("id","title-c-1")
+      .attr("transform",
+            "translate(" + ((width/2)+margin.left) + "," + (margin.top/2) + ")")
+      .style("text-anchor","middle")
+      .text("Number of Ratings 2016-2020 (Square root Scale)");
+
+	var plotc1 = svg3.append("g")
+		.attr("id","plot-c-1")
+		.attr("transform","translate(" + margin.left + "," + margin.top + ")")
+
+	plotc1.append("g")
+		.attr("id","x-axis-c-1")
+		.attr("class","x axis")
+		.attr("transform","translate(0," + (height - margin.bottom)  + ")")
+		.call(d3.axisBottom(scaleDate).tickFormat(d3.timeFormat('%b %y')));
+	
+	plotc1.append("text")
+    .attr("id","x-axis-c1 label")
+    .attr("transform",
+          "translate(" + (width/2) + " ," + 
+                         (height) + ")")
+    .style("text-anchor","middle")
+    .text("Month");
+
+  plotc1.append("g")
+    .attr("id","y-axis-c-1")
+    .attr("class","y axis")
+    .attr("transform","translate(" + (margin.left) + ",0)")
+    .call(d3.axisLeft(scaleNumCountSqrt).ticks(10))
+    .attr("class", "axis");
+   
+  plotc1.append("text")
+   	.attr("id","y-axis-c1 label")
+   	.attr("transform", "rotate(-90)")
+    .attr("y", -margin.left/2)
+    .attr("x", -(height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor","middle")
+    .text("Num of Ratings");
+
+  
+  var line = d3.line()
+  .x(function(d) {return scaleDate(d.date)})
+  .y(function(d) {return scaleNumCountSqrt(d.v)});
+
+  var lines = plotc1.append("g")
+  	.attr("id","lines-c-1")
+  	.selectAll("lines")
+    .data(dic)
+    .enter();
+
+  lines.append("path")
+  .attr("class","lines")
+  .attr("d", function(d) { return line(d.val)})
+  .style("stroke",function(d,i){return d3.schemeCategory10[i]});
+
+  lines.append("text")
+  .attr("class","label3")
+  .datum(function(d) {
+  	return{
+  		key: d.key,
+  		val: d.val[d.val.length - 1]
+  	};
+  })
+  .attr("transform", function(m) {return "translate(" + (scaleDate(m.val.date) + 5) + "," + (scaleNumCountSqrt(m.val.v) + 5) + ")";})
+  .attr("x",5)
+  .style("font-size",10)
+  .text(function(m) {return m.key})
+  .style("stroke",function(d,i){return d3.schemeCategory10[i]});
+
+  var circle = plotc1.append("g")
+        .attr("id","symbols-c-1");
+
+  for (i in dic){
+  	var game = gameslist[i]
+  	if(d3.set(games).has(game)){
+      for (j in dic[i].val){
+      	if((j+1)%3==0 & j != 0){
+	        circle.append("circle")
+	        	.attr("class","circle")
+		        .attr("cx",scaleDate(dic[i].val[j].date))
+		        .attr("cy",scaleNumCountSqrt(dic[i].val[j].v))
+		        .attr("r",10)
+		        .style("stroke",d3.schemeCategory10[i])
+		        .style("fill",d3.schemeCategory10[i])
+	      	
+	      	circle.append("text")
+		        .style("text-anchor","middle")
+		        .style("alignment-baseline","central")
+		        .style("stroke","white")
+		        .style("font-size",10)
+		        .style("font-family", "Arial")
+		        .style("font-weight", 1)
+		        .attr("x",scaleDate(dic[i].val[j].date))
+		        .attr("y",scaleNumCountSqrt(dic[i].val[j].v))
+		        .text(dicr[i].valr[j].r);
+	      	}
+	      }
+	    }
+    }
+
+  /////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+
+  var svg4 = d3.select("body")
+		.append("svg")
+		.attr("id","svg-c-2")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom);
+
+	svg4.append("text")
+    .attr("id","title-c-2")
+    .attr("transform",
+          "translate(" + ((width/2)+margin.left) + "," + (margin.top/2) + ")")
+    .style("text-anchor","middle")
+    .text("Number of Ratings 2016-2020 (Log Scale)");
+
+	var plotc2 = svg4.append("g")
+		.attr("id","plot-c2")
+		.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+	plotc2.append("g")
+		.attr("id","x-axis-c-2")
+		.attr("class","x axis")
+		.attr("transform","translate(0," + (height - margin.bottom)  + ")")
+		.call(d3.axisBottom(scaleDate).tickFormat(d3.timeFormat('%b %y')));
+	
+	plotc2.append("text")
+    .attr("id","x--c2 label")
+    .attr("transform",
+          "translate(" + (width/2) + " ," + 
+                         (height) + ")")
+    .style("text-anchor","middle")
+    .text("Month");
+
+  plotc2.append("g")
+    .attr("id","y-axis-c-2")
+    .attr("class","y axis")
+    .attr("transform","translate(" + (margin.left) + ",0)")
+    .call(d3.axisLeft(scaleNumCountLog))
+    .attr("class", "axis");
+   
+  plotc2.append("text")
+   	.attr("id","y-axis-c2 label")
+   	.attr("transform", "rotate(-90)")
+    .attr("y", -margin.left/2)
+    .attr("x", -(height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor","middle")
+    .text("Num of Ratings");
+
+  var line = d3.line()
+  .x(function(d) {return scaleDate(d.date)})
+  .y(function(d) {return scaleNumCountLog(d.v)});
+
+  var lines = plotc2.append("g")
+  	.attr("id","lines-c-2")
+  	.selectAll("lines")
+    .data(dic)
+    .enter();
+
+  lines.append("path")
+  .attr("class","lines")
+  .attr("d", function(d) { return line(d.val)})
+  .style("stroke",function(d,i){return d3.schemeCategory10[i]});
+
+  lines.append("text")
+  .attr("class","label4")
+  .datum(function(d) {
+  	return{
+  		key: d.key,
+  		val: d.val[d.val.length - 1]
+  	};
+  })
+  .attr("transform", function(m) {return "translate(" + (scaleDate(m.val.date) + 5) + "," + (scaleNumCountLog(m.val.v) + 5) + ")";})
+  .attr("x",5)
+  .style("font-size",10)
+  .text(function(m) {return m.key})
+  .style("stroke",function(d,i){return d3.schemeCategory10[i]});
+
+  var circle = plotc2.append("g")
+        .attr("id","symbols-c-2");
+
+  for (i in dic){
+  	var game = gameslist[i]
+  	if(d3.set(games).has(game)){
+      for (j in dic[i].val){
+      	if((j+1)%3==0 & j != 0){
+	        circle.append("circle")
+	        	.attr("class","circle")
+		        .attr("cx",scaleDate(dic[i].val[j].date))
+		        .attr("cy",scaleNumCountLog(dic[i].val[j].v))
+		        .attr("r",10)
+		        .style("stroke",d3.schemeCategory10[i])
+		        .style("fill",d3.schemeCategory10[i])
+	      	
+	      	circle.append("text")
+		        .style("text-anchor","middle")
+		        .style("alignment-baseline","central")
+		        .style("stroke","white")
+		        .style("font-size",10)
+		        .style("font-family", "Arial")
+		        .style("font-weight", 1)
+		        .attr("x",scaleDate(dic[i].val[j].date))
+		        .attr("y",scaleNumCountLog(dic[i].val[j].v))
+		        .text(dicr[i].valr[j].r);
+	      	}
+	      }
+	    }
+    }
+
+  svg4.append("text")
+    .attr("id","signature")
+    .attr("transform",
+          "translate(" + (width+margin.right+margin.left) + "," + (height+margin.top+margin.bottom) + ")")
+    .style("text-anchor","end")
+    .text("thabibe3");
+
+	});
+
+	</script>
+</body>
+
