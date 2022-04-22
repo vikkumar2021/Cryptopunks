@@ -296,8 +296,6 @@ def run_pipeline(
         df_joined = df_price
 
     pandas_df = df_joined.toPandas().sort_values(by=["TradeDate"])
-    # Added Below
-    pandas_df = pandas.to_datetime(pandas_df['TradeDate'], format='%Y-%m-%d')
 
 
 
