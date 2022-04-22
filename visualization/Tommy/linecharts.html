@@ -63,12 +63,14 @@ path.lines-c-2 {
     "sentiment_threshold": 0.3,
   };
 
+
   var queryString = Object.keys(params).map(function(key) {
       return key + '=' + params[key]
   }).join('&');
   console.log(queryString);
 
   var url = "/run_qlearner?" + queryString
+
   console.log(url);
 
   fetch(url)
@@ -79,7 +81,6 @@ path.lines-c-2 {
     var rawdata = data
 
     console.log(data);
-    
 
   });
   
