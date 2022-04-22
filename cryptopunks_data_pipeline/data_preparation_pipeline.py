@@ -254,13 +254,21 @@ def run_pipeline(
     bollinger_stdvs: Optional[int] = None,
     so_window: Optional[int] = None,
     so_window_sma: Optional[int] = None,
-    obv: Optional[bool] = None,
-    macd: Optional[bool] = None,
+    obv: Optional[str] = None,
+    macd: Optional[str] = None,
     mom_window: Optional[int] = None,
-    include_sentiment: Optional[bool] = None,
+    include_sentiment: Optional[str] = None,
     **kwargs: Any,
 ) -> PandasDataFrame:
     """Run data preparation pipeline."""
+    include_sentiment = (
+        False
+        if isinstance(include_sentiment, str) and include_sentiment.lower() == "false"
+        else include_sentiment
+    )
+    obv = False if isinstance(obv, str) and obv.lower() == "false" else obv
+    macd = False if isinstance(macd, str) and macd.lower() == "false" else macd
+
     df_price = read_stock_price_data(spark)
 
     # the following parameters must all be passed if either is present
@@ -276,12 +284,12 @@ def run_pipeline(
     # transform price data to add indicators
     if sma_window:
         df_price = add_price_to_SMA_ratio(spark, df_price, sma_window)
-    if bool(obv):
+    if obv:
         df_price = add_on_balance_volume(spark, df_price)
     if mom_window:
         df_price = add_momentum(spark, df_price, mom_window)
 
-    if bool(include_sentiment):
+    if include_sentiment:
         # Use aggregated version of the tweets data if it exists, otherwise recompute it
         if os.path.exists(TWEETS_FILE_PATH):
             df_agg_sentiment = read_aggregated_tweets(spark)
@@ -297,7 +305,7 @@ def run_pipeline(
 
     pandas_df = df_joined.toPandas().sort_values(by=["TradeDate"])
 
-    if bool(macd):
+    if macd:
         pandas_df = add_MACD(pandas_df)
     # print(pandas_df)
     pandas_df.to_csv(os.path.join(CWD, "data", "pipeline_export.csv"))
