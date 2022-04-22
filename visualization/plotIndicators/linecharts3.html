@@ -236,5 +236,144 @@ const dataset = d3.csv("data2.csv");
 
 //})
 });
+
+
+// we are appending SVG first
+const svg2 = d3.select("div#container").append("svg")
+    .attr("secondChart", "xMinYMin meet")
+    .attr("viewBox", "-"
+          + adj + " -"
+          + adj + " "
+          + (width + adj *3) + " "
+          + (height + adj*3))
+    .style("padding", padding)
+    .style("margin", margin)
+    .classed("svg-content", true)
+
+var dataset2 = fetch(url)
+    .then(response => response.json())
+    .then(function(data) {
+
+        //console.log(data)
+        let time = data[0]['TradeDate']
+        //var parseDate = d3.timeParse("%a, %d %b %Y %H:%M:%S GMT");
+        var parseDate = d3.timeParse("%Y-%m-%d");
+        //console.log(time)
+        // console.log(parseDate(time))
+        // console.log(typeof data)
+        // console.log(data.keys())
+        // console.log(data)
+        // console.log(data[0])
+        const cols = data[0]
+        var indicatorSet = {id: {'Adj_Close': {values: []}, 'rolling_avg': {values: []}}}
+        //var inds = [{id: {'Adj_Close': {values: []}}}, {id: {'rolling_avg': {values: []}}}]
+        var inds = [{id: 'MACD', values: []}, {id: 'MACD_raw', values: []}, {id: 'MACD_signal', values: []}]
+        for (const [key, value] of Object.entries(data)) {
+            let date = value.TradeDate;
+            for (const [id, measurement] of Object.entries(value)) {
+                if (id === 'MACD') {
+                    //console.log(measurement)
+                    inds[0].values.push({date: parseDate(date), measurement: +measurement})
+                }
+                else if (id === 'MACD_raw') {
+                    inds[1].values.push({date: parseDate(date), measurement: +measurement})
+                }
+                else if (id === 'MACD_signal') {
+                    inds[2].values.push({date: parseDate(date), measurement: +measurement})
+                }
+
+            }
+        }
+
+    slices = inds
+
+    //console.log(typeof slices)
+
+//----------------------------SCALES----------------------------//
+    const xScale = d3.scaleTime().range([0, width]);
+    const yScale = d3.scaleLinear().rangeRound([height, 0]);
+    xScale.domain(d3.extent(data, function (d) {
+        return parseDate(d.TradeDate)
+    }));
+    yScale.domain([(-1500), (2500)]);
+
+//-----------------------------AXES-----------------------------//
+    const yaxis = d3.axisLeft()
+        .ticks(20)
+        .scale(yScale);
+
+    const xaxis = d3.axisBottom()
+        .ticks(50)
+        .tickFormat(d3.timeFormat('%b %d'))
+        .scale(xScale);
+
+//----------------------------LINES-----------------------------//
+    const line = d3.line()
+        .x(function (d) {
+            return xScale(d.date);
+        })
+        .y(function (d) {
+            return yScale(d.measurement);
+        });
+
+    let id = 0;
+    const ids = function () {
+        console.log("line-" + id)
+        return "line-" + id++;
+    }
+//-------------------------2. DRAWING---------------------------//
+//-----------------------------AXES-----------------------------//
+    svg2.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xaxis);
+
+    svg2.append("g")
+        .attr("class", "axis")
+        .call(yaxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("dy", ".75em")
+        .attr("y", 6)
+        .style("text-anchor", "end")
+        .text("Frequency");
+
+//----------------------------LINES-----------------------------//
+    const lines = svg2.selectAll("lines")
+        .data(slices)
+        .enter()
+        .append("g");
+
+    lines.append("path")
+        .attr("class", ids)
+        //.attr("class", "line-2")
+        .attr("d", function (d) {
+            return line(d.values);
+        });
+
+    lines.append("text")
+        .attr("class", "serie_label")
+        .datum(function (d) {
+            return {
+                id: d.id,
+                value: d.values[d.values.length - 1]
+            };
+        })
+        .attr("transform", function (d) {
+            return "translate(" + (xScale(d.value.date) + 10)
+                + "," + (yScale(d.value.measurement) + 5) + ")";
+        })
+        .attr("x", -150)
+        .attr("y", -150)
+        .text(function (d) {
+            return ("Series ") + d.id;
+        });
+
+//})
+});
+
+
+
+
 </script>
 </body>
