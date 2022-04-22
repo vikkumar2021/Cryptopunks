@@ -211,8 +211,8 @@ const dataset = d3.csv("data2.csv");
         .append("g");
 
     lines.append("path")
-        //.attr("class", ids)
-        .attr("class", "line-2")
+        .attr("class", ids)
+        //.attr("class", "line-2")
         .attr("d", function (d) {
             return line(d.values);
         });
