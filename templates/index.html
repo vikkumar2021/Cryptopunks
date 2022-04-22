@@ -1,49 +1,69 @@
 <body>
-<script>
+    <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+    <script>
 
-    var params = {
-        "ticker": "BTC",
-        "training_sd": "2017-05-01",
-        "training_ed": "2018-05-01",
-        "test_sd": "2018-05-02",
-        "test_ed": "2019-02-01",
-        "sv": 500000,
-        "sma_window": 14,
-        "bollinger_window": 14,
-        "bollinger_stdvs": 3,
-        "so_window": 14,
-        "so_window_sma": 14,
-        "obv": false,
-        "macd": true,
-        "include_sentiment": false,
-        "mom_window": 14,
-        "alpha": 0.1,
-        "gamma": 0.9,
-        "rar": 0.99,
-        "radr": 0.8,
-        "sma_threshold": 0.2,
-        "so_ul": 80,
-        "so_ll": 20,
-        "mom_threshold": 0.2,
-        "sentiment_threshold": 0.3,
-    };
-    var queryString = Object.keys(params).map(function(key) {
-        return key + '=' + params[key]
-    }).join('&');
-    console.log(queryString);
+        // Margins
+        var margin = {top: 50, right: 50, bottom: 50, left: 50}
+          , width = 1000 - margin.left - margin.right // Use the window's width 
+          , height = 500 - margin.top - margin.bottom; // Use the window's height
 
-    var url = "/run_qlearner?" + queryString
-    console.log(url);
+        // Date Parse
+        var parseTime = d3.timeParse('%Y-%m-%d');
 
-    fetch(url)
-    .then(function (response) {
-      return response.json();
-    }).then(function (text) {
-      console.log('GET response:');
-      console.log(text);
-    });
+        // Model/Pipeline Parameters
+        var params = {
+            "ticker": "BTC",
+            "training_sd": "2017-05-01", //mandatory
+            "training_ed": "2018-05-01",
+            "test_sd": "2018-05-02",
+            "test_ed": "2019-02-01",
+            "sv": 500000,
+            "sma_window": 14,
+            "bollinger_window": 14,
+            "bollinger_stdvs": 3,
+            "so_window": 14,
+            "so_window_sma": 14,
+            "obv": true,
+            "macd": true,
+            "include_sentiment": true,
+            "mom_window": 14,
+            "alpha": 0.1,
+            "gamma": 0.9,
+            "rar": 0.99,
+            "radr": 0.8,
+            "sma_threshold": 0.2,
+            "so_ul": 80,
+            "so_ll": 20,
+            "mom_threshold": 0.2,
+            "sentiment_threshold": 0.3
+        };
 
-</script>
+        var queryString = Object.keys(params).map(function(key) {
+            return key + '=' + params[key]
+        }).join('&');
+        console.log(queryString);
+
+        var url = "/run_qlearner?" + queryString
+        console.log(url);
+
+        fetch(url)
+        .then(function (response) {
+          return response.json();
+        }).then(function (data) {
+
+            console.log(data);
+
+            var dates_arr = data.map(function(d) { return parseTime(d.TradeDate);})
+            console.log(dates_arr);
+            date_min = d3.min(dates_arr)
+            date_max = d3.max(dates_arr)
+
+            var scaleX = d3.scaleTime().domain([date_min, date_max])
+              .range([margin.left, width - margin.left - margin.right])
+
+        });
+
+    </script>
 <h1> Python Fetch Example</h1>
 <p id='embed'>{{embed}}</p>
 <p id='mylog'/>

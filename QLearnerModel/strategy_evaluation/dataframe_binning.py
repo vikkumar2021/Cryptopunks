@@ -16,13 +16,13 @@ def categorize_pipeline(df, config):
             float(config.get("so_ul")),
         ),
         ("rsi", 3),
-        ("price_to_SMA_ratio", 3, float(config.get("sma_threshold"))),
-        ("momentum", 3, float(config.get("mom_threshold"))),
+        ("price_to_SMA_ratio", 3, float(config.get("sma_threshold", 0.2))),
+        ("momentum", 3, float(config.get("mom_threshold", 0.2))),
         (
             "avg_compound_sentiment",
             3,
-            -1 * float(config.get("sentiment_threshold")),
-            float(config.get("sentiment_threshold")),
+            -1 * float(config.get("sentiment_threshold", 0.3)),
+            float(config.get("sentiment_threshold", 0.3)),
         ),
         ("macd", 3),
     ]
