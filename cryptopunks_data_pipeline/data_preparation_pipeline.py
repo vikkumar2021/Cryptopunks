@@ -297,9 +297,7 @@ def run_pipeline(
 
     pandas_df = df_joined.toPandas().sort_values(by=["TradeDate"])
 
-
-
-    if macd:
+    if bool(macd):
         pandas_df = add_MACD(pandas_df)
     # print(pandas_df)
     pandas_df.to_csv(os.path.join(CWD, "data", "pipeline_export.csv"))
