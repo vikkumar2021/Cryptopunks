@@ -205,22 +205,22 @@ def main(config, dataframebtc):
     dataframebtccopia = dataframebtc.copy()
 
     dfgains1 = dfgains1.rename_axis("TradeDate").reset_index()
-    dfgains1 = dfgains1.rename(columns={"Sum": "Training QL"})
+    dfgains1 = dfgains1.rename(columns={"Sum": "training_ql"})
 
     benchmark = benchmark.rename_axis("TradeDate").reset_index()
-    benchmark = benchmark.rename(columns={"Sum": "Training Benchmark"})
+    benchmark = benchmark.rename(columns={"Sum": "training_benchmark"})
 
     dfgains2 = dfgains2.rename_axis("TradeDate").reset_index()
-    dfgains2 = dfgains2.rename(columns={"Sum": "Testing QL"})
+    dfgains2 = dfgains2.rename(columns={"Sum": "testing_ql"})
 
     benchmark2 = benchmark2.rename_axis("TradeDate").reset_index()
-    benchmark2 = benchmark2.rename(columns={"Sum": "Testing Benchmark"})
+    benchmark2 = benchmark2.rename(columns={"Sum": "testing_benchmark"})
 
     df1 = df1[["TradeDate", "Order"]]
-    df1 = df1.rename(columns={"Order": "Testing Orders"})
+    df1 = df1.rename(columns={"Order": "training_orders"})
 
     df2 = df2[["TradeDate", "Order"]]
-    df2 = df2.rename(columns={"Order": "Training Orders"})
+    df2 = df2.rename(columns={"Order": "testing_orders"})
 
     dataframebtccopia = dataframebtccopia.merge(dfgains1, on="TradeDate", how="left")
     dataframebtccopia = dataframebtccopia.merge(benchmark, on="TradeDate", how="left")
