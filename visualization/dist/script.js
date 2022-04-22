@@ -65,14 +65,16 @@ $(document).ready(function(){
 
 
 	var data  = {
-		labels: [ 'January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October', 'November','December' ],
+		//labels: [ 'January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October', 'November','December' ],
+		labels: [ 1,2,3,4,5,6,7,8,9,10,11,12],
 		datasets: [{
 				label: 'Price',
 				backgroundColor: gradient,
 				pointBackgroundColor: '##89f58f',
 				borderWidth: 2,
 				borderColor: '#0a8c05',
-				data: [20, 45, 40, 30, 35, 55,75,80,40,50,80,50]
+				data: [20, 45, 40, 30, 35, 55,75,80,40,50,80,50],
+				lineAtIndex: 4
 			}]
 	};
 
@@ -118,13 +120,29 @@ $(document).ready(function(){
 			cornerRadius: 2,
 			xPadding: 10,
 			yPadding: 10
+		},
+		annotation:{
+			annotations:[{
+				type:"line",
+				mode:"vertical",
+				value: 4,
+				borderColor: "red",
+			}]
+		},
+		plugins: {
+			arbitraryLine: {
+			  lineColor: 'red',
+			  xPosition: 4,
+			},
 		}
+
 	};
 
 	var chartInstance = new Chart(chart, {
 		type: 'line',
 		data: data,
-			options: options
+		options: options,
+		lineAtIndex: [2,4,8],
 	});
 
 

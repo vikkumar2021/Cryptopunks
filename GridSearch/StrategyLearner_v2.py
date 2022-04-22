@@ -3,6 +3,7 @@
 
 import datetime as dt
 import random
+import math
 
 import numpy as np
 import pandas as pd
@@ -29,8 +30,8 @@ def get_sharpe_ratio(threshold, *params):
     for day in range(1, normed.shape[0]):
             if (
                 (indicator_1[day] < threshold[0])
-                or (indicator_2[day] < threshold[1])
-                or (indicator_3[day] < threshold[1])
+                and (indicator_2[day] < threshold[1])
+                and (indicator_3[day] < threshold[1])
                 and (-num_shares <= holdings[syms[0]] < num_shares)
             ):
                 if holdings[syms[0]] < num_shares:  # stock oversold but index is not oversold
@@ -48,8 +49,8 @@ def get_sharpe_ratio(threshold, *params):
                     Order.append("BUY")
             elif (
                 (indicator_1[day] > threshold[2])
-                or (indicator_2[day] > threshold[3])
-                or (indicator_3[day] > threshold[3])
+                and (indicator_2[day] > threshold[3])
+                and (indicator_3[day] > threshold[3])
                 and (-num_shares <= holdings[syms[0]] <= num_shares)
             ):  # stock overbought but index is not overbought
                 if holdings[syms[0]] > -num_shares:
@@ -67,7 +68,7 @@ def get_sharpe_ratio(threshold, *params):
                     Order.append("SELL")
             elif (
                 (indicator_1[day] >= (threshold[2]))
-                or (indicator_1[day-1] < (threshold[2]))
+                and (indicator_1[day-1] < (threshold[2]))
                 and (-num_shares < holdings[syms[0]] <= num_shares)
                 and (-num_shares <= holdings[syms[0]] <= num_shares)
             ):  # crossed SMA upwards and hold long
@@ -86,7 +87,7 @@ def get_sharpe_ratio(threshold, *params):
                 Order.append("SELL")
             elif (
                 (indicator_1[day] <= (threshold[0]))
-                or (indicator_1[day-1] > (threshold[0]))
+                and (indicator_1[day-1] > (threshold[0]))
                 and (-num_shares <= holdings[syms[0]] < num_shares)
             ):  # crossed SMA downwards and hold short
                 # print '4444 '
@@ -225,20 +226,41 @@ class StrategyLearner(object):
         print(
             "********************* Add Evidence   ************************")
 
-        sma_ratio = input_df['price_to_SMA_ratio']
-        bbp = input_df['momentum']
-        rsi = input_df['rolling_avg']
+        indicator_1 = input_df['price_to_SMA_ratio']
+        indicator_2 = input_df['momentum']
+        indicator_3 = input_df['rolling_avg']
 
 
         initial_threshold = [0.95, 0.3, 1.05, 1]
-        params = (sma_ratio, bbp, rsi, normed, symbol_str, self.impact, input_df, num_shares)
+        params = (indicator_1, indicator_2, indicator_3, normed, symbol_str, self.impact, input_df, num_shares)
 
-        rranges = [
+        rranges_old = [
             slice(0.6, 1.01, 0.4),  #  SMA  RATIO
             slice(-0.2, 1.21, 0.4),  # BUY
             slice(1.0, 1.61, 0.4),  # SELL SMA
-            slice(-0.2, 1.21, 0.4),
-        ]  #  SELL BBP-RSI
+            slice(-0.2, 1.21, 0.4),  #  SELL BBP-RSI
+        ] 
+        min_1 = indicator_1.min()
+        max_1 = indicator_1.max()
+        mid_1 = round(((max_1 + min_1)/2) , 3)
+        step_1 = round(((max_1 - min_1)/ 3), 3)/2
+
+        min_2 = indicator_2.min()
+        max_2 = indicator_2.max()
+        mid_2 = round(((max_2 + min_2)/2) , 3)
+        step_2 = round(((max_2 - min_2)/3 ), 3)/2
+
+        min_3 = indicator_3.min()
+        max_3 = indicator_3.max()
+        mid_3 = round(((max_3 + min_3)/2) , 3)
+        step_3 = round(((max_3 - min_3)/ 3), 3)/2
+
+        rranges = [
+            slice(min_1, mid_1, step_1),  #  SMA  RATIO
+            slice(min_2, mid_2, step_2),  # BUY
+            slice(mid_1, max_1, step_1),  # SELL SMA
+            slice(mid_2, max_2, step_2),  #  SELL BBP-RSI
+        ] 
 
         threshold_brute = spo.brute(
             get_sharpe_ratio, rranges, args=params, full_output=True, finish=None
@@ -247,6 +269,7 @@ class StrategyLearner(object):
         # self.threshold  = initial_threshold
         self.threshold = threshold_brute[0]
         print("========  self.threshold  ==========  ", self.threshold)
+        # ========  self.threshold  ==========   [-0.22234573 -0.43464864  0.32065427 -0.43464864]
 
     def testPolicy(
         self,
@@ -296,8 +319,8 @@ class StrategyLearner(object):
         for day in range(1, normed.shape[0]):
                 if (
                     (indicator_1[day] < self.threshold[0])
-                    or (indicator_2[day] < self.threshold[1])
-                    or (indicator_3[day] < self.threshold[1])
+                    and (indicator_2[day] < self.threshold[1])
+                    and (indicator_3[day] < self.threshold[1])
                     and (-num_shares <= holdings[syms[0]] < num_shares)
                 ):
                     if holdings[syms[0]] < 10:  # stock oversold but index is not oversold
@@ -315,8 +338,8 @@ class StrategyLearner(object):
                         Order.append("BUY")
                 elif (
                     (indicator_1[day] > self.threshold[2])
-                    or (indicator_2[day] > self.threshold[3])
-                    or (indicator_3[day] > self.threshold[3])
+                    and (indicator_2[day] > self.threshold[3])
+                    and (indicator_3[day] > self.threshold[3])
                     and (-num_shares <= holdings[syms[0]] <= num_shares)
                 ):  # stock overbought but index is not overbought
                     if holdings[syms[0]] > -num_shares:
@@ -334,7 +357,7 @@ class StrategyLearner(object):
                         Order.append("SELL")
                 elif (
                     (indicator_1[day] >= (self.threshold[2]))
-                    or (indicator_1[day-1] < (self.threshold[2]))
+                    and (indicator_1[day-1] < (self.threshold[2]))
                     and (-num_shares < holdings[syms[0]] <= num_shares)
                     and (-num_shares <= holdings[syms[0]] <= num_shares)
                 ):  # crossed SMA upwards and hold long
@@ -353,7 +376,7 @@ class StrategyLearner(object):
                     Order.append("SELL")
                 elif (
                     (indicator_1[day] <= (self.threshold[0]))
-                    or (indicator_1[day-1] > (self.threshold[0]))
+                    and (indicator_1[day-1] > (self.threshold[0]))
                     and (-num_shares <= holdings[syms[0]] < num_shares)
                 ):  # crossed SMA downwards and hold short
                     # print '4444 '
@@ -369,6 +392,13 @@ class StrategyLearner(object):
                     Date.append(normed.index[day])
                     Symbol.append(symbol_str)
                     Order.append("BUY")
+
+        if (holdings[syms[0]] > 0):
+            orders.append([ed, syms[0], "SELL", holdings[syms[0]]])
+            Shares.append(holdings[syms[0]])
+            Date.append(ed)
+            Symbol.append(symbol_str)
+            Order.append("SELL")
 
         df = pd.DataFrame({"Symbol": Symbol}, index=Date)
         df["Order"] = Order

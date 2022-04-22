@@ -48,7 +48,7 @@ def run_gridsearch() -> dict:
     print(input_df)
     output_df = run_logic(config=config, dataframebtc_input=input_df)
 
-    return jsonify(output_df.fillna(0).to_dict())
+    return jsonify(output_df.fillna(0).to_dict('records'))
 
 
 """
@@ -86,17 +86,17 @@ if __name__ == "__main__":
 
     with app.test_request_context():
 
-        # Q-Learner Method
-        url2 = url_for("run_qlearner", **config_dict)
-        print("TRIGGER Q-LEAERNER BY CLICKING THIS URL:")
-        print(f"http://127.0.0.1:5000{url2}")
-        app.run(debug=True, host="0.0.0.0", port=5000)
+        # # Q-Learner Method
+        # url2 = url_for("run_qlearner", **config_dict)
+        # print("TRIGGER Q-LEAERNER BY CLICKING THIS URL:")
+        # print(f"http://127.0.0.1:5000{url2}")
+        # app.run(debug=True, host="0.0.0.0", port=5000)
 
-        # Grid Search Method
-        # url2 = url_for("run_gridsearch", **config_dict)
-        # print("TRIGGER run_gridsearch BY CLICKING THIS URL:")
-        # print(f"http://127.0.0.1:5005/{url2}")
-        # app.run(debug=True, host="0.0.0.0", port=5005)
+        #Grid Search Method
+        url2 = url_for("run_gridsearch", **config_dict)
+        print("TRIGGER run_gridsearch BY CLICKING THIS URL:")
+        print(f"http://127.0.0.1:5005/{url2}")
+        app.run(debug=True, host="0.0.0.0", port=5005)
 
 
 

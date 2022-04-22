@@ -108,17 +108,25 @@
                 },
                 scales: {
                     yAxes: [{
-                ticks: {
-                    fontColor: '#5e6a81'
-                },
+                        ticks: {
+                            fontColor: '#5e6a81'
+                        },
                         gridLines: {
                             color: 'rgba(200, 200, 200, 0.08)',
                             lineWidth: 1
+                        },
+                        scaleLabel:{
+                            display: true,
+                            labelString: 'Price ($)'
                         }
                     }],
                 xAxes:[{
                 ticks: {
                     fontColor: '#5e6a81'
+                },
+                scaleLabel:{
+                    display: true,
+                    labelString: 'Trade Date'
                 }
                 }]
                 },
@@ -130,6 +138,12 @@
                 legend: {
                     display: false
                 },
+                plugins:{
+                    title:{
+                        display: true,
+                        text: 'BITCOIN PRICES'
+                    }
+                },                
                 point: {
                     backgroundColor: '#00c7d6'
                 },
@@ -141,14 +155,25 @@
                     cornerRadius: 2,
                     xPadding: 10,
                     yPadding: 10
-                }
+                },
+                annotation:{
+                    annotations:[{
+                        type:"line",
+                        mode:"vertical",
+                        value:dates_arr[40],
+                        borderColor: "red",
+                    }]
+            }
             };
+
             var chartInstance = new Chart(chart, {
                 type: 'line',
                 data: data,
-                    options: options
+                options: options,
+                lineAtIndex: [dates_arr[10], dates_arr[40], dates_arr[100]],
             });
 
+        console.log('dates_arr[100] = ' , dates_arr[100])
 
         // BENCHMARK vs TRAIN GRID SEARCH PORTVALS
         var chart    = document.getElementById('chart2').getContext('2d'),
@@ -167,7 +192,7 @@
         var data  = {
             labels: dates_arr,
             datasets: [{
-                    label: 'Applications',
+                    label: 'Benchmark',
                     backgroundColor: gradient,
                     pointBackgroundColor: '#00c7d6',
                     borderWidth: 2,
@@ -175,7 +200,7 @@
                     data: TrainBenchmark
                 },
                 {
-                    label: 'Applications2',
+                    label: 'Grid Search',
                     backgroundColor: gradient2,
                     pointBackgroundColor: '#e8b4d6',
                     borderWidth: 2,
@@ -193,27 +218,41 @@
             },
             scales: {
                 yAxes: [{
-            ticks: {
-                fontColor: '#5e6a81'
-            },
+                    ticks: {
+                        fontColor: '#5e6a81'
+                    },
                     gridLines: {
                         color: 'rgba(200, 200, 200, 0.08)',
                         lineWidth: 1
+                    },
+                    scaleLabel:{
+                        display: true,
+                        labelString: 'Porfolio Values ($)'
                     }
-                }],
-            xAxes:[{
-            ticks: {
-                fontColor: '#5e6a81'
-            }
-            }]
-            },
+                    }],
+                xAxes:[{
+                ticks: {
+                    fontColor: '#5e6a81'
+                },
+                scaleLabel:{
+                    display: true,
+                    labelString: 'Trade Date'
+                }
+                }]
+                },
             elements: {
                 line: {
                     tension: 0.4
                 }
             },
             legend: {
-                display: false
+                display: true
+            },
+            plugins:{
+                title:{
+                    display: true,
+                    text: 'BENCHMARK vs TRAIN GRID SEARCH PORTVALS'
+                }
             },
             point: {
                 backgroundColor: '#00c7d6'
@@ -226,13 +265,21 @@
                 cornerRadius: 2,
                 xPadding: 10,
                 yPadding: 10
-            }
+            },
+            annotations:[{
+                type:"line",
+                mode:"vertical",
+                value:dates_arr[100],
+                borderColor: "red",
+
+            }]
         };
+
 
         var chartInstance = new Chart(chart, {
             type: 'line',
             data: data,
-                options: options
+            options: options
         });
 
         });
