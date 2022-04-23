@@ -309,9 +309,14 @@ class StrategyLearner(object):
         Symbol = []
         Order = []
         Shares = []
+        Date_all = []
+        Symbol_all = []
+        Order_all = []
+        Shares_all = []
         SELL = []
         BUY = []
         orders = []
+        orders_all=[]
         holdings = {sym: 0 for sym in symbol}
         syms = [symbol_str]
 
@@ -327,14 +332,21 @@ class StrategyLearner(object):
                         if holdings[syms[0]] == 0:
                             holdings[syms[0]] = holdings[syms[0]] + num_shares
                             Shares.append(num_shares)
+                            Shares_all.append(num_shares)
                         else:  # hold = -1000
                             holdings[syms[0]] = holdings[syms[0]] + num_shares*2
                             Shares.append(num_shares*2)
+                            Shares_all.append(num_shares*2)
 
                         orders.append([normed.index[day].date(), syms[0], "BUY", num_shares])
                         Date.append(normed.index[day])
                         Symbol.append(symbol_str)
                         Order.append("BUY")
+
+                        orders_all.append([normed.index[day].date(), syms[0], "BUY", num_shares])
+                        Date_all.append(normed.index[day])
+                        Symbol_all.append(symbol_str)
+                        Order_all.append("BUY")
                 elif (
                     (indicator_1[day] > self.threshold[2])
                     and (indicator_2[day] > self.threshold[3])
@@ -346,14 +358,21 @@ class StrategyLearner(object):
                         if holdings[syms[0]] == 0:
                             holdings[syms[0]] = holdings[syms[0]] - num_shares
                             Shares.append(num_shares)
+                            Shares_all.append(-num_shares)
                         else:
                             holdings[syms[0]] = holdings[syms[0]] - num_shares*2
                             Shares.append(num_shares*2)
+                            Shares_all.append(-num_shares*2)
 
                         orders.append([normed.index[day].date(), syms[0], "SELL", num_shares])
                         Date.append(normed.index[day])
                         Symbol.append(symbol_str)
                         Order.append("SELL")
+
+                        orders_all.append([normed.index[day].date(), syms[0], "SELL", num_shares])
+                        Date_all.append(normed.index[day])
+                        Symbol_all.append(symbol_str)
+                        Order_all.append("SELL")
                 elif (
                     (indicator_1[day] >= (self.threshold[2]))
                     and (indicator_1[day-1] < (self.threshold[2]))
@@ -364,15 +383,24 @@ class StrategyLearner(object):
                     if holdings[syms[0]] == 0:
                         holdings[syms[0]] = holdings[syms[0]] - num_shares
                         Shares.append(num_shares)
+                        Shares_all.append(-num_shares)
 
                     else:
                         holdings[syms[0]] = holdings[syms[0]] - num_shares*2
                         Shares.append(num_shares*2)
+                        Shares_all.append(-num_shares*2)
 
                     orders.append([normed.index[day].date(), syms[0], "SELL", num_shares])
                     Date.append(normed.index[day])
                     Symbol.append(symbol_str)
                     Order.append("SELL")
+
+                    orders_all.append([normed.index[day].date(), syms[0], "SELL", num_shares])
+                    Date_all.append(normed.index[day])
+                    Symbol_all.append(symbol_str)
+                    Order_all.append("SELL")
+
+
                 elif (
                     (indicator_1[day] <= (self.threshold[0]))
                     and (indicator_1[day-1] > (self.threshold[0]))
@@ -383,28 +411,53 @@ class StrategyLearner(object):
 
                         holdings[syms[0]] = holdings[syms[0]] + num_shares
                         Shares.append(num_shares)
+                        Shares_all.append(num_shares)
                     else:
                         holdings[syms[0]] = holdings[syms[0]] + num_shares*2
                         Shares.append(num_shares*2)
+                        Shares_all.append(num_shares*2)
+
 
                     orders.append([normed.index[day].date(), syms[0], "BUY", num_shares])
                     Date.append(normed.index[day])
                     Symbol.append(symbol_str)
                     Order.append("BUY")
 
-        if (holdings[syms[0]] > 0):
-            orders.append([ed, syms[0], "SELL", holdings[syms[0]]])
-            Shares.append(holdings[syms[0]])
-            Date.append(ed)
-            Symbol.append(symbol_str)
-            Order.append("SELL")
+                    orders_all.append([normed.index[day].date(), syms[0], "BUY", num_shares])
+                    Date_all.append(normed.index[day])
+                    Symbol_all.append(symbol_str)
+                    Order_all.append("BUY")  
+
+                else:
+                    Shares_all.append(0)
+                    orders_all.append([normed.index[day].date(), syms[0], "HOLD", 0])
+                    Date_all.append(normed.index[day])
+                    Symbol_all.append(symbol_str)
+                    Order_all.append("HOLD")                    
+
+        # if (holdings[syms[0]] > 0):
+        #     orders.append([ed, syms[0], "SELL", holdings[syms[0]]])
+        #     Shares.append(holdings[syms[0]])
+        #     Date.append(ed)
+        #     Symbol.append(symbol_str)
+        #     Order.append("SELL")
+
+        #     orders_all[-1] = ([ed, syms[0], "SELL", holdings[syms[0]]])
+        #     Shares_all[-1] = (-holdings[syms[0]])
+        #     Date_all[-1] = (ed)
+        #     Symbol_all[-1] = (symbol_str)
+        #     Order_all[-1] = ("SELL")            
 
         df = pd.DataFrame({"Symbol": Symbol}, index=Date)
         df["Order"] = Order
         df["Shares"] = Shares
         self.num_order = df.shape[0]
         print("NUM ORDERS  ===============> ", self.num_order)
-        return df
+
+        df_all = pd.DataFrame({"Symbol": Symbol_all}, index=Date_all)
+        df_all["Order"] = Order_all
+        df_all["Shares"] = Shares_all
+        return df, df_all
 
 
 

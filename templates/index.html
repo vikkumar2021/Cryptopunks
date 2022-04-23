@@ -1,21 +1,28 @@
 <body>
     <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
     <script  type="text/javascript" src="static/lib/Chart.min.js"></script>
+    <link rel="stylesheet" href="static/lib/style.css">
 
-    <div id="lookback">
-        <h1>Select number of lookback days</h1>
+    <h1> Grid Search Market Analysis</h1>
 
-        <input type="radio" id="r1" name="rr" />
-        <label for="r1"><span></span>5 days</label>
+    <div id="indicators">
+        <h1>Select up to 3 indicators</h1>
         <p>
-        <input type="radio" id="r2" name="rr" />
-        <label for="r2"><span></span>10 days</label>
+        <input type="checkbox" id="c1" name="cc" />
+        <label for="c1"><span></span>Simple Moving Average (SMA)</label>
         <p>
-        <input type="radio" id="r2" name="rr" />
-        <label for="r2"><span></span>20 days</label>
+        <input type="checkbox" id="c2" name="cc" />
+        <label for="c2"><span></span>Relative Strength Index (RSI)</label>
         <p>
-        <input type="radio" id="r2" name="rr" />
-        <label for="r2"><span></span>30 days</label>
+            <input type="checkbox" id="c3" name="cc" />
+            <label for="c2"><span></span>Bollinger Band (BB)</label>
+        <p>
+            <input type="checkbox" id="c4" name="cc" />
+            <label for="c2"><span></span>Twitter Sentiment (SEN)</label>											
+    </div>
+
+    <div class="frame">
+        <button class="custom-btn btn-4">   START    </button>
     </div>
 
     <script>
@@ -72,31 +79,94 @@
         }).then(function (data) {
 
             console.log('OUTPUT DATA = ', data);
+            
 
             var parseTime = d3.timeParse('%Y-%m-%d');
             var dates_arr = data.map(function(d) { return formatTime(parseTime(d.TradeDate));})
 
-            var price_arr = data.map(function(d) { return d.Adj_Close;})
-            var TrainBenchmark = data.map(function(d) { return d.TrainBenchmark;})
-            var TrainGridSearch = data.map(function(d) { return d.TrainGridSearch;})
+            const formatTime2 = d3.timeFormat("%Y-%m-%d");
+            var dates_arr2 = data.map(function(d) { return formatTime2(parseTime(d.TradeDate));})
+
+            var start_ind = 1000;
+            var end_ind = 1500;
             
+            for (let i = 0; i < dates_arr.length; i++) {
+                if (dates_arr[i] == params["training_sd"]){
+                    start_ind = i;
+                }
+                if (dates_arr[i] == params["training_ed"]){
+                    end_ind = i;
+                }                           
+            }
+
+            var dates_arr2_train = dates_arr2.slice(start_ind , end_ind);
+            console.log('CHECK HERE = ', dates_arr2[0], dates_arr2[1], dates_arr2[1] == "2014-09-18");
+
+            var TrainOrders_arr = data.map(function(d) { return d.TrainOrders;})
+            console.log('CHECK HERE dates = ', dates_arr2[1031], dates_arr2[1032], TrainOrders_arr[1031], TrainOrders_arr[1032], TrainOrders_arr[1032] > 1)
+
+            var TrainOrders_arr = TrainOrders_arr.slice(start_ind , end_ind);
+
+            var price_arr = data.map(function(d) { return d.Adj_Close;})
+            var price_arr_train = price_arr.slice(start_ind , end_ind);
+            
+            var TrainBenchmark = data.map(function(d) { return d.TrainBenchmark;})
+            var TrainBenchmark_train = TrainBenchmark.slice(start_ind , end_ind);
+
+            var TrainGridSearch = data.map(function(d) { return d.TrainGridSearch;})
+            var TrainGridSearch_train = TrainGridSearch.slice(start_ind , end_ind);
+
+
+            var buy_orders = [];
+            var sell_orders = [];
+
+            for (let i = 0; i < dates_arr.length; i++) {
+                if (TrainOrders_arr[i] > 1){
+                    buy_orders.push(i);
+                }
+                if (TrainOrders_arr[i] < -1){
+                    sell_orders.push(i);
+                }                        
+            }
+
+            console.log('buy_orders = ', buy_orders)
+            console.log('sell_orders = ', sell_orders)
+
 
             var chart   = document.getElementById('chart1').getContext('2d'),
             gradient = chart.createLinearGradient(0, 0, 0, 900);
-            gradient.addColorStop(0, 'rgba( 50, 250, 50, 0.32)');
-            gradient.addColorStop(0.3, 'rgba( 50, 250, 50, 0.1)');
-            gradient.addColorStop(1, 'rgba( 50, 250, 50, 0)');
+            gradient.addColorStop(0, 'rgba( 50, 50, 250, 0.32)');
+            gradient.addColorStop(0.3, 'rgba( 50, 50, 250, 0.1)');
+            gradient.addColorStop(1, 'rgba( 50, 50, 250, 0)');
 
             var data  = {
-                labels:dates_arr,
+                labels:dates_arr2_train,
                 datasets: [{
                         label: 'Price',
                         backgroundColor: gradient,
-                        pointBackgroundColor: '#0a8c05',
+                        pointBackgroundColor: '#0000ff',
                         borderWidth: 2,
-                        borderColor: '#0a8c05',
-                        data:price_arr
-                    }]
+                        borderColor: '#0000ff',
+                        data:price_arr_train
+                    },
+                    {
+                        label: 'Buy',
+                        backgroundColor: gradient,
+                        pointBackgroundColor: '#00ff00',
+                        borderWidth: 0.1,
+                        borderColor: '#00ff00',
+                        data:[0]
+                    },
+                    {
+                        label: 'Sell',
+                        backgroundColor: gradient,
+                        pointBackgroundColor: '#ff0000',
+                        borderWidth: 0.1,
+                        borderColor: '#ff0000',
+                        data:[0]
+                    }
+                ],
+                lineAtIndex: [ sell_orders, buy_orders]
             };
 
             var options = {
@@ -136,7 +206,7 @@
                     }
                 },
                 legend: {
-                    display: false
+                    display: true
                 },
                 plugins:{
                     title:{
@@ -173,6 +243,48 @@
                 lineAtIndex: [dates_arr[10], dates_arr[40], dates_arr[100]],
             });
 
+
+
+            var originalLineDraw = Chart.controllers.line.prototype.draw;
+            Chart.helpers.extend(Chart.controllers.line.prototype, {
+            draw: function() {
+                originalLineDraw.apply(this, arguments);
+            
+                var chart = this.chart;
+                var ctx = chart.chart.ctx;
+            
+                var index = chart.config.data.lineAtIndex;
+                if (index) {
+                var xaxis = chart.scales['x-axis-0'];
+                var yaxis = chart.scales['y-axis-0'];
+
+                for (let i = 0; i < index[0].length; i++) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.setLineDash([10, 10]);
+                    ctx.moveTo(xaxis.getPixelForValue(undefined, index[0][i]), yaxis.top);
+                    ctx.strokeStyle = '#ff0000'; //red
+                    ctx.lineTo(xaxis.getPixelForValue(undefined, index[0][i]), yaxis.bottom);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                for (let i = 0; i < index[1].length; i++) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.setLineDash([10, 10]);
+                    ctx.moveTo(xaxis.getPixelForValue(undefined, index[1][i]), yaxis.top);
+                    ctx.strokeStyle = '#1ce116'; //green
+                    ctx.lineTo(xaxis.getPixelForValue(undefined, index[1][i]), yaxis.bottom);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                }
+            }
+            });
+
+
         console.log('dates_arr[100] = ' , dates_arr[100])
 
         // BENCHMARK vs TRAIN GRID SEARCH PORTVALS
@@ -190,14 +302,14 @@
 
 
         var data  = {
-            labels: dates_arr,
+            labels: dates_arr2_train,
             datasets: [{
                     label: 'Benchmark',
                     backgroundColor: gradient,
                     pointBackgroundColor: '#00c7d6',
                     borderWidth: 2,
                     borderColor: '#961205',
-                    data: TrainBenchmark
+                    data: TrainBenchmark_train
                 },
                 {
                     label: 'Grid Search',
@@ -205,7 +317,7 @@
                     pointBackgroundColor: '#e8b4d6',
                     borderWidth: 2,
                     borderColor: '#331ab1',
-                    data: TrainGridSearch
+                    data: TrainGridSearch_train
                 }]
         };
 
@@ -307,7 +419,7 @@
     </div>
     <!-- <script  type="text/javascript" src="static/lib/scripts.js"></script> -->
 
-<h1> Python Fetch Example</h1>
+
 <p id='embed'>{{embed}}</p>
 <p id='mylog'/>
 <body>
