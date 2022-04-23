@@ -24,13 +24,12 @@ def validate_config(config: dict) -> Optional[dict]:
     test_ed = datetime.strptime(config.get("test_ed"), "%Y-%m-%d")
 
     # validate training and testing dates
-    if not all([training_sd < training_ed, test_sd < test_ed, training_ed < test_sd]):
-        return {
-            "Error": """Invalid Date Range.
-        Training Start Date must be before than Training End Date.
-        Testing Start Date must be before than Testing End Date.
-        Training End Date must be before than Testing Start Date."""
-        }
+    if not training_sd < training_ed:
+        return {"Error": "Training Start Date must be before than Training End Date."}
+    if not test_sd < test_ed:
+        return {"Error": "Testing Start Date must be before than Testing End Date."}
+    if not training_ed < test_sd:
+        return {"Error": "Training End Date must be before than Testing Start Date."}
 
 
 @app.route("/")
