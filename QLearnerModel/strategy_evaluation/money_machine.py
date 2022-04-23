@@ -52,8 +52,11 @@ def main(config, dataframebtc):
     training_ed = datetime.strptime(config.get("training_ed"), "%Y-%m-%d")
     test_sd = datetime.strptime(config.get("test_sd"), "%Y-%m-%d")
     test_ed = datetime.strptime(config.get("test_ed"), "%Y-%m-%d")
-    sv = int(config.get("sv", 1000000))
 
+    # validate training and testing dates
+    assert all([training_sd < training_ed, training_ed < test_sd, test_sd < test_ed])
+
+    sv = int(config.get("sv", 1000000))
     alpha = float(config.get("alpha", 0.1))
     gamma = float(config.get("gamma", 0.9))
     rar = float(config.get("rar", 0.99))
