@@ -68,74 +68,66 @@ Inputs.date({value: "2019-02-01", label: "Testing Enddate"})
 )}
 
 function _smawindow(Inputs){return(
-Inputs.checkbox([7, 14, 21], {value: [14], label: "SMA Window"})
+Inputs.select([7, 14, 21], {value: 14, label: "SMA Window"})
 )}
 
 function _bbwindow(Inputs){return(
-Inputs.checkbox([7, 14, 21], {value: [14], label: "Bollinger Band Window"})
+Inputs.select([7, 14, 21], {value: 14, label: "Bollinger Band Window"})
 )}
 
 function _bbstdev(Inputs){return(
-Inputs.checkbox([1, 2, 3], {value: [2], label: "Bollinger Band Stdev"})
+Inputs.select([1, 2, 3], {value: 2, label: "Bollinger Band Stdev"})
 )}
 
 function _so_window(Inputs){return(
-Inputs.checkbox([7, 14, 21], {value: [14],label: "Stochastic Oscillator SMA Window"})
+Inputs.select([7, 14, 21], {value: 14,label: "Stochastic Oscillator SMA Window"})
 )}
 
 function _so_window_sma(Inputs){return(
-Inputs.checkbox([7, 14, 21], {value: [14], label: "Stochastic Oscillator SMA Window"})
+Inputs.select([7, 14, 21], {value: 14, label: "Stochastic Oscillator SMA Window"})
 )}
 
 function _mom_window(Inputs){return(
-Inputs.checkbox([7, 14, 21], {value: [14], label: "Momentum Window"})
+Inputs.select([7, 14, 21], {value: 14, label: "Momentum Window"})
 )}
 
 function _24(htl){return(
+htl.html`     <pre>     <h1>  Run the Q Learner or Grid Search Here </pre>`
+)}
+
+function _qlgs(Inputs){return(
+Inputs.select(["Run QLearner", "Run GridSearch"], {label: "QLearner or Grid Search:"})
+)}
+
+function _rf(Inputs){return(
+Inputs.toggle({label: "Fetch Data", value: false})
+)}
+
+function _27(htl){return(
+htl.html`     <pre>     <h1>  Select viewing window </pre>`
+)}
+
+function _dateone(Inputs,training_startdate){return(
+Inputs.date({value: training_startdate, label: "StartDate"})
+)}
+
+function _datetwo(Inputs,testing_enddate){return(
+Inputs.date({value: testing_enddate, label: "EndDate"})
+)}
+
+function _30(htl){return(
 htl.html`     <pre>     <h1>  Bollinger Band Graph </pre>`
 )}
 
 function _inchart1(Inputs){return(
-Inputs.toggle({label: "Bollinger Graph"})
+Inputs.toggle({label: "Show Bollinger Graph"})
 )}
 
-function _26(md){return(
-md`<b>Select viewing window`
+function _bbg_inputs(Inputs){return(
+Inputs.checkbox(["Bollinger Band Upper", "Bollinger Band Lower", "Bollinger SMA", "ADJ Close", "SMA"], {label: "Select Features:"})
 )}
 
-function _dateone(Inputs){return(
-Inputs.date({value: "2014-04-01", label: "StartDate"})
-)}
-
-function _datetwo(Inputs){return(
-Inputs.date({value: "2022-02-01", label: "EndDate"})
-)}
-
-function _timeframe(dateone,datetwo){return(
-[dateone,datetwo]
-)}
-
-function _include1(Inputs){return(
-Inputs.toggle({label: "Bollinger Upper"})
-)}
-
-function _include2(Inputs){return(
-Inputs.toggle({label: "Bollinger Band Lower"})
-)}
-
-function _include3(Inputs){return(
-Inputs.toggle({label: "Bollinger SMA"})
-)}
-
-function _include4(Inputs){return(
-Inputs.toggle({label: "Adj_Close"})
-)}
-
-function _include5(Inputs){return(
-Inputs.toggle({label: "SMA"})
-)}
-
-function _chart(d3,width,height,x,y,include1,data,include2,include3,include4,include5,xAxis,yAxis,inchart1)
+function _chart(d3,width,height,x,y,bbg_inputs,data,xAxis,yAxis,inchart1)
 {
   const svg = d3.create("svg")
       .attr("width", width)
@@ -148,7 +140,7 @@ function _chart(d3,width,height,x,y,include1,data,include2,include3,include4,inc
 
   var line1 = d3.line()
   var path1 = svg.append("path")
-  if (include1 == 1) {
+  if (bbg_inputs.includes("Bollinger Band Upper") == 1) {
     line1 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.bollinger_band_upper));
@@ -162,7 +154,7 @@ function _chart(d3,width,height,x,y,include1,data,include2,include3,include4,inc
   }
   var line2 = d3.line()
   var path2 = svg.append("path")
-  if (include2 == 1) {
+  if (bbg_inputs.includes("Bollinger Band Lower") == 1) {
     line2 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.bollinger_band_lower));
@@ -177,7 +169,7 @@ function _chart(d3,width,height,x,y,include1,data,include2,include3,include4,inc
 
   var line3 = d3.line()
   var path3 = svg.append("path")
-  if (include3 == 1) {
+  if (bbg_inputs.includes("Bollinger SMA")) {
     line3 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.bollinger_sma));
@@ -192,14 +184,14 @@ function _chart(d3,width,height,x,y,include1,data,include2,include3,include4,inc
 
   var line4 = d3.line()
   var path4 = svg.append("path")
-  if (include4 == 1) {
+  if (bbg_inputs.includes("ADJ Close")) {
     line4 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.Adj_Close));
 
     path4 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "green")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line4(data));
@@ -207,14 +199,14 @@ function _chart(d3,width,height,x,y,include1,data,include2,include3,include4,inc
 
   var line5 = d3.line()
   var path5 = svg.append("path")
-  if (include5 == 1) {
+  if (bbg_inputs.includes("SMA")) {
     line5 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.rolling_avg));
 
     path5 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "black")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line5(data));
@@ -244,7 +236,7 @@ function _chart(d3,width,height,x,y,include1,data,include2,include3,include4,inc
 }
 
 
-function _36(htl){return(
+function _34(htl){return(
 htl.html`     <pre>     <h1>  Bollinger Percentage </pre>`
 )}
 
@@ -341,7 +333,7 @@ function _chart2(d3,width,height,x,y2,include6,data,xAxis,yAxis2)
 }
 
 
-function _41(htl){return(
+function _39(htl){return(
 htl.html`     <pre>     <h1>  Stochastic Oscillator </pre>`
 )}
 
@@ -438,7 +430,7 @@ function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,xAxis,yAxis3)
 }
 
 
-function _46(htl){return(
+function _44(htl){return(
 htl.html`     <pre>     <h1>  Price to SMA Ratio </pre>`
 )}
 
@@ -535,7 +527,7 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4)
 }
 
 
-function _51(htl){return(
+function _49(htl){return(
 htl.html`     <pre>     <h1>  Momentum </pre>`
 )}
 
@@ -543,9 +535,13 @@ function _include9(Inputs){return(
 Inputs.toggle({label: "Momentum"})
 )}
 
+function _data2(data){return(
+data.map(d => d.momentum)
+)}
+
 function _y5(d3,data,height,margin){return(
 d3.scaleLinear()
-    .domain([d3.min(data, d => +d.Momentum), d3.max(data, d => +d.Momentum)])
+    .domain([d3.min(data, d => +d.momentum), d3.max(data, d => +d.momentum)])
     .range([height - margin.bottom, margin.top])
 )}
 
@@ -556,7 +552,7 @@ g => g
     .call(g => g.select(".domain").remove())
 )}
 
-function _chart5(d3,width,height,x,y5,include9,data,xAxis,yAxis5)
+function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5)
 {
   const svg = d3.create("svg")
       .attr("width", width)
@@ -572,7 +568,7 @@ function _chart5(d3,width,height,x,y5,include9,data,xAxis,yAxis5)
   if (include9 == 1) {
     line9 = d3.line()
       .x(d => zx(d.TradeDate))
-      .y(d => zy(+d.Momentum));
+      .y(d => zy(d.momentum));
 
     path9 = svg.append("path")
       .attr("fill", "none")
@@ -580,6 +576,36 @@ function _chart5(d3,width,height,x,y5,include9,data,xAxis,yAxis5)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line9(data));
+  }
+
+  var line91 = d3.line()
+  var path91 = svg.append("path")
+  if (include9 == 1) {
+    line91 = d3.line()
+      .x(d => zx(d.TradeDate))
+      .y(d => zy(momentumth));
+
+    path91 = svg.append("path")
+      .attr("fill", "none")
+      .attr("stroke", "purple")
+      .attr("stroke-width", 1)
+      .attr("stroke-miterlimit", 1)
+      .attr("d", line91(data));
+  }
+
+  var line92 = d3.line()
+  var path92 = svg.append("path")
+  if (include9 == 1) {
+    line92 = d3.line()
+      .x(d => zx(d.TradeDate))
+      .y(d => zy(-1*momentumth));
+
+    path92 = svg.append("path")
+      .attr("fill", "none")
+      .attr("stroke", "purple")
+      .attr("stroke-width", 1)
+      .attr("stroke-miterlimit", 1)
+      .attr("d", line92(data));
   }
   
   const gx = svg.append("g")
@@ -602,7 +628,7 @@ function _chart5(d3,width,height,x,y5,include9,data,xAxis,yAxis5)
 }
 
 
-function _56(htl){return(
+function _55(htl){return(
 htl.html`     <pre>     <h1>  Sentiment </pre>`
 )}
 
@@ -701,25 +727,21 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,xAxis,yAxis6)
 }
 
 
-function _61(htl){return(
+function _60(htl){return(
 htl.html`     <pre>     <h1>  MACD </pre>`
 )}
 
 function _include11(Inputs){return(
-Inputs.toggle({label: "MACD"})
+Inputs.toggle({label: "MACD", value: false})
 )}
 
-function _include112(Inputs){return(
-Inputs.toggle({label: "MACD Signal"})
+function _macd_inputs(Inputs){return(
+Inputs.checkbox(["MACD", "MACD Signal", "MACD Raw"], {label: "Select Features:"})
 )}
 
-function _include113(Inputs){return(
-Inputs.toggle({label: "MACD Raw"})
-)}
-
-function _y7(d3,data,height,margin){return(
+function _y7(d3,min_macd,max_macd,height,margin){return(
 d3.scaleLinear()
-    .domain([d3.min(data, d => +d.MACD_signal), d3.max(data, d => +d.MACD_signal)])
+    .domain([min_macd,max_macd])
     .range([height - margin.bottom, margin.top])
 )}
 
@@ -730,7 +752,15 @@ g => g
     .call(g => g.select(".domain").remove())
 )}
 
-function _chart7(d3,width,height,x,y7,include11,data,include112,include113,xAxis,yAxis7)
+function _max_macd(d3,data){return(
+d3.max([d3.max(data, function(d) { return +d.MACD; }), d3.max(data, function(d) { return +d.MACD_signal; }), d3.max(data, function(d) { return +d.MACD_raw; })])
+)}
+
+function _min_macd(d3,data){return(
+d3.min([d3.min(data, function(d) { return +d.MACD; }), d3.min(data, function(d) { return +d.MACD_signal; }), d3.min(data, function(d) { return +d.MACD_raw; })])
+)}
+
+function _chart7(d3,width,height,x,y7,include11,data,macd_inputs,xAxis,yAxis7)
 {
   const svg = d3.create("svg")
       .attr("width", width)
@@ -758,7 +788,7 @@ function _chart7(d3,width,height,x,y7,include11,data,include112,include113,xAxis
 
   var line112 = d3.line()
   var path112 = svg.append("path")
-  if (include112 == 1) {
+  if (macd_inputs.includes("MACD Signal")) {
     line112 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.MACD_raw));
@@ -773,7 +803,7 @@ function _chart7(d3,width,height,x,y7,include11,data,include112,include113,xAxis
 
   var line113 = d3.line()
   var path113 = svg.append("path")
-  if (include113 == 1) {
+  if (macd_inputs.includes("MACD Raw")) {
     line113 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.MACD_signal));
@@ -792,7 +822,7 @@ function _chart7(d3,width,height,x,y7,include11,data,include112,include113,xAxis
   const gy = svg.append("g")
       .call(yAxis7, zy);
 
-  if (include11 | include112 | include113){
+  if (include11){
     return Object.assign(svg.node(), {
       update(domain) {
         const t = svg.transition().duration(750);
@@ -820,9 +850,22 @@ function _include13(Inputs){return(
 Inputs.toggle({label: "Training Benchmark"})
 )}
 
-function _y8(d3,data,height,margin){return(
+function _datasettraining(data){return(
+data.filter(d => d.test_or_train == 'train')
+)}
+
+function _max_y(d3,datasettraining){return(
+d3.max([d3.max(datasettraining, function(d) { return +d.QL; }), d3.max(datasettraining, function(d) { return +d.benchmark; })])
+)}
+
+function _min_y(d3,datasettraining){return(
+d3.min([d3.min(datasettraining, function(d) { return +d.QL; }), d3.min(datasettraining, function(d) { return +d.benchmark; })])
+)}
+
+function _y8(d3,min_y,max_y,height,margin){return(
 d3.scaleLinear()
-    .domain([d3.min(data, d => +d.training_ql), d3.max(data, d => +d.training_ql)])
+    // .domain(d3.min([d3.min(datasettraining.QL),d3.min(datasettraining.QL)]),d3.max([d3.max(datasettraining.QL),d3.max(datasettraining.QL)]))
+    .domain([min_y,max_y])
     .range([height - margin.bottom, margin.top])
 )}
 
@@ -833,15 +876,39 @@ g => g
     .call(g => g.select(".domain").remove())
 )}
 
-function _chart8(d3,width,height,x,y8,include12,data,include13,xAxis,yAxis8)
+function _x8(d3,datasettraining,margin,width){return(
+d3.scaleUtc()
+    .domain(d3.extent(datasettraining, d => d.TradeDate))
+    .range([margin.left, width - margin.right])
+)}
+
+function _77(d3,datasettraining){return(
+d3.extent(datasettraining, d => d.TradeDate)
+)}
+
+function _xAxis8(height,margin,d3,x8,width){return(
+g => g
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(x8).ticks(width / 80).tickSizeOuter(0))
+)}
+
+function _orderstraining(data){return(
+data.filter(d => ((d.test_or_train == 'train') & (d.orders == 'BUY' | d.orders == 'BUY')))
+)}
+
+function _orderstraining2(orderstraining){return(
+orderstraining.map(d => [d.TradeDate, d.orders])
+)}
+
+function _chart8(d3,width,height,x8,y8,include12,datasettraining,include13,xAxis8,yAxis8)
 {
   const svg = d3.create("svg")
       .attr("width", width)
       .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
+      .attr("viewBox", [-20,-10, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
-  const zx = x.copy(); // x, but with a new domain.
+  const zx = x8.copy(); // x, but with a new domain.
   const zy = y8.copy(); // x, but with a new domain.
 
  var line8 = d3.line()
@@ -849,14 +916,14 @@ function _chart8(d3,width,height,x,y8,include12,data,include13,xAxis,yAxis8)
   if (include12 == 1) {
     line8 = d3.line()
       .x(d => zx(d.TradeDate))
-      .y(d => zy(+d.training_ql));
+      .y(d => zy(+d.QL));
 
     path8 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "blue")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
-      .attr("d", line8(data));
+      .attr("d", line8(datasettraining));
   }
 
   var line82 = d3.line()
@@ -864,18 +931,39 @@ function _chart8(d3,width,height,x,y8,include12,data,include13,xAxis,yAxis8)
   if (include13 == 1) {
     line82 = d3.line()
       .x(d => zx(d.TradeDate))
-      .y(d => zy(+d.training_benchmark));
+      .y(d => zy(+d.benchmark+ 500000));
 
     path82 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "orange")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
-      .attr("d", line82(data));
+      .attr("d", line82(datasettraining));
+  }
+
+  for (let index = 0; index < datasettraining.length; ++index) {
+
+    if (datasettraining[index].orders == 'BUY'){
+        svg.append("circle")
+  	        	.attr("class","circle")
+  		        .attr("cx",zx(datasettraining[index].TradeDate))
+  		        .attr("cy",zy(datasettraining[index].benchmark + 500000))
+  		        .attr("r",5)
+  		        .style("stroke","#00ff00")
+  		        .style("fill","#00ff00")
+    } else if (datasettraining[index].orders == 'SELL'){
+      svg.append("circle")
+  	        	.attr("class","circle")
+  		        .attr("cx",zx(datasettraining[index].TradeDate))
+  		        .attr("cy",zy(datasettraining[index].benchmark + 500000))
+  		        .attr("r",5)
+  		        .style("stroke","#ff0000")
+  		        .style("fill","#ff0000")
+    }
   }
   
   const gx = svg.append("g")
-      .call(xAxis, zx);
+      .call(xAxis8, zx);
 
   const gy = svg.append("g")
       .call(yAxis8, zy);
@@ -885,17 +973,15 @@ function _chart8(d3,width,height,x,y8,include12,data,include13,xAxis,yAxis8)
       update(domain) {
         const t = svg.transition().duration(750);
         zx.domain(domain);
-        gx.transition(t).call(xAxis, zx);
+        gx.transition(t).call(xAxis8, zx);
         // ADD PATH TRANSITIONS HERE SO THAT THEY SCALE WITH VIEWING WINDOW
-        path8.transition(t).attr("d", line8(data));
-        path82.transition(t).attr("d", line82(data));
       }
     });
   }
 }
 
 
-function _74(htl){return(
+function _82(htl){return(
 htl.html`     <pre>     <h1>  Testing Data </pre>`
 )}
 
@@ -907,9 +993,21 @@ function _include15(Inputs){return(
 Inputs.toggle({label: "Testing Benchmark"})
 )}
 
-function _y9(d3,data,height,margin){return(
+function _datasetesting(data){return(
+data.filter(d => d.test_or_train == 'test')
+)}
+
+function _max_y2(d3,datasetesting){return(
+d3.max([d3.max(datasetesting, function(d) { return +d.QL; }), d3.max(datasetesting, function(d) { return +d.benchmark; })])
+)}
+
+function _min_y2(d3,datasetesting){return(
+d3.min([d3.min(datasetesting, function(d) { return +d.QL; }), d3.min(datasetesting, function(d) { return +d.benchmark; })])
+)}
+
+function _y9(d3,min_y2,max_y2,height,margin){return(
 d3.scaleLinear()
-    .domain([d3.min(data, d => +d.testing_ql), d3.max(data, d => +d.testing_ql)])
+    .domain([min_y2 ,max_y2])
     .range([height - margin.bottom, margin.top])
 )}
 
@@ -920,15 +1018,31 @@ g => g
     .call(g => g.select(".domain").remove())
 )}
 
-function _chart9(d3,width,height,x,y9,include14,data,include15,xAxis,yAxis9)
+function _x9(d3,datasetesting,margin,width){return(
+d3.scaleUtc()
+    .domain(d3.extent(datasetesting, d => d.TradeDate))
+    .range([margin.left, width - margin.right])
+)}
+
+function _91(d3,datasetesting){return(
+d3.extent(datasetesting, d => d.TradeDate)
+)}
+
+function _xAxis9(height,margin,d3,x9,width){return(
+g => g
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(x9).ticks(width / 80).tickSizeOuter(0))
+)}
+
+function _chart9(d3,width,height,x9,y9,include14,datasetesting,include15,xAxis9,yAxis9)
 {
   const svg = d3.create("svg")
       .attr("width", width)
       .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
+      .attr("viewBox", [-20, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
-  const zx = x.copy(); // x, but with a new domain.
+  const zx = x9.copy(); // x, but with a new domain.
   const zy = y9.copy(); // x, but with a new domain.
 
  var line9 = d3.line()
@@ -936,14 +1050,14 @@ function _chart9(d3,width,height,x,y9,include14,data,include15,xAxis,yAxis9)
   if (include14 == 1) {
     line9 = d3.line()
       .x(d => zx(d.TradeDate))
-      .y(d => zy(+d.testing_ql));
+      .y(d => zy(+d.QL));
 
     path9 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "blue")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
-      .attr("d", line9(data));
+      .attr("d", line9(datasetesting));
   }
 
   var line10 = d3.line()
@@ -951,18 +1065,40 @@ function _chart9(d3,width,height,x,y9,include14,data,include15,xAxis,yAxis9)
   if (include15 == 1) {
     line10 = d3.line()
       .x(d => zx(d.TradeDate))
-      .y(d => zy(+d.testing_benchmark));
+      .y(d => zy(+d.benchmark + 500000));
 
     path10 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "orange")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
-      .attr("d", line10(data));
+      .attr("d", line10(datasetesting));
+  }
+
+  for (let index = 0; index < datasetesting.length; ++index) {
+
+    if (datasetesting[index].orders == 'BUY'){
+        svg.append("circle")
+  	        	.attr("class","circle")
+  		        .attr("cx",zx(datasetesting[index].TradeDate))
+  		        .attr("cy",zy(datasetesting[index].benchmark+ 500000))
+  		        .attr("r",5)
+  		        .style("stroke","#00ff00")
+  		        .style("fill","#00ff00")
+
+    } else if (datasetesting[index].orders == 'SELL'){
+      svg.append("circle")
+  	        	.attr("class","circle")
+  		        .attr("cx",zx(datasetesting[index].TradeDate))
+  		        .attr("cy",zy(datasetesting[index].benchmark+ 500000))
+  		        .attr("r",5)
+  		        .style("stroke","#ff0000")
+  		        .style("fill","#ff0000")
+    }
   }
   
   const gx = svg.append("g")
-      .call(xAxis, zx);
+      .call(xAxis9, zx);
 
   const gy = svg.append("g")
       .call(yAxis9, zy);
@@ -972,10 +1108,8 @@ function _chart9(d3,width,height,x,y9,include14,data,include15,xAxis,yAxis9)
       update(domain) {
         const t = svg.transition().duration(750);
         zx.domain(domain);
-        gx.transition(t).call(xAxis, zx);
+        gx.transition(t).call(xAxis9, zx);
         // ADD PATH TRANSITIONS HERE SO THAT THEY SCALE WITH VIEWING WINDOW
-        path9.transition(t).attr("d", line9(data));
-        path10.transition(t).attr("d", line10(data));
       }
     });
   }
@@ -1018,10 +1152,14 @@ function _update9(chart9,timeframe){return(
 chart9.update(timeframe)
 )}
 
-function _89(md){return(
+function _103(md){return(
 md`---
 
 ## Appendix`
+)}
+
+function _timeframe(dateone,datetwo){return(
+[dateone,datetwo]
 )}
 
 function _datep(d3){return(
@@ -1036,15 +1174,15 @@ function _params(datep,training_startdate,training_enddate,testing_startdate,tes
 "test_sd": datep(testing_startdate),
 "test_ed": datep(testing_enddate),
 "sv": 500000,
-"sma_window": smawindow[0],
-"bollinger_window": bbwindow[0],
-"bollinger_stdvs": bbstdev[0],
-"so_window": so_window[0],
-"so_window_sma": so_window_sma[0],
+"sma_window": smawindow,
+"bollinger_window": bbwindow,
+"bollinger_stdvs": bbstdev,
+"so_window": so_window,
+"so_window_sma": so_window_sma,
 "obv": obv,
 "macd": macd,
 "include_sentiment": include_sentiment,
-"mom_window": mom_window[0],
+"mom_window": mom_window,
 "alpha": alpha,
 "gamma": gamma,
 "rar": rar,
@@ -1067,12 +1205,23 @@ function _url(queryString){return(
 "http://127.0.0.1:5001/run_qlearner?" + queryString
 )}
 
-function _dataset2(url){return(
-fetch(url)
-    .then(response => response.json())
-    .then(function(data) {
-        return data
-    })
+function _url2(queryString){return(
+"http://127.0.0.1:5001/run_gridsearch?" + queryString
+)}
+
+function _dataset2(rf,qlgs,url,url2)
+{
+  if (rf){
+    if (qlgs == "Run QLearner"){
+      return fetch(url).then(response => response.json()).then(function(data) {return data})
+    } else if (qlgs == "Run GridSearch")
+      return fetch(url2).then(response => response.json()).then(function(data) {return data})
+  }
+}
+
+
+function _111(dataset2){return(
+dataset2
 )}
 
 function _cleanedData(dataset2){return(
@@ -1092,22 +1241,23 @@ dataset2.map(d => ({
   'MACD_signal': parseFloat(d.MACD_signal),
   'MACD': parseFloat(d.MACD),
   'price_to_SMA_ratio': parseFloat(d.price_to_SMA_ratio),
-  'momentum': parseFloat(d.momentum),
   'avg_compound_sentiment': parseFloat(d.avg_compound_sentiment),
   'MACD_raw': parseFloat(d.MACD_raw),
   'MACD_signal': parseFloat(d.MACD_signal),
   'MACD': parseFloat(d.MACD),
-  "testing_benchmark": parseFloat(d.testing_benchmark),
-  "testing_orders": parseFloat(d.testing_orders),
-  "testing_ql": parseFloat(d.testing_ql),
-  "training_benchmark": parseFloat(d.training_benchmark),
-  "training_orders": parseFloat(d.training_orders),
-  "training_ql": parseFloat(d.training_ql)
+  "QL": parseFloat(d.QL),
+  "benchmark": parseFloat(d.benchmark),
+  "test_or_train": d.test_or_train,
+  "orders": d.orders
 }))
 )}
 
 function _data(cleanedData){return(
 cleanedData
+)}
+
+function _114(data){return(
+console.log(data)
 )}
 
 function _xAxis(x,height,margin,d3,width){return(
@@ -1143,22 +1293,8 @@ d3.scaleLinear()
     .range([height - margin.bottom, margin.top])
 )}
 
-function _orders_data(FileAttachment){return(
-FileAttachment("orders.csv").csv({typed: true})
-)}
-
-function _ymax(d3,data){return(
-d3.max(data, d => +d.bollinger_band_upper)
-)}
-
-function _xmax(d3,data){return(
-d3.extent(data, d => d.TradeDate)
-)}
-
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["orders.csv",new URL("./files/d86e1a00c3fb63076884707fc2d81f21158e15b1b377db66d123f642e05d93e984e477a52d776cc8e068ac75db181a6c67ba8c11b957cba818006ecb64d87fc0",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("viewof include_sentiment")).define("viewof include_sentiment", ["Inputs"], _include_sentiment);
   main.variable(observer("include_sentiment")).define("include_sentiment", ["Generators", "viewof include_sentiment"], (G, _) => G.input(_));
@@ -1205,81 +1341,92 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof mom_window")).define("viewof mom_window", ["Inputs"], _mom_window);
   main.variable(observer("mom_window")).define("mom_window", ["Generators", "viewof mom_window"], (G, _) => G.input(_));
   main.variable(observer()).define(["htl"], _24);
+  main.variable(observer("viewof qlgs")).define("viewof qlgs", ["Inputs"], _qlgs);
+  main.variable(observer("qlgs")).define("qlgs", ["Generators", "viewof qlgs"], (G, _) => G.input(_));
+  main.variable(observer("viewof rf")).define("viewof rf", ["Inputs"], _rf);
+  main.variable(observer("rf")).define("rf", ["Generators", "viewof rf"], (G, _) => G.input(_));
+  main.variable(observer()).define(["htl"], _27);
+  main.variable(observer("viewof dateone")).define("viewof dateone", ["Inputs","training_startdate"], _dateone);
+  main.variable(observer("dateone")).define("dateone", ["Generators", "viewof dateone"], (G, _) => G.input(_));
+  main.variable(observer("viewof datetwo")).define("viewof datetwo", ["Inputs","testing_enddate"], _datetwo);
+  main.variable(observer("datetwo")).define("datetwo", ["Generators", "viewof datetwo"], (G, _) => G.input(_));
+  main.variable(observer()).define(["htl"], _30);
   main.variable(observer("viewof inchart1")).define("viewof inchart1", ["Inputs"], _inchart1);
   main.variable(observer("inchart1")).define("inchart1", ["Generators", "viewof inchart1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _26);
-  main.variable(observer("viewof dateone")).define("viewof dateone", ["Inputs"], _dateone);
-  main.variable(observer("dateone")).define("dateone", ["Generators", "viewof dateone"], (G, _) => G.input(_));
-  main.variable(observer("viewof datetwo")).define("viewof datetwo", ["Inputs"], _datetwo);
-  main.variable(observer("datetwo")).define("datetwo", ["Generators", "viewof datetwo"], (G, _) => G.input(_));
-  main.variable(observer("timeframe")).define("timeframe", ["dateone","datetwo"], _timeframe);
-  main.variable(observer("viewof include1")).define("viewof include1", ["Inputs"], _include1);
-  main.variable(observer("include1")).define("include1", ["Generators", "viewof include1"], (G, _) => G.input(_));
-  main.variable(observer("viewof include2")).define("viewof include2", ["Inputs"], _include2);
-  main.variable(observer("include2")).define("include2", ["Generators", "viewof include2"], (G, _) => G.input(_));
-  main.variable(observer("viewof include3")).define("viewof include3", ["Inputs"], _include3);
-  main.variable(observer("include3")).define("include3", ["Generators", "viewof include3"], (G, _) => G.input(_));
-  main.variable(observer("viewof include4")).define("viewof include4", ["Inputs"], _include4);
-  main.variable(observer("include4")).define("include4", ["Generators", "viewof include4"], (G, _) => G.input(_));
-  main.variable(observer("viewof include5")).define("viewof include5", ["Inputs"], _include5);
-  main.variable(observer("include5")).define("include5", ["Generators", "viewof include5"], (G, _) => G.input(_));
-  main.variable(observer("chart")).define("chart", ["d3","width","height","x","y","include1","data","include2","include3","include4","include5","xAxis","yAxis","inchart1"], _chart);
-  main.variable(observer()).define(["htl"], _36);
+  main.variable(observer("viewof bbg_inputs")).define("viewof bbg_inputs", ["Inputs"], _bbg_inputs);
+  main.variable(observer("bbg_inputs")).define("bbg_inputs", ["Generators", "viewof bbg_inputs"], (G, _) => G.input(_));
+  main.variable(observer("chart")).define("chart", ["d3","width","height","x","y","bbg_inputs","data","xAxis","yAxis","inchart1"], _chart);
+  main.variable(observer()).define(["htl"], _34);
   main.variable(observer("viewof include6")).define("viewof include6", ["Inputs"], _include6);
   main.variable(observer("include6")).define("include6", ["Generators", "viewof include6"], (G, _) => G.input(_));
   main.variable(observer("y2")).define("y2", ["d3","data","height","margin"], _y2);
   main.variable(observer("yAxis2")).define("yAxis2", ["margin","d3","y2","height"], _yAxis2);
   main.variable(observer("chart2")).define("chart2", ["d3","width","height","x","y2","include6","data","xAxis","yAxis2"], _chart2);
-  main.variable(observer()).define(["htl"], _41);
+  main.variable(observer()).define(["htl"], _39);
   main.variable(observer("viewof include7")).define("viewof include7", ["Inputs"], _include7);
   main.variable(observer("include7")).define("include7", ["Generators", "viewof include7"], (G, _) => G.input(_));
   main.variable(observer("y3")).define("y3", ["d3","data","height","margin"], _y3);
   main.variable(observer("yAxis3")).define("yAxis3", ["margin","d3","y3","height"], _yAxis3);
   main.variable(observer("chart3")).define("chart3", ["d3","width","height","x","y3","include7","data","so_ul","so_ll","xAxis","yAxis3"], _chart3);
-  main.variable(observer()).define(["htl"], _46);
+  main.variable(observer()).define(["htl"], _44);
   main.variable(observer("viewof include8")).define("viewof include8", ["Inputs"], _include8);
   main.variable(observer("include8")).define("include8", ["Generators", "viewof include8"], (G, _) => G.input(_));
   main.variable(observer("y4")).define("y4", ["d3","data","height","margin"], _y4);
   main.variable(observer("yAxis4")).define("yAxis4", ["margin","d3","y4","height"], _yAxis4);
   main.variable(observer("chart4")).define("chart4", ["d3","width","height","x","y4","include8","data","smathreshold","xAxis","yAxis4"], _chart4);
-  main.variable(observer()).define(["htl"], _51);
+  main.variable(observer()).define(["htl"], _49);
   main.variable(observer("viewof include9")).define("viewof include9", ["Inputs"], _include9);
   main.variable(observer("include9")).define("include9", ["Generators", "viewof include9"], (G, _) => G.input(_));
+  main.variable(observer("data2")).define("data2", ["data"], _data2);
   main.variable(observer("y5")).define("y5", ["d3","data","height","margin"], _y5);
   main.variable(observer("yAxis5")).define("yAxis5", ["margin","d3","y5","height"], _yAxis5);
-  main.variable(observer("chart5")).define("chart5", ["d3","width","height","x","y5","include9","data","xAxis","yAxis5"], _chart5);
-  main.variable(observer()).define(["htl"], _56);
+  main.variable(observer("chart5")).define("chart5", ["d3","width","height","x","y5","include9","data","momentumth","xAxis","yAxis5"], _chart5);
+  main.variable(observer()).define(["htl"], _55);
   main.variable(observer("viewof include10")).define("viewof include10", ["Inputs"], _include10);
   main.variable(observer("include10")).define("include10", ["Generators", "viewof include10"], (G, _) => G.input(_));
   main.variable(observer("y6")).define("y6", ["d3","data","height","margin"], _y6);
   main.variable(observer("yAxis6")).define("yAxis6", ["margin","d3","y6","height"], _yAxis6);
   main.variable(observer("chart6")).define("chart6", ["d3","width","height","x","y6","include10","data","sentimentth","xAxis","yAxis6"], _chart6);
-  main.variable(observer()).define(["htl"], _61);
+  main.variable(observer()).define(["htl"], _60);
   main.variable(observer("viewof include11")).define("viewof include11", ["Inputs"], _include11);
   main.variable(observer("include11")).define("include11", ["Generators", "viewof include11"], (G, _) => G.input(_));
-  main.variable(observer("viewof include112")).define("viewof include112", ["Inputs"], _include112);
-  main.variable(observer("include112")).define("include112", ["Generators", "viewof include112"], (G, _) => G.input(_));
-  main.variable(observer("viewof include113")).define("viewof include113", ["Inputs"], _include113);
-  main.variable(observer("include113")).define("include113", ["Generators", "viewof include113"], (G, _) => G.input(_));
-  main.variable(observer("y7")).define("y7", ["d3","data","height","margin"], _y7);
+  main.variable(observer("viewof macd_inputs")).define("viewof macd_inputs", ["Inputs"], _macd_inputs);
+  main.variable(observer("macd_inputs")).define("macd_inputs", ["Generators", "viewof macd_inputs"], (G, _) => G.input(_));
+  main.variable(observer("y7")).define("y7", ["d3","min_macd","max_macd","height","margin"], _y7);
   main.variable(observer("yAxis7")).define("yAxis7", ["margin","d3","y7","height"], _yAxis7);
-  main.variable(observer("chart7")).define("chart7", ["d3","width","height","x","y7","include11","data","include112","include113","xAxis","yAxis7"], _chart7);
+  main.variable(observer("max_macd")).define("max_macd", ["d3","data"], _max_macd);
+  main.variable(observer("min_macd")).define("min_macd", ["d3","data"], _min_macd);
+  main.variable(observer("chart7")).define("chart7", ["d3","width","height","x","y7","include11","data","macd_inputs","xAxis","yAxis7"], _chart7);
   main.variable(observer()).define(["htl"], _68);
   main.variable(observer("viewof include12")).define("viewof include12", ["Inputs"], _include12);
   main.variable(observer("include12")).define("include12", ["Generators", "viewof include12"], (G, _) => G.input(_));
   main.variable(observer("viewof include13")).define("viewof include13", ["Inputs"], _include13);
   main.variable(observer("include13")).define("include13", ["Generators", "viewof include13"], (G, _) => G.input(_));
-  main.variable(observer("y8")).define("y8", ["d3","data","height","margin"], _y8);
+  main.variable(observer("datasettraining")).define("datasettraining", ["data"], _datasettraining);
+  main.variable(observer("max_y")).define("max_y", ["d3","datasettraining"], _max_y);
+  main.variable(observer("min_y")).define("min_y", ["d3","datasettraining"], _min_y);
+  main.variable(observer("y8")).define("y8", ["d3","min_y","max_y","height","margin"], _y8);
   main.variable(observer("yAxis8")).define("yAxis8", ["margin","d3","y8","height"], _yAxis8);
-  main.variable(observer("chart8")).define("chart8", ["d3","width","height","x","y8","include12","data","include13","xAxis","yAxis8"], _chart8);
-  main.variable(observer()).define(["htl"], _74);
+  main.variable(observer("x8")).define("x8", ["d3","datasettraining","margin","width"], _x8);
+  main.variable(observer()).define(["d3","datasettraining"], _77);
+  main.variable(observer("xAxis8")).define("xAxis8", ["height","margin","d3","x8","width"], _xAxis8);
+  main.variable(observer("orderstraining")).define("orderstraining", ["data"], _orderstraining);
+  main.variable(observer("orderstraining2")).define("orderstraining2", ["orderstraining"], _orderstraining2);
+  main.variable(observer("chart8")).define("chart8", ["d3","width","height","x8","y8","include12","datasettraining","include13","xAxis8","yAxis8"], _chart8);
+  main.variable(observer()).define(["htl"], _82);
   main.variable(observer("viewof include14")).define("viewof include14", ["Inputs"], _include14);
   main.variable(observer("include14")).define("include14", ["Generators", "viewof include14"], (G, _) => G.input(_));
   main.variable(observer("viewof include15")).define("viewof include15", ["Inputs"], _include15);
   main.variable(observer("include15")).define("include15", ["Generators", "viewof include15"], (G, _) => G.input(_));
-  main.variable(observer("y9")).define("y9", ["d3","data","height","margin"], _y9);
+  main.variable(observer("datasetesting")).define("datasetesting", ["data"], _datasetesting);
+  main.variable(observer("max_y2")).define("max_y2", ["d3","datasetesting"], _max_y2);
+  main.variable(observer("min_y2")).define("min_y2", ["d3","datasetesting"], _min_y2);
+  main.variable(observer("y9")).define("y9", ["d3","min_y2","max_y2","height","margin"], _y9);
   main.variable(observer("yAxis9")).define("yAxis9", ["margin","d3","y9","height"], _yAxis9);
-  main.variable(observer("chart9")).define("chart9", ["d3","width","height","x","y9","include14","data","include15","xAxis","yAxis9"], _chart9);
+  main.variable(observer("x9")).define("x9", ["d3","datasetesting","margin","width"], _x9);
+  main.variable(observer()).define(["d3","datasetesting"], _91);
+  main.variable(observer("xAxis9")).define("xAxis9", ["height","margin","d3","x9","width"], _xAxis9);
+  main.variable(observer("chart9")).define("chart9", ["d3","width","height","x9","y9","include14","datasetesting","include15","xAxis9","yAxis9"], _chart9);
   main.variable(observer("update")).define("update", ["chart","timeframe"], _update);
   main.variable(observer("update2")).define("update2", ["chart2","timeframe"], _update2);
   main.variable(observer("update3")).define("update3", ["chart3","timeframe"], _update3);
@@ -1289,22 +1436,23 @@ export default function define(runtime, observer) {
   main.variable(observer("update7")).define("update7", ["chart7","timeframe"], _update7);
   main.variable(observer("update8")).define("update8", ["chart8","timeframe"], _update8);
   main.variable(observer("update9")).define("update9", ["chart9","timeframe"], _update9);
-  main.variable(observer()).define(["md"], _89);
+  main.variable(observer()).define(["md"], _103);
+  main.variable(observer("timeframe")).define("timeframe", ["dateone","datetwo"], _timeframe);
   main.variable(observer("datep")).define("datep", ["d3"], _datep);
   main.variable(observer("params")).define("params", ["datep","training_startdate","training_enddate","testing_startdate","testing_enddate","smawindow","bbwindow","bbstdev","so_window","so_window_sma","obv","macd","include_sentiment","mom_window","alpha","gamma","rar","radr","smathreshold","so_ul","so_ll","momentumth","sentimentth"], _params);
   main.variable(observer("queryString")).define("queryString", ["params"], _queryString);
   main.variable(observer("url")).define("url", ["queryString"], _url);
-  main.variable(observer("dataset2")).define("dataset2", ["url"], _dataset2);
+  main.variable(observer("url2")).define("url2", ["queryString"], _url2);
+  main.variable(observer("dataset2")).define("dataset2", ["rf","qlgs","url","url2"], _dataset2);
+  main.variable(observer()).define(["dataset2"], _111);
   main.variable(observer("cleanedData")).define("cleanedData", ["dataset2"], _cleanedData);
   main.variable(observer("data")).define("data", ["cleanedData"], _data);
+  main.variable(observer()).define(["data"], _114);
   main.variable(observer("xAxis")).define("xAxis", ["x","height","margin","d3","width"], _xAxis);
   main.variable(observer("yAxis")).define("yAxis", ["margin","d3","y","height"], _yAxis);
   main.variable(observer("height")).define("height", _height);
   main.variable(observer("margin")).define("margin", _margin);
   main.variable(observer("x")).define("x", ["d3","data","margin","width"], _x);
   main.variable(observer("y")).define("y", ["d3","data","height","margin"], _y);
-  main.variable(observer("orders_data")).define("orders_data", ["FileAttachment"], _orders_data);
-  main.variable(observer("ymax")).define("ymax", ["d3","data"], _ymax);
-  main.variable(observer("xmax")).define("xmax", ["d3","data"], _xmax);
   return main;
 }

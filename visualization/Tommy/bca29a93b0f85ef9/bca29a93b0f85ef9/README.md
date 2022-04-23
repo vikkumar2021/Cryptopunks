@@ -1,6 +1,6 @@
 # Cryptopunks Project Vis Development
 
-https://observablehq.com/d/bca29a93b0f85ef9@2537
+https://observablehq.com/d/bca29a93b0f85ef9@3159
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/bca29a93b0f85ef9@2537.tgz?v=3
+npm install https://api.observablehq.com/d/bca29a93b0f85ef9@3159.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
