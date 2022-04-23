@@ -37,7 +37,7 @@ Backend: Our backend consists of a REST API that runs in a Docker Container. Thi
 
 3. On the command line unzip the download and change directories to the "CODE" folder in the root of the repository/folder. The below steps are intended to be completed on the command line interface.
 
- `cd ~/Downloads/Cryptopunks/CODE`
+ `cd ~/Downloads/Cryptopunks/CODE/`
 
 To ensure you're in the correct directory, when you run the `ls` command you should see the Dockerfile as well as this current README.md file listed.
 
