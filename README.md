@@ -3,6 +3,10 @@
 
 # Description
 
+FrontEnd: We have HTML/Javascript Files in our visualization folder [INSERT FILE NAME HERE]. Our FrontEnd HTML File contains 3 tabs. The first tab displays a series of graphs displaying statistical indicators. The second and third graphs allow you to manipulate Q-Learning and Gridsearch Models through various hyperparameters to identify best times to buy and sell. The frontend queries the backend for the data to display using REST API
+
+Backend: Our backend consists of REST API Server that runs in a DOCKER Container. This API is responsible for serving the data the frontend needs based on input parameters the user gives the frontend. The API was built using a FLASK app and the custom dataset to be displayed by the frontend runs in a pyspark app. 
+
 
 
 # Installation & Execution
