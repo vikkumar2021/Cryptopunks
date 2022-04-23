@@ -3,10 +3,20 @@
 
 # Description
 
-FrontEnd: We have HTML/Javascript Files in our visualization folder [INSERT FILE NAME HERE]. Our FrontEnd HTML File contains 3 tabs. The first tab displays a series of graphs displaying statistical indicators. The second and third graphs allow you to manipulate Q-Learning and Gridsearch Models through various hyperparameters to identify best times to buy and sell. The frontend queries the backend for the data to display using REST API
+The Cryptopunks application allows users to train and test a model for recommending buying, selling, or holding Bitcoin cryptocurrency. The variables user in training the model include the following:
+- Average Twitter Sentiment (obtained using the pre-trained [NLTK Vader Sentiment Analyzer](https://www.nltk.org/api/nltk.sentiment.html) on 4 GB of tweets about Bitcoin from 2014 to 2019)
+- Simple Moving Average (SMA)
+- Bollinger Bands
+- Moving Average Convergence Divergence (MACD)
+- Stochastic Oscillator
+- On Balance Volume (OBV)
+- Momentum
 
-Backend: Our backend consists of REST API Server that runs in a DOCKER Container. This API is responsible for serving the data the frontend needs based on input parameters the user gives the frontend. The API was built using a FLASK app and the custom dataset to be displayed by the frontend runs in a pyspark app. 
+FrontEnd: The front end HTML/CSS/Javascript files can be found in our [visualization folder](https://github.com/vikkumar2021/Cryptopunks/tree/main/visualization). The front end was created using Observable and D3. The front end is interactive and allows the user to input parameters for the data pipeline and model algorithm (Q-learning or Grid Search) via sliders, dropdowns, and checkboxes. The frontend queries the backend to obtain the Q-learner or Grid Search model results and renders the visualizations using the returned JSON data.
 
+Backend: Our backend consists of a REST API that runs in a Docker Container. This API is responsible for serving the data the frontend needs based on input parameters the user selects on the interactive visualization. The API was built using the Flask web framework. The front end submits a HTTP GET request to the `run_qlearner` or `run_gridsearch` Flask API end point. The parameters in the URL are parsed and passed to the Pyspark pipeline which in turn processes the Bitcoin price data and the Twitter sentiment data. The resulting Spark dataframe is then converted to a Pandas dataframe and passed to the model (either Q-learner or Grid Search). The model is run on the Pandas dataframe and the training and testing results are returned to the front end as a JSON.
+
+![CryptopunksApplicationFlow](https://github.com/vikkumar2021/Cryptopunks/blob/main/CryptopunksApplicationFlow.png)
 
 
 # Installation & Execution
