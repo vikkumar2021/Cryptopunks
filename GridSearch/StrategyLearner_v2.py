@@ -53,7 +53,7 @@ def get_sharpe_ratio(threshold, *params):
                 and (indicator_3[day] > threshold[3])
                 and (-num_shares <= holdings[syms[0]] <= num_shares)
             ):  # stock overbought but index is not overbought
-                if holdings[syms[0]] > -num_shares:
+                if holdings[syms[0]] > 0:
                     # print ('2222 ')
                     if holdings[syms[0]] == 0:
                         holdings[syms[0]] = holdings[syms[0]] - num_shares
@@ -106,7 +106,7 @@ def get_sharpe_ratio(threshold, *params):
 
     #    print "NUM ORDERS => ", len(Order)
     if len(Order) == 0:
-        return 10
+        return num_shares
 
     df = pd.DataFrame({"Symbol": Symbol}, index=Date)
     df["Order"] = Order
@@ -140,20 +140,13 @@ def get_sharpe_ratio(threshold, *params):
         # print ('df_trade.loc[i] = ', df_trade.loc[i])
         if row.Order == "BUY":
             df_trade.loc[i][row.Symbol] = df_trade.loc[i][row.Symbol] + row.Shares
-            df_trade.loc[i]["CASH"] = (
-                df_trade.loc[i]["CASH"]
-                - (row.Shares * ((1 + impact) * df_prices.loc[i][row.Symbol]))
-                - (commission)
-            )
+            df_trade.loc[i]["CASH"] =  math.floor((row.Shares * df_prices.loc[i][row.Symbol]) * (-1))
             # df_trade.loc[i,row.Symbol] += row.Shares
             # df_trade.loc[i, 'CASH'] -= (row.Shares * ((1+impact)*df_prices.loc[i,row.Symbol])) - (commission)
         else:  # order is SELL
             df_trade.loc[i][row.Symbol] = df_trade.loc[i][row.Symbol] - row.Shares
-            df_trade.loc[i]["CASH"] = (
-                df_trade.loc[i]["CASH"]
-                + (row.Shares * ((1 - impact) * df_prices.loc[i][row.Symbol]))
-                - (commission)
-            )
+            df_trade.loc[i]["CASH"] = math.floor((row.Shares * df_prices.loc[i][row.Symbol]) * 1)
+
             # df_trade.loc[i,row.Symbol] -= row.Shares
             # df_trade.loc[i,'CASH'] +=(row.Shares * ((1-impact)*df_prices.loc[i,row.Symbol])) - (commission)
     df_holding = pd.DataFrame(index=df_prices.index, columns=cols)
@@ -172,8 +165,7 @@ def get_sharpe_ratio(threshold, *params):
     df_value["CASH"] = df_holding["CASH"]
     # print df_value
     portvals = df_value.sum(axis=1)
-    rfr = 0
-    sf = 252
+
     cr = (portvals[-1] / portvals[0]) - 1
     # print("TH , last day portval = ", threshold, portvals[-1])
     # print("ORDERS = ", Order)
@@ -255,11 +247,19 @@ class StrategyLearner(object):
         mid_3 = round(((max_3 + min_3)/2) , 3)
         step_3 = round(((max_3 - min_3)/ 3), 3)/2
 
+        print ('\nRRANGES')
+        print ((min_1, mid_1, step_1))
+        print ((min_2, mid_2, step_2))
+        print ((mid_1, max_1, step_1))
+        print ((mid_2, max_2, step_2))
+
+
         rranges = [
          slice(-0.31743839421422201, 0.162, 0.160),
          slice(-0.3637347457782, 0.431, 0.265),
          slice(0.162, 0.64165430406962668, 0.160),
          slice(0.431, 1.2266714932757, 0.265) ]
+         
 
         threshold_brute = spo.brute(
             get_sharpe_ratio, rranges, args=params, full_output=True, finish=None
@@ -353,7 +353,7 @@ class StrategyLearner(object):
                     and (indicator_3[day] > self.threshold[3])
                     and (-num_shares <= holdings[syms[0]] <= num_shares)
                 ):  # stock overbought but index is not overbought
-                    if holdings[syms[0]] > -num_shares:
+                    if holdings[syms[0]] > 0:
                         # print ('2222 ')
                         if holdings[syms[0]] == 0:
                             holdings[syms[0]] = holdings[syms[0]] - num_shares
@@ -404,7 +404,7 @@ class StrategyLearner(object):
                 elif (
                     (indicator_1[day] <= (self.threshold[0]))
                     and (indicator_1[day-1] > (self.threshold[0]))
-                    and (-num_shares <= holdings[syms[0]] < num_shares)
+                    and (-num_shares <= holdings[syms[0]] <= num_shares)
                 ):  # crossed SMA downwards and hold short
                     # print '4444 '
                     if holdings[syms[0]] == 0:

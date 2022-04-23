@@ -45,27 +45,27 @@ def compute_portvals_2(orders_df, dataframebtc, start_val=100000):
         commission = 0
         impact = 0
         for i, row in orders_df.iterrows():  # go through each order
-            print ('i,row = ', i, row)
+            #print ('i,row = ', i, row)
             if row.Order == "BUY":
                 df_trade.loc[i][row.Symbol] = df_trade.loc[i][row.Symbol] + row.Shares
-                print ('*** before df_trade.loc[i]["CASH"] = ', df_trade.loc[i]["CASH"])
-                print ('df_prices.loc[i][row.Symbol] = ', df_prices.loc[i][row.Symbol])
-                print ('row.Shares * df_prices.loc[i][row.Symbol] = ', row.Shares * df_prices.loc[i][row.Symbol])
+                # print ('*** before df_trade.loc[i]["CASH"] = ', df_trade.loc[i]["CASH"])
+                # print ('df_prices.loc[i][row.Symbol] = ', df_prices.loc[i][row.Symbol])
+                # print ('row.Shares * df_prices.loc[i][row.Symbol] = ', row.Shares * df_prices.loc[i][row.Symbol])
 
                 df_trade.loc[i]["CASH"] =  math.floor((row.Shares * df_prices.loc[i][row.Symbol]) * (-1))
 
                 # df_trade.loc[i]["CASH"] = -498719
 
-                print ('*** after - df_trade.loc[i]["CASH"] = ', df_trade.loc[i]["CASH"])
-                print ('BUY row.Shares , df_prices.loc[i][row.Symbol] = ', row.Shares , df_prices.loc[i][row.Symbol] )
-                print ('row.Symbol , df_prices.loc[i] = ', row.Symbol , df_prices.loc[i])
+                # print ('*** after - df_trade.loc[i]["CASH"] = ', df_trade.loc[i]["CASH"])
+                # print ('BUY row.Shares , df_prices.loc[i][row.Symbol] = ', row.Shares , df_prices.loc[i][row.Symbol] )
+                # print ('row.Symbol , df_prices.loc[i] = ', row.Symbol , df_prices.loc[i])
                 
             else:  # order is SELL
                 df_trade.loc[i][row.Symbol] = df_trade.loc[i][row.Symbol] - row.Shares
                 df_trade.loc[i]["CASH"] = math.floor((row.Shares * df_prices.loc[i][row.Symbol]) * 1)
-                print ('SELL - df_trade.loc[i]["CASH"] = ', df_trade.loc[i]["CASH"])
-                print ('BUY row.Shares , df_prices.loc[i][row.Symbol] = ', row.Shares , df_prices.loc[i][row.Symbol] )
-                print ('row.Symbol , df_prices.loc[i] = ', row.Symbol , df_prices.loc[i])
+                # print ('SELL - df_trade.loc[i]["CASH"] = ', df_trade.loc[i]["CASH"])
+                # print ('BUY row.Shares , df_prices.loc[i][row.Symbol] = ', row.Shares , df_prices.loc[i][row.Symbol] )
+                # print ('row.Symbol , df_prices.loc[i] = ', row.Symbol , df_prices.loc[i])
             
 
         df_holding = pd.DataFrame(index=df_prices.index, columns=cols)
