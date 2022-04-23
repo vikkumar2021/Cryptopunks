@@ -3,7 +3,7 @@
 
 # Description
 
-The Cryptopunks application allows users to train and test a model for recommending buying, selling, or holding Bitcoin cryptocurrency. The variables user in training the model include the following:
+The Cryptopunks application allows users to train and test a Q-learning or Grid Search model for recommending buying, selling, or holding Bitcoin cryptocurrency. The user inputs for the model (such as the lookback windows for moving averages) include parameters that calculate the following variables that are then used to train and test the model:
 - Average Twitter Sentiment (obtained using the pre-trained [NLTK Vader Sentiment Analyzer](https://www.nltk.org/api/nltk.sentiment.html) on 4 GB of tweets about Bitcoin from 2014 to 2019)
 - Simple Moving Average (SMA)
 - Bollinger Bands
@@ -11,6 +11,16 @@ The Cryptopunks application allows users to train and test a model for recommend
 - Stochastic Oscillator
 - On Balance Volume (OBV)
 - Momentum
+
+Additionally the following hyperparameters are selected by the user as well:
+- Alpha
+- Gamma
+- Random Action Rate (RAR)
+- Random Action Decay Rate (RADR)
+- Simple Moving Average (SMA) Threshold
+- Stochastic Oscillator Upper and Lower Limit
+- Momentum Threshold
+- Momentum Threshold
 
 FrontEnd: The front end HTML/CSS/Javascript files can be found in our [visualization folder](https://github.com/vikkumar2021/Cryptopunks/tree/main/visualization). The front end was created using Observable and D3. The front end is interactive and allows the user to input parameters for the data pipeline and model algorithm (Q-learning or Grid Search) via sliders, dropdowns, and checkboxes. The frontend queries the backend to obtain the Q-learner or Grid Search model results and renders the visualizations using the returned JSON data.
 
