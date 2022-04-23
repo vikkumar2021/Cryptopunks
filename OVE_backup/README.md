@@ -1,6 +1,6 @@
 # Cryptopunks Project Vis Development
 
-https://observablehq.com/d/bca29a93b0f85ef9@3412
+https://observablehq.com/@sssantos/cryptopunks-project-vis-development@1618
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,14 +14,14 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/bca29a93b0f85ef9@3412.tgz?v=3
+npm install https://api.observablehq.com/d/d5b1a6801aef3e79@1618.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
 
 ~~~js
 import {Runtime, Inspector} from "@observablehq/runtime";
-import define from "bca29a93b0f85ef9";
+import define from "@sssantos/cryptopunks-project-vis-development";
 ~~~
 
 To log the value of the cell named “foo”:

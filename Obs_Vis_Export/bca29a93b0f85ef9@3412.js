@@ -1,3 +1,5 @@
+import define1 from "./7a9e12f9fb3d8e06@459.js";
+
 function _1(md){return(
 md`# Cryptopunks Project Vis Development
 `
@@ -120,7 +122,7 @@ htl.html`     <pre>     <h1>  Bollinger Band Graph </pre>`
 )}
 
 function _inchart1(Inputs){return(
-Inputs.toggle({label: "Show Bollinger Graph"})
+Inputs.toggle({label: "Load Bollinger Band Graph"})
 )}
 
 function _bbg_inputs(Inputs){return(
@@ -151,6 +153,9 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,xAxis,yAxis,inchart1)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line1(data));
+
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Upper").style("font-size", "13px").attr("alignment-baseline","middle")
   }
   var line2 = d3.line()
   var path2 = svg.append("path")
@@ -165,6 +170,9 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,xAxis,yAxis,inchart1)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line2(data));
+
+   const leg2_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "red")
+   const leg2_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Lower").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line3 = d3.line()
@@ -180,6 +188,10 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,xAxis,yAxis,inchart1)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line3(data));
+    
+    const leg3_shape = svg.append("circle").attr("cx",1000).attr("cy",60).attr("r", 6).style("fill", "purple")
+    const leg3_text = svg.append("text").attr("x", 1010).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger SMA").style("font-size", "13px").attr("alignment-baseline","middle")
+  
   }
 
   var line4 = d3.line()
@@ -195,6 +207,9 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,xAxis,yAxis,inchart1)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line4(data));
+    
+    const leg4_shape = svg.append("circle").attr("cx",1000).attr("cy",80).attr("r", 6).style("fill", "green")
+    const leg4_text = svg.append("text").attr("x", 1010).attr("y", 80).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Adjusted Close").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line5 = d3.line()
@@ -210,8 +225,37 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,xAxis,yAxis,inchart1)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line5(data));
+
+    const leg5_shape = svg.append("circle").attr("cx",1000).attr("cy",100).attr("r", 6).style("fill", "black")
+    const leg5_text = svg.append("text").attr("x", 1010).attr("y", 100).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Simple Moving Average").style("font-size", "13px").attr("alignment-baseline","middle")
   }
+
+  const tooltip = svg.append("g")
+      .style("pointer-events", "none");
+
+
+  //AXIS LABEL
+  const y_axis_label = svg.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y",20)
+      .attr("x",-180)
+      .attr("transform", "rotate(-90)")
+      .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+      .style("font-size", "12px")
+      .text("Price USD");
   
+    //AXIS LABEL
+  const x_axis_label = svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width - 550)
+    .attr("y", height - 6)
+    .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+    .style("font-size", "12px")
+    .text("Trade Date");
+  
+  //TRANSITIONING AXIS
   const gx = svg.append("g")
       .call(xAxis, zx);
 
@@ -237,24 +281,11 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,xAxis,yAxis,inchart1)
 
 
 function _34(htl){return(
-htl.html`     <pre>     <h1>  Bollinger Percentage </pre>`
+htl.html`     <pre>     <h1>  Bollinger Percentage Graph </pre>`
 )}
 
 function _include6(Inputs){return(
-Inputs.toggle({label: "Bollinger Band %"})
-)}
-
-function _y2(d3,data,height,margin){return(
-d3.scaleLinear()
-    .domain([d3.min(data, d => +d.bollinger_band_percentage), d3.max(data, d => +d.bollinger_band_percentage)])
-    .range([height - margin.bottom, margin.top])
-)}
-
-function _yAxis2(margin,d3,y2,height){return(
-g => g
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y2).ticks(height / 40))
-    .call(g => g.select(".domain").remove())
+Inputs.toggle({label: "Load Bollinger Band % Graph"})
 )}
 
 function _chart2(d3,width,height,x,y2,include6,data,xAxis,yAxis2)
@@ -281,6 +312,9 @@ function _chart2(d3,width,height,x,y2,include6,data,xAxis,yAxis2)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line6(data));
+
+     // const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "purple")
+     // const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Percentage").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line62 = d3.line()
@@ -292,7 +326,7 @@ function _chart2(d3,width,height,x,y2,include6,data,xAxis,yAxis2)
 
     path62 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "black")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line62(data));
@@ -307,12 +341,35 @@ function _chart2(d3,width,height,x,y2,include6,data,xAxis,yAxis2)
 
     path63 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "black")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line63(data));
-  }
 
+    // const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "blue")
+    // const leg1_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Percentage").style("font-size", "13px").attr("alignment-baseline","middle")
+  }
+    //AXIS LABEL
+  const y_axis_label = svg.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y",20)
+      .attr("x",-180)
+      .attr("transform", "rotate(-90)")
+      .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+      .style("font-size", "12px")
+      .text("Bollinger Percentage");
+  
+    //AXIS LABEL
+  const x_axis_label = svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width - 550)
+    .attr("y", height - 6)
+    .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+    .style("font-size", "12px")
+    .text("Trade Date");
+  
   const gx = svg.append("g")
       .call(xAxis, zx);
 
@@ -333,25 +390,12 @@ function _chart2(d3,width,height,x,y2,include6,data,xAxis,yAxis2)
 }
 
 
-function _39(htl){return(
-htl.html`     <pre>     <h1>  Stochastic Oscillator </pre>`
+function _37(htl){return(
+htl.html`     <pre>     <h1>  Stochastic Oscillator Graph </pre>`
 )}
 
 function _include7(Inputs){return(
-Inputs.toggle({label: "Stochastic Oscillator"})
-)}
-
-function _y3(d3,data,height,margin){return(
-d3.scaleLinear()
-    .domain([d3.min(data, d => +d.stochastic_oscillator_sma), d3.max(data, d => +d.stochastic_oscillator_sma)])
-    .range([height - margin.bottom, margin.top])
-)}
-
-function _yAxis3(margin,d3,y3,height){return(
-g => g
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y3).ticks(height / 40))
-    .call(g => g.select(".domain").remove())
+Inputs.toggle({label: "Load Stochastic Oscillator Graph"})
 )}
 
 function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,xAxis,yAxis3)
@@ -378,6 +422,8 @@ function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,xAxis,yAxis3)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line7(data));
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "purple")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Stochastic Osciallator").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line72 = d3.line()
@@ -389,10 +435,12 @@ function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,xAxis,yAxis3)
 
     path72 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "blue")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line72(data));
+   const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "blue")
+   const leg1_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("SO Upper Limit").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line73 = d3.line()
@@ -404,12 +452,35 @@ function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,xAxis,yAxis3)
 
     path73 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "Red")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line73(data));
+
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",60).attr("r", 6).style("fill", "red")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("SO Lower Limit").style("font-size", "13px").attr("alignment-baseline","middle")
   }
+    //AXIS LABEL
+  const y_axis_label = svg.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y",20)
+      .attr("x",-180)
+      .attr("transform", "rotate(-90)")
+      .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+      .style("font-size", "12px")
+      .text("Stochastic Oscillator");
   
+    //AXIS LABEL
+  const x_axis_label = svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width - 550)
+    .attr("y", height - 6)
+    .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+    .style("font-size", "12px")
+    .text("Trade Date");
+
   const gx = svg.append("g")
       .call(xAxis, zx);
 
@@ -430,25 +501,12 @@ function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,xAxis,yAxis3)
 }
 
 
-function _44(htl){return(
-htl.html`     <pre>     <h1>  Price to SMA Ratio </pre>`
+function _40(htl){return(
+htl.html`     <pre>     <h1>  Price to SMA Ratio Graph </pre>`
 )}
 
 function _include8(Inputs){return(
-Inputs.toggle({label: "Price to SMA Ratio"})
-)}
-
-function _y4(d3,data,height,margin){return(
-d3.scaleLinear()
-    .domain([d3.min(data, d => +d.price_to_SMA_ratio), d3.max(data, d => +d.price_to_SMA_ratio)])
-    .range([height - margin.bottom, margin.top])
-)}
-
-function _yAxis4(margin,d3,y4,height){return(
-g => g
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y4).ticks(height / 40))
-    .call(g => g.select(".domain").remove())
+Inputs.toggle({label: "Load Price to SMA Ratio Graph"})
 )}
 
 function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4)
@@ -475,6 +533,9 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line8(data));
+
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "purple")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Price To SMA Ratio").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line81 = d3.line()
@@ -486,10 +547,13 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4)
 
     path81 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "blue")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line81(data));
+
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Upper Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line82 = d3.line()
@@ -501,10 +565,13 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4)
 
     path82 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "red")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line82(data));
+
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",60).attr("r", 6).style("fill", "red")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Lower Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
   
   const gx = svg.append("g")
@@ -513,6 +580,28 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4)
   const gy = svg.append("g")
       .call(yAxis4, zy);
 
+    //AXIS LABEL
+  const y_axis_label = svg.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y",20)
+      .attr("x",-180)
+      .attr("transform", "rotate(-90)")
+      .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+      .style("font-size", "12px")
+      .text("Ratio");
+
+  
+    //AXIS LABEL
+  const x_axis_label = svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width - 550)
+    .attr("y", height - 6)
+    .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+    .style("font-size", "12px")
+    .text("Trade Date");
+  
   if (include8){
     return Object.assign(svg.node(), {
       update(domain) {
@@ -527,29 +616,12 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4)
 }
 
 
-function _49(htl){return(
-htl.html`     <pre>     <h1>  Momentum </pre>`
+function _43(htl){return(
+htl.html`     <pre>     <h1>  Momentum  Graph</pre>`
 )}
 
 function _include9(Inputs){return(
-Inputs.toggle({label: "Momentum"})
-)}
-
-function _data2(data){return(
-data.map(d => d.momentum)
-)}
-
-function _y5(d3,data,height,margin){return(
-d3.scaleLinear()
-    .domain([d3.min(data, d => +d.momentum), d3.max(data, d => +d.momentum)])
-    .range([height - margin.bottom, margin.top])
-)}
-
-function _yAxis5(margin,d3,y5,height){return(
-g => g
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y5).ticks(height / 40))
-    .call(g => g.select(".domain").remove())
+Inputs.toggle({label: "Load Momentum Graph"})
 )}
 
 function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5)
@@ -576,6 +648,10 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line9(data));
+
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "purple")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Momentum").style("font-size", "13px").attr("alignment-baseline","middle")
+    
   }
 
   var line91 = d3.line()
@@ -587,10 +663,13 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5)
 
     path91 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "blue")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line91(data));
+
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Upper Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line92 = d3.line()
@@ -602,10 +681,13 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5)
 
     path92 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "red")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line92(data));
+
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",60).attr("r", 6).style("fill", "red")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Lower Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
   
   const gx = svg.append("g")
@@ -614,6 +696,27 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5)
   const gy = svg.append("g")
       .call(yAxis5, zy);
 
+    //AXIS LABEL
+  const y_axis_label = svg.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y",20)
+      .attr("x",-180)
+      .attr("transform", "rotate(-90)")
+      .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+      .style("font-size", "12px")
+      .text("Momentum");
+
+  
+  const x_axis_label = svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width - 550)
+    .attr("y", height - 6)
+    .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+    .style("font-size", "12px")
+    .text("Trade Date");
+  
   if (include9){
     return Object.assign(svg.node(), {
       update(domain) {
@@ -628,25 +731,12 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5)
 }
 
 
-function _55(htl){return(
-htl.html`     <pre>     <h1>  Sentiment </pre>`
+function _46(htl){return(
+htl.html`     <pre>     <h1>  Sentiment Graph</pre>`
 )}
 
 function _include10(Inputs){return(
-Inputs.toggle({label: "Sentiment"})
-)}
-
-function _y6(d3,data,height,margin){return(
-d3.scaleLinear()
-    .domain([d3.min(data, d => +d.avg_compound_sentiment), d3.max(data, d => +d.avg_compound_sentiment)])
-    .range([height - margin.bottom, margin.top])
-)}
-
-function _yAxis6(margin,d3,y6,height){return(
-g => g
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y6).ticks(height / 40))
-    .call(g => g.select(".domain").remove())
+Inputs.toggle({label: "Load Sentiment Graph"})
 )}
 
 function _chart6(d3,width,height,x,y6,include10,data,sentimentth,xAxis,yAxis6)
@@ -673,6 +763,8 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,xAxis,yAxis6)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line10(data));
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",300).attr("r", 6).style("fill", "purple")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 300).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sentiment Value").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line102 = d3.line()
@@ -684,10 +776,12 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,xAxis,yAxis6)
 
     path102 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "red")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line102(data));
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",340).attr("r", 6).style("fill", "red")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 340).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Lower Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line103 = d3.line()
@@ -699,10 +793,12 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,xAxis,yAxis6)
 
     path103 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "blue")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line103(data));
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",320).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 320).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Upper Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   
@@ -712,7 +808,27 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,xAxis,yAxis6)
 
   const gy = svg.append("g")
       .call(yAxis6, zy);
-
+  //AXIS LABEL
+  const y_axis_label = svg.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y",20)
+      .attr("x",-180)
+      .attr("transform", "rotate(-90)")
+      .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+      .style("font-size", "12px")
+      .text("Sentiment Value [-1,1]");
+  
+    //AXIS LABEL
+  const x_axis_label = svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width - 550)
+    .attr("y", height - 6)
+    .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+    .style("font-size", "12px")
+    .text("Trade Date");
+  
   if (include10){
     return Object.assign(svg.node(), {
       update(domain) {
@@ -727,40 +843,19 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,xAxis,yAxis6)
 }
 
 
-function _60(htl){return(
-htl.html`     <pre>     <h1>  MACD </pre>`
+function _49(htl){return(
+htl.html`     <pre>     <h1>  MACD Graph </pre>`
 )}
 
 function _include11(Inputs){return(
-Inputs.toggle({label: "MACD", value: false})
+Inputs.toggle({label: "Load MACD Graph", value: false})
 )}
 
 function _macd_inputs(Inputs){return(
 Inputs.checkbox(["MACD", "MACD Signal", "MACD Raw"], {label: "Select Features:"})
 )}
 
-function _y7(d3,min_macd,max_macd,height,margin){return(
-d3.scaleLinear()
-    .domain([min_macd,max_macd])
-    .range([height - margin.bottom, margin.top])
-)}
-
-function _yAxis7(margin,d3,y7,height){return(
-g => g
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y7).ticks(height / 40))
-    .call(g => g.select(".domain").remove())
-)}
-
-function _max_macd(d3,data){return(
-d3.max([d3.max(data, function(d) { return +d.MACD; }), d3.max(data, function(d) { return +d.MACD_signal; }), d3.max(data, function(d) { return +d.MACD_raw; })])
-)}
-
-function _min_macd(d3,data){return(
-d3.min([d3.min(data, function(d) { return +d.MACD; }), d3.min(data, function(d) { return +d.MACD_signal; }), d3.min(data, function(d) { return +d.MACD_raw; })])
-)}
-
-function _chart7(d3,width,height,x,y7,include11,data,macd_inputs,xAxis,yAxis7)
+function _chart7(d3,width,height,x,y7,macd_inputs,data,xAxis,yAxis7,include11)
 {
   const svg = d3.create("svg")
       .attr("width", width)
@@ -773,7 +868,7 @@ function _chart7(d3,width,height,x,y7,include11,data,macd_inputs,xAxis,yAxis7)
 
   var line11 = d3.line()
   var path11 = svg.append("path")
-  if (include11 == 1) {
+  if (macd_inputs.includes("MACD")) {
     line11 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.MACD));
@@ -784,6 +879,8 @@ function _chart7(d3,width,height,x,y7,include11,data,macd_inputs,xAxis,yAxis7)
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line11(data));
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "purple")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("MACD").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line112 = d3.line()
@@ -795,10 +892,12 @@ function _chart7(d3,width,height,x,y7,include11,data,macd_inputs,xAxis,yAxis7)
 
     path112 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "green")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line112(data));
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "green")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("MAC Signal").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line113 = d3.line()
@@ -810,10 +909,27 @@ function _chart7(d3,width,height,x,y7,include11,data,macd_inputs,xAxis,yAxis7)
 
     path113 = svg.append("path")
       .attr("fill", "none")
-      .attr("stroke", "purple")
+      .attr("stroke", "brown")
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line113(data));
+    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",60).attr("r", 6).style("fill", "brown")
+    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("MACD Raw").style("font-size", "13px").attr("alignment-baseline","middle")
+  }
+
+  var line114 = d3.line()
+  var path114 = svg.append("path")
+  if (true) {
+    line114 = d3.line()
+      .x(d => zx(d.TradeDate))
+      .y(d => zy(0));
+
+    path114 = svg.append("path")
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", 1)
+      .attr("stroke-miterlimit", 1)
+      .attr("d", line114(data));
   }
   
   const gx = svg.append("g")
@@ -822,6 +938,27 @@ function _chart7(d3,width,height,x,y7,include11,data,macd_inputs,xAxis,yAxis7)
   const gy = svg.append("g")
       .call(yAxis7, zy);
 
+  //AXIS LABEL
+  const y_axis_label = svg.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y",20)
+      .attr("x",-180)
+      .attr("transform", "rotate(-90)")
+      .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+      .style("font-size", "12px")
+      .text("MACD");
+  
+    //AXIS LABEL
+  const x_axis_label = svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width - 550)
+    .attr("y", height - 6)
+    .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+    .style("font-size", "12px")
+    .text("Trade Date");
+   
   if (include11){
     return Object.assign(svg.node(), {
       update(domain) {
@@ -838,69 +975,15 @@ function _chart7(d3,width,height,x,y7,include11,data,macd_inputs,xAxis,yAxis7)
 }
 
 
-function _68(htl){return(
-htl.html`     <pre>     <h1>  Training Data </pre>`
+function _53(htl){return(
+htl.html`     <pre>     <h1>  Training Data Graph </pre>`
 )}
 
-function _include12(Inputs){return(
-Inputs.toggle({label: "Training QL"})
+function _training_inputs(Inputs){return(
+Inputs.checkbox(["Training QL", "Training Benchmark"], {label: "Select Features:"})
 )}
 
-function _include13(Inputs){return(
-Inputs.toggle({label: "Training Benchmark"})
-)}
-
-function _datasettraining(data){return(
-data.filter(d => d.test_or_train == 'train')
-)}
-
-function _max_y(d3,datasettraining){return(
-d3.max([d3.max(datasettraining, function(d) { return +d.QL; }), d3.max(datasettraining, function(d) { return +d.benchmark; })])
-)}
-
-function _min_y(d3,datasettraining){return(
-d3.min([d3.min(datasettraining, function(d) { return +d.QL; }), d3.min(datasettraining, function(d) { return +d.benchmark; })])
-)}
-
-function _y8(d3,min_y,max_y,height,margin){return(
-d3.scaleLinear()
-    // .domain(d3.min([d3.min(datasettraining.QL),d3.min(datasettraining.QL)]),d3.max([d3.max(datasettraining.QL),d3.max(datasettraining.QL)]))
-    .domain([min_y,max_y])
-    .range([height - margin.bottom, margin.top])
-)}
-
-function _yAxis8(margin,d3,y8,height){return(
-g => g
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y8).ticks(height / 40))
-    .call(g => g.select(".domain").remove())
-)}
-
-function _x8(d3,datasettraining,margin,width){return(
-d3.scaleUtc()
-    .domain(d3.extent(datasettraining, d => d.TradeDate))
-    .range([margin.left, width - margin.right])
-)}
-
-function _77(d3,datasettraining){return(
-d3.extent(datasettraining, d => d.TradeDate)
-)}
-
-function _xAxis8(height,margin,d3,x8,width){return(
-g => g
-    .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x8).ticks(width / 80).tickSizeOuter(0))
-)}
-
-function _orderstraining(data){return(
-data.filter(d => ((d.test_or_train == 'train') & (d.orders == 'BUY' | d.orders == 'BUY')))
-)}
-
-function _orderstraining2(orderstraining){return(
-orderstraining.map(d => [d.TradeDate, d.orders])
-)}
-
-function _chart8(d3,width,height,x8,y8,include12,datasettraining,include13,xAxis8,yAxis8)
+function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,xAxis8,yAxis8)
 {
   const svg = d3.create("svg")
       .attr("width", width)
@@ -913,7 +996,7 @@ function _chart8(d3,width,height,x8,y8,include12,datasettraining,include13,xAxis
 
  var line8 = d3.line()
   var path8 = svg.append("path")
-  if (include12 == 1) {
+  if (training_inputs.includes("Training QL")) {
     line8 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.QL));
@@ -924,11 +1007,13 @@ function _chart8(d3,width,height,x8,y8,include12,datasettraining,include13,xAxis
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line8(datasettraining));
+    const leg1_shape = svg.append("circle").attr("cx",100).attr("cy",20).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", 110).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Q Learner").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line82 = d3.line()
   var path82 = svg.append("path")
-  if (include13 == 1) {
+  if (training_inputs.includes("Training Benchmark")) {
     line82 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.benchmark+ 500000));
@@ -939,6 +1024,8 @@ function _chart8(d3,width,height,x8,y8,include12,datasettraining,include13,xAxis
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line82(datasettraining));
+    const leg1_shape = svg.append("circle").attr("cx",100).attr("cy",40).attr("r", 6).style("fill", "orange")
+    const leg1_text = svg.append("text").attr("x", 110).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Benchmark").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   for (let index = 0; index < datasettraining.length; ++index) {
@@ -961,6 +1048,12 @@ function _chart8(d3,width,height,x8,y8,include12,datasettraining,include13,xAxis
   		        .style("fill","#ff0000")
     }
   }
+
+  const leg3_shape = svg.append("circle").attr("cx",100).attr("cy",60).attr("r", 6).style("fill", "#00ff00")
+  const leg3_text = svg.append("text").attr("x", 110).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Buy").style("font-size", "13px").attr("alignment-baseline","middle")
+  
+  const leg4_shape = svg.append("circle").attr("cx",100).attr("cy",80).attr("r", 6).style("fill", "#ff0000")
+  const leg4_text = svg.append("text").attr("x", 110).attr("y", 80).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sell").style("font-size", "13px").attr("alignment-baseline","middle")
   
   const gx = svg.append("g")
       .call(xAxis8, zx);
@@ -968,7 +1061,28 @@ function _chart8(d3,width,height,x8,y8,include12,datasettraining,include13,xAxis
   const gy = svg.append("g")
       .call(yAxis8, zy);
 
-  if (include12 | include13){
+  //  AXIS LABEL
+  const y_axis_label = svg.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y",0 )
+      .attr("x",-180)
+      .attr("transform", "rotate(-90)")
+      .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+      .style("font-size", "12px")
+      .text("Portfolio Value USD");
+  
+    //AXIS LABEL
+  const x_axis_label = svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width - 550)
+    .attr("y", height - 6)
+    .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+    .style("font-size", "12px")
+    .text("Trade Date");
+
+  if (training_inputs.includes("Training Benchmark") | training_inputs.includes("Training QL")){
     return Object.assign(svg.node(), {
       update(domain) {
         const t = svg.transition().duration(750);
@@ -981,60 +1095,15 @@ function _chart8(d3,width,height,x8,y8,include12,datasettraining,include13,xAxis
 }
 
 
-function _82(htl){return(
-htl.html`     <pre>     <h1>  Testing Data </pre>`
+function _56(htl){return(
+htl.html`     <pre>     <h1>  Testing Data Graph </pre>`
 )}
 
-function _include14(Inputs){return(
-Inputs.toggle({label: "Testing QL"})
+function _testing_inputs(Inputs){return(
+Inputs.checkbox(["Testing QL", "Testing Benchmark"], {label: "Select Features:"})
 )}
 
-function _include15(Inputs){return(
-Inputs.toggle({label: "Testing Benchmark"})
-)}
-
-function _datasetesting(data){return(
-data.filter(d => d.test_or_train == 'test')
-)}
-
-function _max_y2(d3,datasetesting){return(
-d3.max([d3.max(datasetesting, function(d) { return +d.QL; }), d3.max(datasetesting, function(d) { return +d.benchmark; })])
-)}
-
-function _min_y2(d3,datasetesting){return(
-d3.min([d3.min(datasetesting, function(d) { return +d.QL; }), d3.min(datasetesting, function(d) { return +d.benchmark; })])
-)}
-
-function _y9(d3,min_y2,max_y2,height,margin){return(
-d3.scaleLinear()
-    .domain([min_y2 ,max_y2])
-    .range([height - margin.bottom, margin.top])
-)}
-
-function _yAxis9(margin,d3,y9,height){return(
-g => g
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y9).ticks(height / 40))
-    .call(g => g.select(".domain").remove())
-)}
-
-function _x9(d3,datasetesting,margin,width){return(
-d3.scaleUtc()
-    .domain(d3.extent(datasetesting, d => d.TradeDate))
-    .range([margin.left, width - margin.right])
-)}
-
-function _91(d3,datasetesting){return(
-d3.extent(datasetesting, d => d.TradeDate)
-)}
-
-function _xAxis9(height,margin,d3,x9,width){return(
-g => g
-    .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x9).ticks(width / 80).tickSizeOuter(0))
-)}
-
-function _chart9(d3,width,height,x9,y9,include14,datasetesting,include15,xAxis9,yAxis9)
+function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,xAxis9,yAxis9)
 {
   const svg = d3.create("svg")
       .attr("width", width)
@@ -1047,7 +1116,7 @@ function _chart9(d3,width,height,x9,y9,include14,datasetesting,include15,xAxis9,
 
  var line9 = d3.line()
   var path9 = svg.append("path")
-  if (include14 == 1) {
+  if (testing_inputs.includes("Testing QL")) {
     line9 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.QL));
@@ -1058,11 +1127,13 @@ function _chart9(d3,width,height,x9,y9,include14,datasetesting,include15,xAxis9,
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line9(datasetesting));
+    const leg1_shape = svg.append("circle").attr("cx",100).attr("cy",20).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", 110).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Q Learner").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line10 = d3.line()
   var path10 = svg.append("path")
-  if (include15 == 1) {
+  if (testing_inputs.includes("Testing Benchmark")) {
     line10 = d3.line()
       .x(d => zx(d.TradeDate))
       .y(d => zy(+d.benchmark + 500000));
@@ -1073,6 +1144,8 @@ function _chart9(d3,width,height,x9,y9,include14,datasetesting,include15,xAxis9,
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line10(datasetesting));
+    const leg1_shape = svg.append("circle").attr("cx",100).attr("cy",40).attr("r", 6).style("fill", "orange")
+    const leg1_text = svg.append("text").attr("x", 110).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Benchmark").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   for (let index = 0; index < datasetesting.length; ++index) {
@@ -1096,6 +1169,32 @@ function _chart9(d3,width,height,x9,y9,include14,datasetesting,include15,xAxis9,
   		        .style("fill","#ff0000")
     }
   }
+  const leg3_shape = svg.append("circle").attr("cx",100).attr("cy",60).attr("r", 6).style("fill", "#00ff00")
+  const leg3_text = svg.append("text").attr("x", 110).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Buy").style("font-size", "13px").attr("alignment-baseline","middle")
+  
+  const leg4_shape = svg.append("circle").attr("cx",100).attr("cy",80).attr("r", 6).style("fill", "#ff0000")
+  const leg4_text = svg.append("text").attr("x", 110).attr("y", 80).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sell").style("font-size", "13px").attr("alignment-baseline","middle")
+
+  //AXIS LABEL
+  const y_axis_label = svg.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y",0)
+      .attr("x",-180)
+      .attr("transform", "rotate(-90)")
+      .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+      .style("font-size", "12px")
+      .text("Portfolio Value USD");
+  
+    //AXIS LABEL
+  const x_axis_label = svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width - 550)
+    .attr("y", height - 6)
+    .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
+    .style("font-size", "12px")
+    .text("Trade Date");
   
   const gx = svg.append("g")
       .call(xAxis9, zx);
@@ -1103,7 +1202,7 @@ function _chart9(d3,width,height,x9,y9,include14,datasetesting,include15,xAxis9,
   const gy = svg.append("g")
       .call(yAxis9, zy);
 
-  if (include14 | include15){
+  if (testing_inputs.includes("Testing QL") | testing_inputs.includes("Testing Benchmark")){
     return Object.assign(svg.node(), {
       update(domain) {
         const t = svg.transition().duration(750);
@@ -1115,48 +1214,6 @@ function _chart9(d3,width,height,x9,y9,include14,datasetesting,include15,xAxis9,
   }
 }
 
-
-function _update(chart,timeframe){return(
-chart.update(timeframe)
-)}
-
-function _update2(chart2,timeframe){return(
-chart2.update(timeframe)
-)}
-
-function _update3(chart3,timeframe){return(
-chart3.update(timeframe)
-)}
-
-function _update4(chart4,timeframe){return(
-chart4.update(timeframe)
-)}
-
-function _update5(chart5,timeframe){return(
-chart5.update(timeframe)
-)}
-
-function _update6(chart6,timeframe){return(
-chart6.update(timeframe)
-)}
-
-function _update7(chart7,timeframe){return(
-chart7.update(timeframe)
-)}
-
-function _update8(chart8,timeframe){return(
-chart8.update(timeframe)
-)}
-
-function _update9(chart9,timeframe){return(
-chart9.update(timeframe)
-)}
-
-function _103(md){return(
-md`---
-
-## Appendix`
-)}
 
 function _timeframe(dateone,datetwo){return(
 [dateone,datetwo]
@@ -1195,20 +1252,6 @@ function _params(datep,training_startdate,training_enddate,testing_startdate,tes
 }
 )}
 
-function _queryString(params){return(
-Object.keys(params).map(function(key) {
-return key + '=' + params[key]
-}).join('&')
-)}
-
-function _url(queryString){return(
-"http://127.0.0.1:5001/run_qlearner?" + queryString
-)}
-
-function _url2(queryString){return(
-"http://127.0.0.1:5001/run_gridsearch?" + queryString
-)}
-
 function _dataset2(rf,qlgs,url,url2)
 {
   if (rf){
@@ -1220,7 +1263,7 @@ function _dataset2(rf,qlgs,url,url2)
 }
 
 
-function _111(dataset2){return(
+function _63(dataset2){return(
 dataset2
 )}
 
@@ -1256,14 +1299,22 @@ function _data(cleanedData){return(
 cleanedData
 )}
 
-function _114(data){return(
-console.log(data)
+function _x(d3,data,margin,width){return(
+d3.scaleUtc()
+    .domain(d3.extent(data, d => d.TradeDate))
+    .range([margin.left, width - margin.right])
 )}
 
 function _xAxis(x,height,margin,d3,width){return(
 (g, scale = x) => g
     .attr("transform", `translate(0,${height - margin.bottom})`)
     .call(d3.axisBottom(scale).ticks(width / 80).tickSizeOuter(0))
+)}
+
+function _y(d3,data,height,margin){return(
+d3.scaleLinear()
+    .domain([0, d3.max(data, d => +d.bollinger_band_upper)])
+    .range([height - margin.bottom, margin.top])
 )}
 
 function _yAxis(margin,d3,y,height){return(
@@ -1273,24 +1324,242 @@ g => g
     .call(g => g.select(".domain").remove())
 )}
 
+function _y6(d3,data,height,margin){return(
+d3.scaleLinear()
+    .domain([d3.min(data, d => +d.avg_compound_sentiment), d3.max(data, d => +d.avg_compound_sentiment)])
+    .range([height - margin.bottom, margin.top])
+)}
+
+function _yAxis4(margin,d3,y4,height){return(
+g => g
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y4).ticks(height / 40))
+    .call(g => g.select(".domain").remove())
+)}
+
 function _height(){return(
 480
 )}
 
-function _margin(){return(
-{top: 20, right: 30, bottom: 30, left: 40}
+function _yAxis2(margin,d3,y2,height){return(
+g => g
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y2).ticks(height / 40))
+    .call(g => g.select(".domain").remove())
 )}
 
-function _x(d3,data,margin,width){return(
+function _y4(d3,data,height,margin){return(
+d3.scaleLinear()
+    .domain([d3.min(data, d => +d.price_to_SMA_ratio), d3.max(data, d => +d.price_to_SMA_ratio)])
+    .range([height - margin.bottom, margin.top])
+)}
+
+function _min_macd(d3,data){return(
+d3.min([d3.min(data, function(d) { return +d.MACD; }), d3.min(data, function(d) { return +d.MACD_signal; }), d3.min(data, function(d) { return +d.MACD_raw; })])
+)}
+
+function _y3(d3,data,height,margin){return(
+d3.scaleLinear()
+    .domain([d3.min(data, d => +d.stochastic_oscillator_sma), d3.max(data, d => +d.stochastic_oscillator_sma)])
+    .range([height - margin.bottom, margin.top])
+)}
+
+function _yAxis3(margin,d3,y3,height){return(
+g => g
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y3).ticks(height / 40))
+    .call(g => g.select(".domain").remove())
+)}
+
+function _margin(){return(
+{top: 60, right: 30, bottom: 50, left: 70}
+)}
+
+function _datasettraining(data){return(
+data.filter(d => d.test_or_train == 'train')
+)}
+
+function _data2(data){return(
+data.map(d => d.momentum)
+)}
+
+function _max_y(d3,datasettraining){return(
+d3.max([d3.max(datasettraining, function(d) { return +d.QL; }), d3.max(datasettraining, function(d) { return +d.benchmark; })])
+)}
+
+function _min_y(d3,datasettraining){return(
+d3.min([d3.min(datasettraining, function(d) { return +d.QL; }), d3.min(datasettraining, function(d) { return +d.benchmark; })])
+)}
+
+function _83(d3,datasettraining){return(
+d3.extent(datasettraining, d => d.TradeDate)
+)}
+
+function _x8(d3,datasettraining,margin,width){return(
 d3.scaleUtc()
-    .domain(d3.extent(data, d => d.TradeDate))
+    .domain(d3.extent(datasettraining, d => d.TradeDate))
     .range([margin.left, width - margin.right])
 )}
 
-function _y(d3,data,height,margin){return(
+function _max_macd(d3,data){return(
+d3.max([d3.max(data, function(d) { return +d.MACD; }), d3.max(data, function(d) { return +d.MACD_signal; }), d3.max(data, function(d) { return +d.MACD_raw; })])
+)}
+
+function _y8(d3,min_y,max_y,height,margin){return(
 d3.scaleLinear()
-    .domain([0, d3.max(data, d => +d.bollinger_band_upper)])
+    .domain([min_y,max_y])
     .range([height - margin.bottom, margin.top])
+)}
+
+function _yAxis5(margin,d3,y5,height){return(
+g => g
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y5).ticks(height / 40))
+    .call(g => g.select(".domain").remove())
+)}
+
+function _xAxis8(height,margin,d3,x8,width){return(
+g => g
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(x8).ticks(width / 80).tickSizeOuter(0))
+)}
+
+function _yAxis8(margin,d3,y8,height){return(
+g => g
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y8).ticks(height / 40))
+    .call(g => g.select(".domain").remove())
+)}
+
+function _orderstraining(data){return(
+data.filter(d => ((d.test_or_train == 'train') & (d.orders == 'BUY' | d.orders == 'BUY')))
+)}
+
+function _orderstraining2(orderstraining){return(
+orderstraining.map(d => [d.TradeDate, d.orders])
+)}
+
+function _y5(d3,data,height,margin){return(
+d3.scaleLinear()
+    .domain([d3.min(data, d => +d.momentum), d3.max(data, d => +d.momentum)])
+    .range([height - margin.bottom, margin.top])
+)}
+
+function _datasetesting(data){return(
+data.filter(d => d.test_or_train == 'test')
+)}
+
+function _max_y2(d3,datasetesting){return(
+d3.max([d3.max(datasetesting, function(d) { return +d.QL; }), d3.max(datasetesting, function(d) { return +d.benchmark; })])
+)}
+
+function _min_y2(d3,datasetesting){return(
+d3.min([d3.min(datasetesting, function(d) { return +d.QL; }), d3.min(datasetesting, function(d) { return +d.benchmark; })])
+)}
+
+function _y9(d3,min_y2,max_y2,height,margin){return(
+d3.scaleLinear()
+    .domain([min_y2 ,max_y2])
+    .range([height - margin.bottom, margin.top])
+)}
+
+function _yAxis9(margin,d3,y9,height){return(
+g => g
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y9).ticks(height / 40))
+    .call(g => g.select(".domain").remove())
+)}
+
+function _x9(d3,datasetesting,margin,width){return(
+d3.scaleUtc()
+    .domain(d3.extent(datasetesting, d => d.TradeDate))
+    .range([margin.left, width - margin.right])
+)}
+
+function _yAxis7(margin,d3,y7,height){return(
+g => g
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y7).ticks(height / 40))
+    .call(g => g.select(".domain").remove())
+)}
+
+function _100(d3,datasetesting){return(
+d3.extent(datasetesting, d => d.TradeDate)
+)}
+
+function _yAxis6(margin,d3,y6,height){return(
+g => g
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y6).ticks(height / 40))
+    .call(g => g.select(".domain").remove())
+)}
+
+function _xAxis9(height,margin,d3,x9,width){return(
+g => g
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(x9).ticks(width / 80).tickSizeOuter(0))
+)}
+
+function _update(chart,timeframe){return(
+chart.update(timeframe)
+)}
+
+function _y2(d3,data,height,margin){return(
+d3.scaleLinear()
+    .domain([d3.min(data, d => +d.bollinger_band_percentage), d3.max(data, d => +d.bollinger_band_percentage)])
+    .range([height - margin.bottom, margin.top])
+)}
+
+function _y7(d3,min_macd,max_macd,height,margin){return(
+d3.scaleLinear()
+    .domain([min_macd,max_macd])
+    .range([height - margin.bottom, margin.top])
+)}
+
+function _update2(chart2,timeframe){return(
+chart2.update(timeframe)
+)}
+
+function _update3(chart3,timeframe){return(
+chart3.update(timeframe)
+)}
+
+function _update4(chart4,timeframe){return(
+chart4.update(timeframe)
+)}
+
+function _update5(chart5,timeframe){return(
+chart5.update(timeframe)
+)}
+
+function _update6(chart6,timeframe){return(
+chart6.update(timeframe)
+)}
+
+function _update7(chart7,timeframe){return(
+chart7.update(timeframe)
+)}
+
+function _update8(chart8,timeframe){return(
+chart8.update(timeframe)
+)}
+
+function _update9(chart9,timeframe){return(
+chart9.update(timeframe)
+)}
+
+function _queryString(params){return(
+Object.keys(params).map(function(key) {
+return key + '=' + params[key]
+}).join('&')
+)}
+
+function _url(queryString){return(
+"http://127.0.0.1:5001/run_qlearner?" + queryString
+)}
+
+function _url2(queryString){return(
+"http://127.0.0.1:5001/run_gridsearch?" + queryString
 )}
 
 export default function define(runtime, observer) {
@@ -1359,75 +1628,84 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["htl"], _34);
   main.variable(observer("viewof include6")).define("viewof include6", ["Inputs"], _include6);
   main.variable(observer("include6")).define("include6", ["Generators", "viewof include6"], (G, _) => G.input(_));
-  main.variable(observer("y2")).define("y2", ["d3","data","height","margin"], _y2);
-  main.variable(observer("yAxis2")).define("yAxis2", ["margin","d3","y2","height"], _yAxis2);
   main.variable(observer("chart2")).define("chart2", ["d3","width","height","x","y2","include6","data","xAxis","yAxis2"], _chart2);
-  main.variable(observer()).define(["htl"], _39);
+  main.variable(observer()).define(["htl"], _37);
   main.variable(observer("viewof include7")).define("viewof include7", ["Inputs"], _include7);
   main.variable(observer("include7")).define("include7", ["Generators", "viewof include7"], (G, _) => G.input(_));
-  main.variable(observer("y3")).define("y3", ["d3","data","height","margin"], _y3);
-  main.variable(observer("yAxis3")).define("yAxis3", ["margin","d3","y3","height"], _yAxis3);
   main.variable(observer("chart3")).define("chart3", ["d3","width","height","x","y3","include7","data","so_ul","so_ll","xAxis","yAxis3"], _chart3);
-  main.variable(observer()).define(["htl"], _44);
+  main.variable(observer()).define(["htl"], _40);
   main.variable(observer("viewof include8")).define("viewof include8", ["Inputs"], _include8);
   main.variable(observer("include8")).define("include8", ["Generators", "viewof include8"], (G, _) => G.input(_));
-  main.variable(observer("y4")).define("y4", ["d3","data","height","margin"], _y4);
-  main.variable(observer("yAxis4")).define("yAxis4", ["margin","d3","y4","height"], _yAxis4);
   main.variable(observer("chart4")).define("chart4", ["d3","width","height","x","y4","include8","data","smathreshold","xAxis","yAxis4"], _chart4);
-  main.variable(observer()).define(["htl"], _49);
+  main.variable(observer()).define(["htl"], _43);
   main.variable(observer("viewof include9")).define("viewof include9", ["Inputs"], _include9);
   main.variable(observer("include9")).define("include9", ["Generators", "viewof include9"], (G, _) => G.input(_));
-  main.variable(observer("data2")).define("data2", ["data"], _data2);
-  main.variable(observer("y5")).define("y5", ["d3","data","height","margin"], _y5);
-  main.variable(observer("yAxis5")).define("yAxis5", ["margin","d3","y5","height"], _yAxis5);
   main.variable(observer("chart5")).define("chart5", ["d3","width","height","x","y5","include9","data","momentumth","xAxis","yAxis5"], _chart5);
-  main.variable(observer()).define(["htl"], _55);
+  main.variable(observer()).define(["htl"], _46);
   main.variable(observer("viewof include10")).define("viewof include10", ["Inputs"], _include10);
   main.variable(observer("include10")).define("include10", ["Generators", "viewof include10"], (G, _) => G.input(_));
-  main.variable(observer("y6")).define("y6", ["d3","data","height","margin"], _y6);
-  main.variable(observer("yAxis6")).define("yAxis6", ["margin","d3","y6","height"], _yAxis6);
   main.variable(observer("chart6")).define("chart6", ["d3","width","height","x","y6","include10","data","sentimentth","xAxis","yAxis6"], _chart6);
-  main.variable(observer()).define(["htl"], _60);
+  main.variable(observer()).define(["htl"], _49);
   main.variable(observer("viewof include11")).define("viewof include11", ["Inputs"], _include11);
   main.variable(observer("include11")).define("include11", ["Generators", "viewof include11"], (G, _) => G.input(_));
   main.variable(observer("viewof macd_inputs")).define("viewof macd_inputs", ["Inputs"], _macd_inputs);
   main.variable(observer("macd_inputs")).define("macd_inputs", ["Generators", "viewof macd_inputs"], (G, _) => G.input(_));
-  main.variable(observer("y7")).define("y7", ["d3","min_macd","max_macd","height","margin"], _y7);
-  main.variable(observer("yAxis7")).define("yAxis7", ["margin","d3","y7","height"], _yAxis7);
-  main.variable(observer("max_macd")).define("max_macd", ["d3","data"], _max_macd);
+  main.variable(observer("chart7")).define("chart7", ["d3","width","height","x","y7","macd_inputs","data","xAxis","yAxis7","include11"], _chart7);
+  main.variable(observer()).define(["htl"], _53);
+  main.variable(observer("viewof training_inputs")).define("viewof training_inputs", ["Inputs"], _training_inputs);
+  main.variable(observer("training_inputs")).define("training_inputs", ["Generators", "viewof training_inputs"], (G, _) => G.input(_));
+  main.variable(observer("chart8")).define("chart8", ["d3","width","height","x8","y8","training_inputs","datasettraining","xAxis8","yAxis8"], _chart8);
+  main.variable(observer()).define(["htl"], _56);
+  main.variable(observer("viewof testing_inputs")).define("viewof testing_inputs", ["Inputs"], _testing_inputs);
+  main.variable(observer("testing_inputs")).define("testing_inputs", ["Generators", "viewof testing_inputs"], (G, _) => G.input(_));
+  main.variable(observer("chart9")).define("chart9", ["d3","width","height","x9","y9","testing_inputs","datasetesting","xAxis9","yAxis9"], _chart9);
+  main.variable(observer("timeframe")).define("timeframe", ["dateone","datetwo"], _timeframe);
+  main.variable(observer("datep")).define("datep", ["d3"], _datep);
+  main.variable(observer("params")).define("params", ["datep","training_startdate","training_enddate","testing_startdate","testing_enddate","smawindow","bbwindow","bbstdev","so_window","so_window_sma","obv","macd","include_sentiment","mom_window","alpha","gamma","rar","radr","smathreshold","so_ul","so_ll","momentumth","sentimentth"], _params);
+  main.variable(observer("dataset2")).define("dataset2", ["rf","qlgs","url","url2"], _dataset2);
+  main.variable(observer()).define(["dataset2"], _63);
+  main.variable(observer("cleanedData")).define("cleanedData", ["dataset2"], _cleanedData);
+  main.variable(observer("data")).define("data", ["cleanedData"], _data);
+  main.variable(observer("x")).define("x", ["d3","data","margin","width"], _x);
+  main.variable(observer("xAxis")).define("xAxis", ["x","height","margin","d3","width"], _xAxis);
+  main.variable(observer("y")).define("y", ["d3","data","height","margin"], _y);
+  main.variable(observer("yAxis")).define("yAxis", ["margin","d3","y","height"], _yAxis);
+  main.variable(observer("y6")).define("y6", ["d3","data","height","margin"], _y6);
+  main.variable(observer("yAxis4")).define("yAxis4", ["margin","d3","y4","height"], _yAxis4);
+  main.variable(observer("height")).define("height", _height);
+  main.variable(observer("yAxis2")).define("yAxis2", ["margin","d3","y2","height"], _yAxis2);
+  main.variable(observer("y4")).define("y4", ["d3","data","height","margin"], _y4);
   main.variable(observer("min_macd")).define("min_macd", ["d3","data"], _min_macd);
-  main.variable(observer("chart7")).define("chart7", ["d3","width","height","x","y7","include11","data","macd_inputs","xAxis","yAxis7"], _chart7);
-  main.variable(observer()).define(["htl"], _68);
-  main.variable(observer("viewof include12")).define("viewof include12", ["Inputs"], _include12);
-  main.variable(observer("include12")).define("include12", ["Generators", "viewof include12"], (G, _) => G.input(_));
-  main.variable(observer("viewof include13")).define("viewof include13", ["Inputs"], _include13);
-  main.variable(observer("include13")).define("include13", ["Generators", "viewof include13"], (G, _) => G.input(_));
+  main.variable(observer("y3")).define("y3", ["d3","data","height","margin"], _y3);
+  main.variable(observer("yAxis3")).define("yAxis3", ["margin","d3","y3","height"], _yAxis3);
+  main.variable(observer("margin")).define("margin", _margin);
   main.variable(observer("datasettraining")).define("datasettraining", ["data"], _datasettraining);
+  main.variable(observer("data2")).define("data2", ["data"], _data2);
   main.variable(observer("max_y")).define("max_y", ["d3","datasettraining"], _max_y);
   main.variable(observer("min_y")).define("min_y", ["d3","datasettraining"], _min_y);
-  main.variable(observer("y8")).define("y8", ["d3","min_y","max_y","height","margin"], _y8);
-  main.variable(observer("yAxis8")).define("yAxis8", ["margin","d3","y8","height"], _yAxis8);
+  main.variable(observer()).define(["d3","datasettraining"], _83);
   main.variable(observer("x8")).define("x8", ["d3","datasettraining","margin","width"], _x8);
-  main.variable(observer()).define(["d3","datasettraining"], _77);
+  main.variable(observer("max_macd")).define("max_macd", ["d3","data"], _max_macd);
+  main.variable(observer("y8")).define("y8", ["d3","min_y","max_y","height","margin"], _y8);
+  main.variable(observer("yAxis5")).define("yAxis5", ["margin","d3","y5","height"], _yAxis5);
   main.variable(observer("xAxis8")).define("xAxis8", ["height","margin","d3","x8","width"], _xAxis8);
+  main.variable(observer("yAxis8")).define("yAxis8", ["margin","d3","y8","height"], _yAxis8);
   main.variable(observer("orderstraining")).define("orderstraining", ["data"], _orderstraining);
   main.variable(observer("orderstraining2")).define("orderstraining2", ["orderstraining"], _orderstraining2);
-  main.variable(observer("chart8")).define("chart8", ["d3","width","height","x8","y8","include12","datasettraining","include13","xAxis8","yAxis8"], _chart8);
-  main.variable(observer()).define(["htl"], _82);
-  main.variable(observer("viewof include14")).define("viewof include14", ["Inputs"], _include14);
-  main.variable(observer("include14")).define("include14", ["Generators", "viewof include14"], (G, _) => G.input(_));
-  main.variable(observer("viewof include15")).define("viewof include15", ["Inputs"], _include15);
-  main.variable(observer("include15")).define("include15", ["Generators", "viewof include15"], (G, _) => G.input(_));
+  main.variable(observer("y5")).define("y5", ["d3","data","height","margin"], _y5);
   main.variable(observer("datasetesting")).define("datasetesting", ["data"], _datasetesting);
   main.variable(observer("max_y2")).define("max_y2", ["d3","datasetesting"], _max_y2);
   main.variable(observer("min_y2")).define("min_y2", ["d3","datasetesting"], _min_y2);
   main.variable(observer("y9")).define("y9", ["d3","min_y2","max_y2","height","margin"], _y9);
   main.variable(observer("yAxis9")).define("yAxis9", ["margin","d3","y9","height"], _yAxis9);
   main.variable(observer("x9")).define("x9", ["d3","datasetesting","margin","width"], _x9);
-  main.variable(observer()).define(["d3","datasetesting"], _91);
+  main.variable(observer("yAxis7")).define("yAxis7", ["margin","d3","y7","height"], _yAxis7);
+  main.variable(observer()).define(["d3","datasetesting"], _100);
+  main.variable(observer("yAxis6")).define("yAxis6", ["margin","d3","y6","height"], _yAxis6);
   main.variable(observer("xAxis9")).define("xAxis9", ["height","margin","d3","x9","width"], _xAxis9);
-  main.variable(observer("chart9")).define("chart9", ["d3","width","height","x9","y9","include14","datasetesting","include15","xAxis9","yAxis9"], _chart9);
   main.variable(observer("update")).define("update", ["chart","timeframe"], _update);
+  main.variable(observer("y2")).define("y2", ["d3","data","height","margin"], _y2);
+  main.variable(observer("y7")).define("y7", ["d3","min_macd","max_macd","height","margin"], _y7);
   main.variable(observer("update2")).define("update2", ["chart2","timeframe"], _update2);
   main.variable(observer("update3")).define("update3", ["chart3","timeframe"], _update3);
   main.variable(observer("update4")).define("update4", ["chart4","timeframe"], _update4);
@@ -1436,23 +1714,10 @@ export default function define(runtime, observer) {
   main.variable(observer("update7")).define("update7", ["chart7","timeframe"], _update7);
   main.variable(observer("update8")).define("update8", ["chart8","timeframe"], _update8);
   main.variable(observer("update9")).define("update9", ["chart9","timeframe"], _update9);
-  main.variable(observer()).define(["md"], _103);
-  main.variable(observer("timeframe")).define("timeframe", ["dateone","datetwo"], _timeframe);
-  main.variable(observer("datep")).define("datep", ["d3"], _datep);
-  main.variable(observer("params")).define("params", ["datep","training_startdate","training_enddate","testing_startdate","testing_enddate","smawindow","bbwindow","bbstdev","so_window","so_window_sma","obv","macd","include_sentiment","mom_window","alpha","gamma","rar","radr","smathreshold","so_ul","so_ll","momentumth","sentimentth"], _params);
   main.variable(observer("queryString")).define("queryString", ["params"], _queryString);
   main.variable(observer("url")).define("url", ["queryString"], _url);
   main.variable(observer("url2")).define("url2", ["queryString"], _url2);
-  main.variable(observer("dataset2")).define("dataset2", ["rf","qlgs","url","url2"], _dataset2);
-  main.variable(observer()).define(["dataset2"], _111);
-  main.variable(observer("cleanedData")).define("cleanedData", ["dataset2"], _cleanedData);
-  main.variable(observer("data")).define("data", ["cleanedData"], _data);
-  main.variable(observer()).define(["data"], _114);
-  main.variable(observer("xAxis")).define("xAxis", ["x","height","margin","d3","width"], _xAxis);
-  main.variable(observer("yAxis")).define("yAxis", ["margin","d3","y","height"], _yAxis);
-  main.variable(observer("height")).define("height", _height);
-  main.variable(observer("margin")).define("margin", _margin);
-  main.variable(observer("x")).define("x", ["d3","data","margin","width"], _x);
-  main.variable(observer("y")).define("y", ["d3","data","height","margin"], _y);
+  const child1 = runtime.module(define1);
+  main.import("howto", child1);
   return main;
 }
