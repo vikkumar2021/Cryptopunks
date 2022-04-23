@@ -9,7 +9,6 @@ from QLearnerModel.strategy_evaluation.money_machine import main
 from GridSearch.indicators_search_v2 import run_logic
 
 
-
 app = Flask(__name__)
 cors = CORS(app)
 spark = create_spark_session()
@@ -19,12 +18,6 @@ spark = create_spark_session()
 def index() -> str:
     example_embed = "CSE-6242: Cryptopunks Project Flask API"
     return render_template("index.html", embed=example_embed)
-
-
-@app.route("/d3_test")
-def d3_test() -> str:
-    example_embed = "Test D3"
-    return render_template("interactive.html", embed=example_embed)
 
 
 @app.route("/run_qlearner")
@@ -52,7 +45,7 @@ def run_gridsearch() -> dict:
 
 
 """
-1) To Run the Flask App, run this script
+1) To Run the Flask App locally outside of Docker, run this script `python app.py`
 2) To test Flask is running, go to following URL in your browser: http://127.0.0.1:5000
 3) To trigger the Q-learner, go to the URL printed on the console output
 """
@@ -87,16 +80,14 @@ if __name__ == "__main__":
     with app.test_request_context():
 
         # Q-Learner Method
-        url2 = url_for("run_qlearner", **config_dict)
-        print("TRIGGER Q-LEAERNER BY CLICKING THIS URL:")
-        print(f"http://127.0.0.1:5000{url2}")
+        qlearner_url = url_for("run_qlearner", **config_dict)
+        print("OBTAIN Q-LEAERNER RESPONSE AT THIS URL:")
+        print(f"http://127.0.0.1:5000{qlearner_url}")
+        gridsearch_url = url_for("run_gridsearch", **config_dict)
+        print("OBTAIN GRIDSEARCH RESPONSE AT THIS URL:")
+        print(f"http://127.0.0.1:5000{gridsearch_url}")
         app.run(debug=True, host="0.0.0.0", port=5000)
 
-        # #Grid Search Method
-        # url2 = url_for("run_gridsearch", **config_dict)
-        # print("TRIGGER run_gridsearch BY CLICKING THIS URL:")
-        # print(f"http://127.0.0.1:5005/{url2}")
-        # app.run(debug=True, host="0.0.0.0", port=5000)
 
 
 
