@@ -20,7 +20,7 @@ Additionally the following hyperparameters are selected by the user as well:
 - Simple Moving Average (SMA) Threshold
 - Stochastic Oscillator Upper and Lower Limit
 - Momentum Threshold
-- Momentum Threshold
+- Sentiment Threshold
 
 FrontEnd: The front end HTML/CSS/Javascript files can be found in our [visualization folder](https://github.com/vikkumar2021/Cryptopunks/tree/main/visualization). The front end was created using Observable and D3. The front end is interactive and allows the user to input parameters for the data pipeline and model algorithm (Q-learning or Grid Search) via sliders, dropdowns, and checkboxes. The frontend queries the backend to obtain the Q-learner or Grid Search model results and renders the visualizations using the returned JSON data.
 
