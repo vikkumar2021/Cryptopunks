@@ -1,40 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Line Charts</title>
+  <meta charset="utf-8">
+  <style>
+    path {
+      fill: none;
+      stroke: gray;
+      stroke-width: 3px;
+    }
+
+    text {
+      fill: black;
+      font: 10px sans-serif;
+      pointer-events: none;
+      font-weight:  bold;
+    }
+
+    circle {
+    fill: #ffab00;
+    stroke: #fff;
+  }
+
+  </style>
+</head>
 <body>
     <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
-    <script  type="text/javascript" src="static/lib/Chart.min.js"></script>
-    <link rel="stylesheet" href="static/lib/style.css">
-
-    <h1> Grid Search Market Analysis</h1>
-
-    <div id="indicators">
-        <h1>Select up to 3 indicators</h1>
-        <p>
-        <input type="checkbox" id="c1" name="cc" />
-        <label for="c1"><span></span>Simple Moving Average (SMA)</label>
-        <p>
-        <input type="checkbox" id="c2" name="cc" />
-        <label for="c2"><span></span>Relative Strength Index (RSI)</label>
-        <p>
-            <input type="checkbox" id="c3" name="cc" />
-            <label for="c2"><span></span>Bollinger Band (BB)</label>
-        <p>
-            <input type="checkbox" id="c4" name="cc" />
-            <label for="c2"><span></span>Twitter Sentiment (SEN)</label>											
-    </div>
-
-    <div class="frame">
-        <button class="custom-btn btn-4">   START    </button>
-    </div>
-
     <script>
 
         // Margins
         var margin = {top: 50, right: 50, bottom: 50, left: 50}
-          , width = 1000 - margin.left - margin.right // Use the window's width 
+          , width = 1000 - margin.left - margin.right // Use the window's width
           , height = 500 - margin.top - margin.bottom; // Use the window's height
-
-        // Date Parse
-        const formatTime = d3.timeFormat("%B %d, %Y");
-        var parseTime = d3.timeParse('%Y-%m-%d');
 
         // Model/Pipeline Parameters
         var params = {
@@ -69,8 +66,7 @@
         }).join('&');
         console.log(queryString);
 
-        //var url = "/run_qlearner?" + queryString
-        var url = "/run_gridsearch?" + queryString
+        var url = "http://127.0.0.1:5001/run_qlearner?" + queryString
         console.log(url);
 
         fetch(url)
@@ -78,348 +74,14 @@
           return response.json();
         }).then(function (data) {
 
-            console.log('OUTPUT DATA = ', data);
-            
-
-            var parseTime = d3.timeParse('%Y-%m-%d');
-            var dates_arr = data.map(function(d) { return formatTime(parseTime(d.TradeDate));})
-
-            const formatTime2 = d3.timeFormat("%Y-%m-%d");
-            var dates_arr2 = data.map(function(d) { return formatTime2(parseTime(d.TradeDate));})
-
-            var start_ind = 1000;
-            var end_ind = 1500;
-            
-            for (let i = 0; i < dates_arr.length; i++) {
-                if (dates_arr[i] == params["training_sd"]){
-                    start_ind = i;
-                }
-                if (dates_arr[i] == params["training_ed"]){
-                    end_ind = i;
-                }                           
-            }
-
-            var dates_arr2_train = dates_arr2.slice(start_ind , end_ind);
-            console.log('CHECK HERE = ', dates_arr2[0], dates_arr2[1], dates_arr2[1] == "2014-09-18");
-
-            var TrainOrders_arr = data.map(function(d) { return d.TrainOrders;})
-            console.log('CHECK HERE dates = ', dates_arr2[1031], dates_arr2[1032], TrainOrders_arr[1031], TrainOrders_arr[1032], TrainOrders_arr[1032] > 1)
-
-            var TrainOrders_arr = TrainOrders_arr.slice(start_ind , end_ind);
-
-            var price_arr = data.map(function(d) { return d.Adj_Close;})
-            var price_arr_train = price_arr.slice(start_ind , end_ind);
-            
-            var TrainBenchmark = data.map(function(d) { return d.TrainBenchmark;})
-            var TrainBenchmark_train = TrainBenchmark.slice(start_ind , end_ind);
-
-            var TrainGridSearch = data.map(function(d) { return d.TrainGridSearch;})
-            var TrainGridSearch_train = TrainGridSearch.slice(start_ind , end_ind);
-
-
-            var buy_orders = [];
-            var sell_orders = [];
-
-            for (let i = 0; i < dates_arr.length; i++) {
-                if (TrainOrders_arr[i] > 1){
-                    buy_orders.push(i);
-                }
-                if (TrainOrders_arr[i] < -1){
-                    sell_orders.push(i);
-                }                        
-            }
-
-            console.log('buy_orders = ', buy_orders)
-            console.log('sell_orders = ', sell_orders)
-
-
-            var chart   = document.getElementById('chart1').getContext('2d'),
-            gradient = chart.createLinearGradient(0, 0, 0, 900);
-            gradient.addColorStop(0, 'rgba( 50, 50, 250, 0.32)');
-            gradient.addColorStop(0.3, 'rgba( 50, 50, 250, 0.1)');
-            gradient.addColorStop(1, 'rgba( 50, 50, 250, 0)');
-
-            var data  = {
-                labels:dates_arr2_train,
-                datasets: [{
-                        label: 'Price',
-                        backgroundColor: gradient,
-                        pointBackgroundColor: '#0000ff',
-                        borderWidth: 2,
-                        borderColor: '#0000ff',
-                        data:price_arr_train
-                    },
-                    {
-                        label: 'Buy',
-                        backgroundColor: gradient,
-                        pointBackgroundColor: '#00ff00',
-                        borderWidth: 0.1,
-                        borderColor: '#00ff00',
-                        data:[0]
-                    },
-                    {
-                        label: 'Sell',
-                        backgroundColor: gradient,
-                        pointBackgroundColor: '#ff0000',
-                        borderWidth: 0.1,
-                        borderColor: '#ff0000',
-                        data:[0]
-                    }
-                ],
-                lineAtIndex: [ sell_orders, buy_orders]
-            };
-
-            var options = {
-                responsive: true,
-                maintainAspectRatio: true,
-                animation: {
-                    easing: 'easeInOutQuad',
-                    duration: 520
-                },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            fontColor: '#5e6a81'
-                        },
-                        gridLines: {
-                            color: 'rgba(200, 200, 200, 0.08)',
-                            lineWidth: 1
-                        },
-                        scaleLabel:{
-                            display: true,
-                            labelString: 'Price ($)'
-                        }
-                    }],
-                xAxes:[{
-                ticks: {
-                    fontColor: '#5e6a81'
-                },
-                scaleLabel:{
-                    display: true,
-                    labelString: 'Trade Date'
-                }
-                }]
-                },
-                elements: {
-                    line: {
-                        tension: 0.4
-                    }
-                },
-                legend: {
-                    display: true
-                },
-                plugins:{
-                    title:{
-                        display: true,
-                        text: 'BITCOIN PRICES'
-                    }
-                },                
-                point: {
-                    backgroundColor: '#00c7d6'
-                },
-                tooltips: {
-                    titleFontFamily: 'Poppins',
-                    backgroundColor: 'rgba(0,0,0,0.4)',
-                    titleFontColor: 'white',
-                    caretSize: 5,
-                    cornerRadius: 2,
-                    xPadding: 10,
-                    yPadding: 10
-                },
-                annotation:{
-                    annotations:[{
-                        type:"line",
-                        mode:"vertical",
-                        value:dates_arr[40],
-                        borderColor: "red",
-                    }]
-            }
-            };
-
-            var chartInstance = new Chart(chart, {
-                type: 'line',
-                data: data,
-                options: options,
-                lineAtIndex: [dates_arr[10], dates_arr[40], dates_arr[100]],
-            });
-
-
-
-            var originalLineDraw = Chart.controllers.line.prototype.draw;
-            Chart.helpers.extend(Chart.controllers.line.prototype, {
-            draw: function() {
-                originalLineDraw.apply(this, arguments);
-            
-                var chart = this.chart;
-                var ctx = chart.chart.ctx;
-            
-                var index = chart.config.data.lineAtIndex;
-                if (index) {
-                var xaxis = chart.scales['x-axis-0'];
-                var yaxis = chart.scales['y-axis-0'];
-
-                for (let i = 0; i < index[0].length; i++) {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.setLineDash([10, 10]);
-                    ctx.moveTo(xaxis.getPixelForValue(undefined, index[0][i]), yaxis.top);
-                    ctx.strokeStyle = '#ff0000'; //red
-                    ctx.lineTo(xaxis.getPixelForValue(undefined, index[0][i]), yaxis.bottom);
-                    ctx.stroke();
-                    ctx.restore();
-                }
-
-                for (let i = 0; i < index[1].length; i++) {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.setLineDash([10, 10]);
-                    ctx.moveTo(xaxis.getPixelForValue(undefined, index[1][i]), yaxis.top);
-                    ctx.strokeStyle = '#1ce116'; //green
-                    ctx.lineTo(xaxis.getPixelForValue(undefined, index[1][i]), yaxis.bottom);
-                    ctx.stroke();
-                    ctx.restore();
-                }
-
-                }
-            }
-            });
-
-
-        console.log('dates_arr[100] = ' , dates_arr[100])
-
-        // BENCHMARK vs TRAIN GRID SEARCH PORTVALS
-        var chart    = document.getElementById('chart2').getContext('2d'),
-
-        gradient = chart.createLinearGradient(0, 0, 0, 900);
-        gradient.addColorStop(0, 'rgba( 250, 50, 50, 0.32)');
-        gradient.addColorStop(0.3, 'rgba( 250, 50, 50, 0.1)');
-        gradient.addColorStop(1, 'rgba( 250, 50, 50, 0)');
-
-        gradient2 = chart.createLinearGradient(0, 0, 0, 900);
-        gradient2.addColorStop(0, 'rgba(0, 199, 214, 0.32)');
-        gradient2.addColorStop(0.3, 'rgba(0, 199, 214, 0.1)');
-        gradient2.addColorStop(1, 'rgba(0, 199, 214, 0)');
-
-
-        var data  = {
-            labels: dates_arr2_train,
-            datasets: [{
-                    label: 'Benchmark',
-                    backgroundColor: gradient,
-                    pointBackgroundColor: '#00c7d6',
-                    borderWidth: 2,
-                    borderColor: '#961205',
-                    data: TrainBenchmark_train
-                },
-                {
-                    label: 'Grid Search',
-                    backgroundColor: gradient2,
-                    pointBackgroundColor: '#e8b4d6',
-                    borderWidth: 2,
-                    borderColor: '#331ab1',
-                    data: TrainGridSearch_train
-                }]
-        };
-
-        var options = {
-            responsive: true,
-            maintainAspectRatio: true,
-            animation: {
-                easing: 'easeInOutQuad',
-                duration: 520
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        fontColor: '#5e6a81'
-                    },
-                    gridLines: {
-                        color: 'rgba(200, 200, 200, 0.08)',
-                        lineWidth: 1
-                    },
-                    scaleLabel:{
-                        display: true,
-                        labelString: 'Porfolio Values ($)'
-                    }
-                    }],
-                xAxes:[{
-                ticks: {
-                    fontColor: '#5e6a81'
-                },
-                scaleLabel:{
-                    display: true,
-                    labelString: 'Trade Date'
-                }
-                }]
-                },
-            elements: {
-                line: {
-                    tension: 0.4
-                }
-            },
-            legend: {
-                display: true
-            },
-            plugins:{
-                title:{
-                    display: true,
-                    text: 'BENCHMARK vs TRAIN GRID SEARCH PORTVALS'
-                }
-            },
-            point: {
-                backgroundColor: '#00c7d6'
-            },
-            tooltips: {
-                titleFontFamily: 'Poppins',
-                backgroundColor: 'rgba(0,0,0,0.4)',
-                titleFontColor: 'white',
-                caretSize: 5,
-                cornerRadius: 2,
-                xPadding: 10,
-                yPadding: 10
-            },
-            annotations:[{
-                type:"line",
-                mode:"vertical",
-                value:dates_arr[100],
-                borderColor: "red",
-
-            }]
-        };
-
-
-        var chartInstance = new Chart(chart, {
-            type: 'line',
-            data: data,
-            options: options
-        });
+            console.log(data);
 
         });
 
     </script>
-
-    <p><br/>
-    <div class="chart-container">
-        <div class="chart-container-header">
-            <h2>BTC Price</h2>
-        </div>
-        <div class="line-chart">
-            <canvas id="chart1"></canvas>
-        </div>
-    </div>
-
-    <p><br/>
-    <div class="chart-container">
-        <div class="chart-container-header">
-            <h2>Benchmark vs Grid Search Profolio Value</h2>
-        </div>
-        <div class="line-chart">
-            <canvas id="chart2"></canvas>
-        </div>
-    </div>
-    <!-- <script  type="text/javascript" src="static/lib/scripts.js"></script> -->
-
-
+<body>
+</body>
+</html>
 <p id='embed'>{{embed}}</p>
 <p id='mylog'/>
 <body>
