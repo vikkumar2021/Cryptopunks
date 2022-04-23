@@ -6,23 +6,21 @@ md`# CryptoPunks&#8482; BTC + Sentiment Learner
 )}
 
 function _2(htl){return(
-htl.html`<p>Howdy Yellow Jackets, </p>
-  
-<p>Welcome to the CryptoPunks&#8482; Money Machine!</p>
-
-<p>Get ready to use machine learning to beat the market. This website currently supports Bitcoin (BTC) data only :) </p>
-
-<p>The two algorithms available are: Q-Learning and GridSearch. Select your indicators and fetch the data to get started!!! </p>
-
-<p>  </p>
-
-<p><b>Tips:</b>
+htl.html`<p style="font-size:125%;">Howdy Yellow Jackets, </p>
+<br>
+<p style="font-size:125%;">Welcome to the CryptoPunks&#8482; Money Machine!</p>
+<br>
+<p style="font-size:125%;">Get ready to use machine learning to beat the market. This website currently supports Bitcoin (BTC) data only :) </p>
+<p style="font-size:125%;">The two algorithms available are: Q-Learning and GridSearch. Select your indicators and fetch the data to get started!!! </p>
+<br>
+<p style="font-size:125%;"><b>Tips:</b>
   <ul>
-  <li>Sentiment, MACD and On Balance Volume are not included by default. Check the box for inclusion.</li>
-    <p>  </p>
-  <li>Training time range must be before testing time range and they must not overlap.</li>
-    <p>  </p>
-  <li>Open up the individual graphs wanted for display by checking the boxes.</li>
+  <li style="font-size:125%;">Sentiment, MACD and On Balance Volume are not included by default. Check the box for inclusion.</li>
+    <br>
+  <li style="font-size:125%;">Training time range must be before testing time range and they must not overlap.</li>
+    <br>
+  <li style="font-size:125%;">Open up the individual graphs wanted for display by checking the boxes.</li>
+   <br>
 </ul>
 
 </p>`
@@ -33,7 +31,7 @@ htl.html`<p>  </p>`
 )}
 
 function _4(md){return(
-md`### Pick your indicators:`
+md`# Pick your indicators:`
 )}
 
 function _include_sentiment(Inputs){return(
@@ -175,9 +173,9 @@ Inputs.checkbox(["Training QL", "Training Benchmark"], {label: "Select Features:
 function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_sentiment,xAxis8,yAxis8)
 {
   const svg = d3.create("svg")
-      .attr("width", width)
+      .attr("width", 8.5*width/10)
       .attr("height", height)
-      .attr("viewBox", [-20,-10, width, height])
+      .attr("viewBox", [-1*(width - (8.5*width/10))/2, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
   const zx = x8.copy(); // x, but with a new domain.
@@ -196,8 +194,8 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line8(datasettraining));
-    const leg1_shape = svg.append("circle").attr("cx",100).attr("cy",20).attr("r", 6).style("fill", "blue")
-    const leg1_text = svg.append("text").attr("x", 110).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Q Learner").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Q Learner").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line82 = d3.line()
@@ -213,8 +211,8 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line82(datasettraining));
-    const leg1_shape = svg.append("circle").attr("cx",100).attr("cy",40).attr("r", 6).style("fill", "orange")
-    const leg1_text = svg.append("text").attr("x", 110).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Benchmark").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "orange")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Benchmark").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   if (training_inputs.includes("Training Benchmark")) {
@@ -238,19 +236,19 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
     		        .style("fill","#ff0000")
       }
     }
-  const leg3_shape = svg.append("circle").attr("cx",100).attr("cy",60).attr("r", 6).style("fill", "#00ff00")
-  const leg3_text = svg.append("text").attr("x", 110).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Buy").style("font-size", "13px").attr("alignment-baseline","middle")
+  const leg3_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",60).attr("r", 6).style("fill", "#00ff00")
+  const leg3_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Buy").style("font-size", "13px").attr("alignment-baseline","middle")
   
-  const leg4_shape = svg.append("circle").attr("cx",100).attr("cy",80).attr("r", 6).style("fill", "#ff0000")
-  const leg4_text = svg.append("text").attr("x", 110).attr("y", 80).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sell").style("font-size", "13px").attr("alignment-baseline","middle")
+  const leg4_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",80).attr("r", 6).style("fill", "#ff0000")
+  const leg4_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 80).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sell").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
    //DYNAMIC TITLE (W or W/O SENTIMENT ANALYSIS
   if (include_sentiment) {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -260,8 +258,8 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
   else {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -279,7 +277,7 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
   //  AXIS LABEL
   const y_axis_label = svg.append("text")
       .attr("class", "y label")
-      .attr("text-anchor", "end")
+      .attr("text-align", "center").attr("text-anchor", "middle")
       .attr("y",0 )
       .attr("x",-180)
       .attr("transform", "rotate(-90)")
@@ -290,8 +288,8 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
     //AXIS LABEL
   const x_axis_label = svg.append("text")
     .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("x", width - 550)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", height - 20)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "12px")
@@ -321,9 +319,9 @@ Inputs.checkbox(["Testing QL", "Testing Benchmark"], {label: "Select Features:"}
 function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sentiment,xAxis9,yAxis9)
 {
   const svg = d3.create("svg")
-      .attr("width", width)
+      .attr("width", 8.5*width/10)
       .attr("height", height)
-      .attr("viewBox", [-20, 0, width, height])
+      .attr("viewBox", [-1*(width - (8.5*width/10))/2, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
   const zx = x9.copy(); // x, but with a new domain.
@@ -342,8 +340,8 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line9(datasetesting));
-    const leg1_shape = svg.append("circle").attr("cx",100).attr("cy",20).attr("r", 6).style("fill", "blue")
-    const leg1_text = svg.append("text").attr("x", 110).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Q Learner").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Q Learner").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line10 = d3.line()
@@ -359,8 +357,8 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line10(datasetesting));
-    const leg1_shape = svg.append("circle").attr("cx",100).attr("cy",40).attr("r", 6).style("fill", "orange")
-    const leg1_text = svg.append("text").attr("x", 110).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Benchmark").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "orange")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Benchmark").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   if (testing_inputs.includes("Testing Benchmark")) {
@@ -385,19 +383,19 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
     		        .style("fill","#ff0000")
       }
     }
-    const leg3_shape = svg.append("circle").attr("cx",100).attr("cy",60).attr("r", 6).style("fill", "#00ff00")
-    const leg3_text = svg.append("text").attr("x", 110).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Buy").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg3_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",60).attr("r", 6).style("fill", "#00ff00")
+    const leg3_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Buy").style("font-size", "13px").attr("alignment-baseline","middle")
 
-    const leg4_shape = svg.append("circle").attr("cx",100).attr("cy",80).attr("r", 6).style("fill", "#ff0000")
-    const leg4_text = svg.append("text").attr("x", 110).attr("y", 80).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sell").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg4_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",80).attr("r", 6).style("fill", "#ff0000")
+    const leg4_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 80).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sell").style("font-size", "13px").attr("alignment-baseline","middle")
   }
   
  //DYNAMIC TITLE (W or W/O SENTIMENT ANALYSIS
   if (include_sentiment) {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -407,8 +405,8 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
   else {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -418,7 +416,7 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
   //AXIS LABEL
   const y_axis_label = svg.append("text")
       .attr("class", "y label")
-      .attr("text-anchor", "end")
+      .attr("text-align", "center").attr("text-anchor", "middle")
       .attr("y",0)
       .attr("x",-180)
       .attr("transform", "rotate(-90)")
@@ -429,8 +427,8 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
     //AXIS LABEL
   const x_axis_label = svg.append("text")
     .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("x", width - 550)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", height - 6)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "12px")
@@ -474,9 +472,9 @@ Inputs.checkbox(["Bollinger Band Upper", "Bollinger Band Lower", "Bollinger SMA"
 function _chart(d3,width,height,x,y,bbg_inputs,data,include_sentiment,xAxis,yAxis,inchart1)
 {
   const svg = d3.create("svg")
-      .attr("width", width)
+      .attr("width", 8.5*width/10)
       .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
+      .attr("viewBox", [-1*(width - (8.5*width/10))/2, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
   const zx = x.copy(); // x, but with a new domain.
@@ -496,8 +494,8 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,include_sentiment,xAxis,yAxi
       .attr("stroke-miterlimit", 1)
       .attr("d", line1(data));
 
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "blue")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Upper").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Upper").style("font-size", "13px").attr("alignment-baseline","middle")
   }
   var line2 = d3.line()
   var path2 = svg.append("path")
@@ -513,8 +511,8 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,include_sentiment,xAxis,yAxi
       .attr("stroke-miterlimit", 1)
       .attr("d", line2(data));
 
-   const leg2_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "red")
-   const leg2_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Lower").style("font-size", "13px").attr("alignment-baseline","middle")
+   const leg2_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "red")
+   const leg2_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Lower").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line3 = d3.line()
@@ -531,8 +529,8 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,include_sentiment,xAxis,yAxi
       .attr("stroke-miterlimit", 1)
       .attr("d", line3(data));
     
-    const leg3_shape = svg.append("circle").attr("cx",1000).attr("cy",60).attr("r", 6).style("fill", "purple")
-    const leg3_text = svg.append("text").attr("x", 1010).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger SMA").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg3_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",60).attr("r", 6).style("fill", "purple")
+    const leg3_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger SMA").style("font-size", "13px").attr("alignment-baseline","middle")
   
   }
 
@@ -550,8 +548,8 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,include_sentiment,xAxis,yAxi
       .attr("stroke-miterlimit", 1)
       .attr("d", line4(data));
     
-    const leg4_shape = svg.append("circle").attr("cx",1000).attr("cy",80).attr("r", 6).style("fill", "green")
-    const leg4_text = svg.append("text").attr("x", 1010).attr("y", 80).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Adjusted Close").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg4_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",80).attr("r", 6).style("fill", "green")
+    const leg4_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 80).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Adjusted Close").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line5 = d3.line()
@@ -568,8 +566,8 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,include_sentiment,xAxis,yAxi
       .attr("stroke-miterlimit", 1)
       .attr("d", line5(data));
 
-    const leg5_shape = svg.append("circle").attr("cx",1000).attr("cy",100).attr("r", 6).style("fill", "black")
-    const leg5_text = svg.append("text").attr("x", 1010).attr("y", 100).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Simple Moving Average").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg5_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",100).attr("r", 6).style("fill", "black")
+    const leg5_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 100).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Simple Moving Average").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   const tooltip = svg.append("g")
@@ -579,7 +577,7 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,include_sentiment,xAxis,yAxi
   //AXIS LABEL
   const y_axis_label = svg.append("text")
       .attr("class", "y label")
-      .attr("text-anchor", "end")
+      .attr("text-align", "center").attr("text-anchor", "middle")
       .attr("y",20)
       .attr("x",-180)
       .attr("transform", "rotate(-90)")
@@ -590,8 +588,8 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,include_sentiment,xAxis,yAxi
     //AXIS LABEL
   const x_axis_label = svg.append("text")
     .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("x", width - 550)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", height - 6)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "12px")
@@ -601,8 +599,8 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,include_sentiment,xAxis,yAxi
   if (include_sentiment) {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -612,8 +610,8 @@ function _chart(d3,width,height,x,y,bbg_inputs,data,include_sentiment,xAxis,yAxi
   else {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -661,9 +659,9 @@ Inputs.toggle({label: "Load Bollinger Band % Graph"})
 function _chart2(d3,width,height,x,y2,include6,data,include_sentiment,xAxis,yAxis2)
 {
   const svg = d3.create("svg")
-      .attr("width", width)
+      .attr("width", 8.5*width/10)
       .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
+      .attr("viewBox", [-1*(width - (8.5*width/10))/2, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
   const zx = x.copy(); // x, but with a new domain.
@@ -683,8 +681,11 @@ function _chart2(d3,width,height,x,y2,include6,data,include_sentiment,xAxis,yAxi
       .attr("stroke-miterlimit", 1)
       .attr("d", line6(data));
 
-     // const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "purple")
-     // const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Percentage").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Upper Limit").style("font-size", "13px").attr("alignment-baseline","middle")
+
+     // const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "purple")
+     // const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Percentage").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line62 = d3.line()
@@ -700,6 +701,9 @@ function _chart2(d3,width,height,x,y2,include6,data,include_sentiment,xAxis,yAxi
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line62(data));
+
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "red")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Lower Limit").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line63 = d3.line()
@@ -716,13 +720,16 @@ function _chart2(d3,width,height,x,y2,include6,data,include_sentiment,xAxis,yAxi
       .attr("stroke-miterlimit", 1)
       .attr("d", line63(data));
 
-    // const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "blue")
-    // const leg1_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Percentage").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",60).attr("r", 6).style("fill", "purple")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Percentage").style("font-size", "13px").attr("alignment-baseline","middle")
+
+    // const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "blue")
+    // const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Bollinger Band Percentage").style("font-size", "13px").attr("alignment-baseline","middle")
   }
     //AXIS LABEL
   const y_axis_label = svg.append("text")
       .attr("class", "y label")
-      .attr("text-anchor", "end")
+      .attr("text-align", "center").attr("text-anchor", "middle")
       .attr("y",20)
       .attr("x",-180)
       .attr("transform", "rotate(-90)")
@@ -733,8 +740,8 @@ function _chart2(d3,width,height,x,y2,include6,data,include_sentiment,xAxis,yAxi
     //AXIS LABEL
   const x_axis_label = svg.append("text")
     .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("x", width - 550)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", height - 6)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "12px")
@@ -744,8 +751,8 @@ function _chart2(d3,width,height,x,y2,include6,data,include_sentiment,xAxis,yAxi
   if (include_sentiment) {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -755,8 +762,8 @@ function _chart2(d3,width,height,x,y2,include6,data,include_sentiment,xAxis,yAxi
   else {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -799,9 +806,9 @@ Inputs.toggle({label: "Load Stochastic Oscillator Graph"})
 function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,include_sentiment,xAxis,yAxis3)
 {
   const svg = d3.create("svg")
-      .attr("width", width)
+      .attr("width", 8.5*width/10)
       .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
+      .attr("viewBox", [-1*(width - (8.5*width/10))/2, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
   const zx = x.copy(); // x, but with a new domain.
@@ -820,8 +827,8 @@ function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,include_sentimen
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line7(data));
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "purple")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Stochastic Osciallator").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "purple")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Stochastic Osciallator").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line72 = d3.line()
@@ -837,8 +844,8 @@ function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,include_sentimen
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line72(data));
-   const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "blue")
-   const leg1_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("SO Upper Limit").style("font-size", "13px").attr("alignment-baseline","middle")
+   const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "blue")
+   const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("SO Upper Limit").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line73 = d3.line()
@@ -855,13 +862,13 @@ function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,include_sentimen
       .attr("stroke-miterlimit", 1)
       .attr("d", line73(data));
 
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",60).attr("r", 6).style("fill", "red")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("SO Lower Limit").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",60).attr("r", 6).style("fill", "red")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("SO Lower Limit").style("font-size", "13px").attr("alignment-baseline","middle")
   }
     //AXIS LABEL
   const y_axis_label = svg.append("text")
       .attr("class", "y label")
-      .attr("text-anchor", "end")
+      .attr("text-align", "center").attr("text-anchor", "middle")
       .attr("y",20)
       .attr("x",-180)
       .attr("transform", "rotate(-90)")
@@ -872,8 +879,8 @@ function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,include_sentimen
     //AXIS LABEL
   const x_axis_label = svg.append("text")
     .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("x", width - 550)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", height - 6)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "12px")
@@ -883,8 +890,8 @@ function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,include_sentimen
   if (include_sentiment) {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -894,8 +901,8 @@ function _chart3(d3,width,height,x,y3,include7,data,so_ul,so_ll,include_sentimen
   else {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -938,9 +945,9 @@ Inputs.toggle({label: "Load Price to SMA Ratio Graph"})
 function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4,include_sentiment)
 {
   const svg = d3.create("svg")
-      .attr("width", width)
+      .attr("width", 8.5*width/10)
       .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
+      .attr("viewBox", [-1*(width - (8.5*width/10))/2, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
   const zx = x.copy(); // x, but with a new domain.
@@ -960,8 +967,8 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4,in
       .attr("stroke-miterlimit", 1)
       .attr("d", line8(data));
 
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "purple")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Price To SMA Ratio").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "purple")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Price To SMA Ratio").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line81 = d3.line()
@@ -978,8 +985,8 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4,in
       .attr("stroke-miterlimit", 1)
       .attr("d", line81(data));
 
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "blue")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Upper Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Upper Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line82 = d3.line()
@@ -996,8 +1003,8 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4,in
       .attr("stroke-miterlimit", 1)
       .attr("d", line82(data));
 
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",60).attr("r", 6).style("fill", "red")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Lower Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",60).attr("r", 6).style("fill", "red")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Lower Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
   
   const gx = svg.append("g")
@@ -1009,7 +1016,7 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4,in
     //AXIS LABEL
   const y_axis_label = svg.append("text")
       .attr("class", "y label")
-      .attr("text-anchor", "end")
+      .attr("text-align", "center").attr("text-anchor", "middle")
       .attr("y",20)
       .attr("x",-180)
       .attr("transform", "rotate(-90)")
@@ -1021,8 +1028,8 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4,in
     //AXIS LABEL
   const x_axis_label = svg.append("text")
     .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("x", width - 550)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", height - 6)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "12px")
@@ -1032,8 +1039,8 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4,in
   if (include_sentiment) {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -1043,8 +1050,8 @@ function _chart4(d3,width,height,x,y4,include8,data,smathreshold,xAxis,yAxis4,in
   else {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -1081,9 +1088,9 @@ Inputs.toggle({label: "Load Momentum Graph"})
 function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5,include_sentiment)
 {
   const svg = d3.create("svg")
-      .attr("width", width)
+      .attr("width", 8.5*width/10)
       .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
+      .attr("viewBox", [-1*(width - (8.5*width/10))/2, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
   const zx = x.copy(); // x, but with a new domain.
@@ -1103,8 +1110,8 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5,incl
       .attr("stroke-miterlimit", 1)
       .attr("d", line9(data));
 
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "purple")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Momentum").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "purple")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Momentum").style("font-size", "13px").attr("alignment-baseline","middle")
     
   }
 
@@ -1122,8 +1129,8 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5,incl
       .attr("stroke-miterlimit", 1)
       .attr("d", line91(data));
 
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "blue")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Upper Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Upper Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line92 = d3.line()
@@ -1140,8 +1147,8 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5,incl
       .attr("stroke-miterlimit", 1)
       .attr("d", line92(data));
 
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",60).attr("r", 6).style("fill", "red")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Lower Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",60).attr("r", 6).style("fill", "red")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Lower Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
   
   const gx = svg.append("g")
@@ -1153,7 +1160,7 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5,incl
     //AXIS LABEL
   const y_axis_label = svg.append("text")
       .attr("class", "y label")
-      .attr("text-anchor", "end")
+      .attr("text-align", "center").attr("text-anchor", "middle")
       .attr("y",20)
       .attr("x",-180)
       .attr("transform", "rotate(-90)")
@@ -1164,8 +1171,8 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5,incl
   
   const x_axis_label = svg.append("text")
     .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("x", width - 550)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", height - 6)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "12px")
@@ -1175,8 +1182,8 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5,incl
   if (include_sentiment) {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -1186,8 +1193,8 @@ function _chart5(d3,width,height,x,y5,include9,data,momentumth,xAxis,yAxis5,incl
   else {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -1224,9 +1231,9 @@ Inputs.toggle({label: "Load Sentiment Graph"})
 function _chart6(d3,width,height,x,y6,include10,data,sentimentth,include_sentiment,xAxis,yAxis6)
 {
   const svg = d3.create("svg")
-      .attr("width", width)
+      .attr("width", 8.5*width/10)
       .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
+      .attr("viewBox", [-1*(width - (8.5*width/10))/2, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
   const zx = x.copy(); // x, but with a new domain.
@@ -1245,8 +1252,8 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,include_sentime
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line10(data));
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",300).attr("r", 6).style("fill", "purple")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 300).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sentiment Value").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "purple")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sentiment Value").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line102 = d3.line()
@@ -1262,8 +1269,8 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,include_sentime
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line102(data));
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",340).attr("r", 6).style("fill", "red")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 340).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Lower Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "red")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Lower Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line103 = d3.line()
@@ -1279,16 +1286,16 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,include_sentime
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line103(data));
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",320).attr("r", 6).style("fill", "blue")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 320).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Upper Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",60).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Upper Threshold").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
    //DYNAMIC TITLE (W or W/O SENTIMENT ANALYSIS
   if (include_sentiment) {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -1298,8 +1305,8 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,include_sentime
   else {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -1316,7 +1323,7 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,include_sentime
   //AXIS LABEL
   const y_axis_label = svg.append("text")
       .attr("class", "y label")
-      .attr("text-anchor", "end")
+      .attr("text-align", "center").attr("text-anchor", "middle")
       .attr("y",20)
       .attr("x",-180)
       .attr("transform", "rotate(-90)")
@@ -1327,8 +1334,8 @@ function _chart6(d3,width,height,x,y6,include10,data,sentimentth,include_sentime
     //AXIS LABEL
   const x_axis_label = svg.append("text")
     .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("x", width - 550)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", height - 6)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "12px")
@@ -1367,9 +1374,9 @@ Inputs.checkbox(["MACD", "MACD Signal", "MACD Raw"], {label: "Select Features:"}
 function _chart7(d3,width,height,x,y7,macd_inputs,data,xAxis,yAxis7,include_sentiment,include11)
 {
   const svg = d3.create("svg")
-      .attr("width", width)
+      .attr("width", 8.5*width/10)
       .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
+      .attr("viewBox", [-1*(width - (8.5*width/10))/2, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
   const zx = x.copy(); // x, but with a new domain.
@@ -1388,8 +1395,8 @@ function _chart7(d3,width,height,x,y7,macd_inputs,data,xAxis,yAxis7,include_sent
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line11(data));
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",20).attr("r", 6).style("fill", "purple")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("MACD").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "purple")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("MACD").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line112 = d3.line()
@@ -1405,8 +1412,8 @@ function _chart7(d3,width,height,x,y7,macd_inputs,data,xAxis,yAxis7,include_sent
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line112(data));
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",40).attr("r", 6).style("fill", "green")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("MAC Signal").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "green")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("MAC Signal").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line113 = d3.line()
@@ -1422,8 +1429,8 @@ function _chart7(d3,width,height,x,y7,macd_inputs,data,xAxis,yAxis7,include_sent
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line113(data));
-    const leg1_shape = svg.append("circle").attr("cx",1000).attr("cy",60).attr("r", 6).style("fill", "brown")
-    const leg1_text = svg.append("text").attr("x", 1010).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("MACD Raw").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",60).attr("r", 6).style("fill", "brown")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("MACD Raw").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line114 = d3.line()
@@ -1451,8 +1458,8 @@ function _chart7(d3,width,height,x,y7,macd_inputs,data,xAxis,yAxis7,include_sent
   if (include_sentiment) {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -1462,8 +1469,8 @@ function _chart7(d3,width,height,x,y7,macd_inputs,data,xAxis,yAxis7,include_sent
   else {
   const sentiment_label = svg.append("text")
     .attr("class", "title")
-    .attr("text-anchor", "end")
-    .attr("x", width - 350)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", 35)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "15px")
@@ -1474,7 +1481,7 @@ function _chart7(d3,width,height,x,y7,macd_inputs,data,xAxis,yAxis7,include_sent
   //AXIS LABEL
   const y_axis_label = svg.append("text")
       .attr("class", "y label")
-      .attr("text-anchor", "end")
+      .attr("text-align", "center").attr("text-anchor", "middle")
       .attr("y",20)
       .attr("x",-180)
       .attr("transform", "rotate(-90)")
@@ -1485,8 +1492,8 @@ function _chart7(d3,width,height,x,y7,macd_inputs,data,xAxis,yAxis7,include_sent
     //AXIS LABEL
   const x_axis_label = svg.append("text")
     .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("x", width - 550)
+    .attr("text-align", "center").attr("text-anchor", "middle")
+    .attr("x", width/2)
     .attr("y", height - 6)
     .attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; })
     .style("font-size", "12px")
@@ -1601,7 +1608,7 @@ d3.scaleUtc()
 function _xAxis(x,height,margin,d3,width){return(
 (g, scale = x) => g
     .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(scale).ticks(width / 80).tickSizeOuter(0))
+    .call(d3.axisBottom(scale).tickSizeOuter(0))
 )}
 
 function _y(d3,data,height,margin){return(
@@ -1714,7 +1721,7 @@ g => g
 function _xAxis8(height,margin,d3,x8,width){return(
 g => g
     .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x8).ticks(width / 80).tickSizeOuter(0))
+    .call(d3.axisBottom(x8).tickSizeOuter(0))
 )}
 
 function _yAxis8(margin,d3,y8,height){return(
@@ -1790,7 +1797,7 @@ g => g
 function _xAxis9(height,margin,d3,x9,width){return(
 g => g
     .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x9).ticks(width / 80).tickSizeOuter(0))
+    .call(d3.axisBottom(x9).tickSizeOuter(0))
 )}
 
 function _update(chart,timeframe){return(
