@@ -35,9 +35,9 @@ Backend: Our backend consists of a REST API that runs in a Docker Container. Thi
 
 2. Install Docker if it isn't already installed on your machine. Installation instructions can be found [here from the CSE6242 HW3 resources](https://poloclub.github.io/cse6242-2022spring-online/hw3/Docker_Getting_Started_Guide_Spring_2022.pdf).
 
-3. On the command line unzip the download and change directories to the root of the repository/folder. The below steps are intended to be completed on the command line interface.
+3. On the command line unzip the download and change directories to the "CODE" folder in the root of the repository/folder. The below steps are intended to be completed on the command line interface.
 
- `cd ~/Downloads/Cryptopunks/`
+ `cd ~/Downloads/Cryptopunks/CODE`
 
 To ensure you're in the correct directory, when you run the `ls` command you should see the Dockerfile as well as this current README.md file listed.
 
