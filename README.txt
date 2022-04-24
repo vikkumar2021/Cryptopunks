@@ -30,10 +30,10 @@ Image of CryptopunksApplicationFlow: https://github.com/vikkumar2021/Cryptopunks
 
 
  Installation & Execution
-1. Download the Cryptopunks application from the Crypopunks GitHub https://github.com/vikkumar2021/Cryptopunks/ If you are peer reviewing this for CSE-6242 then you may skip this step as you have already downloaded the file.
+1. Download the Cryptopunks application from the Crypopunks GitHub (https://github.com/vikkumar2021/Cryptopunks/). If you are peer reviewing this for CSE-6242 then you may skip this step as you have already downloaded the file.
 
 
-2. Install Docker if it isn't already installed on your machine. Installation instructions can be found here from the CSE6242 HW3 resources: https://poloclub.github.io/cse6242-2022spring-online/hw3/Docker_Getting_Started_Guide_Spring_2022.pdf
+2. Install Docker if it isn't already installed on your machine. Installation instructions can be found here from the CSE6242 HW3 resources: (https://poloclub.github.io/cse6242-2022spring-online/hw3/Docker_Getting_Started_Guide_Spring_2022.pdf)
 
 3. On the command line unzip the download and change directories to the "CODE" folder in the root of the repository/folder. The below steps are intended to be completed on the command line interface.
 
