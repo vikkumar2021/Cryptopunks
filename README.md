@@ -55,7 +55,7 @@ Alternatively, if you need to delete the image run the following command:
   `docker image rm -f <IMAGE ID here>`
 
 
-6. Using the newly created cryptopunks-app Docker image, create and run a Docker container. By default Flask applications run on port 5000 so we expose that port.
+6. Using the newly created cryptopunks-app Docker image, create and run a Docker container. We expose the Flask API end points on port 5001 and run the container in detached mode.
 
   `docker run -d -p 5001:5000 cryptopunks-app`
 
