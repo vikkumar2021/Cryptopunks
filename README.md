@@ -68,11 +68,11 @@ For Mac users, AirPlay may already be using port 5000 on your computer. If this 
   `docker ps`
 
 
-8. Open your browser and navigate to the following URL to confirm Flask is running successfully: http://localhost:5000/
+8. Open your browser and navigate to the following URL to confirm Flask is running successfully: http://localhost:5000/ if you used port 5000 or http://localhost:5001/ if you used port 5001
 
 
 9. Next run a local python HTTP server on port 8000:
 
   `python -m http.server 8000`
 
-10. On your browser navigate to the following URL: http://localhost:8000/CODE/visualization/
+10. On your browser navigate to the following URL: http://localhost:8000/visualization/
