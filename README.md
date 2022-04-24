@@ -75,7 +75,4 @@ For Mac users, AirPlay may already be using port 5000 on your computer. If this 
 
   `python -m http.server 8000`
 
-On your browser navigate to the following URL: http://localhost:8000/CODE/visualization/
-
-
-10. You should see the `visualization` folder on your browser. Click into it and this should launch the Cryptopunks application.
+10. On your browser navigate to the following URL: http://localhost:8000/CODE/visualization/
