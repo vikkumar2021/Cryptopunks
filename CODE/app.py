@@ -70,7 +70,7 @@ def run_gridsearch() -> dict:
 
 """
 1) To Run the Flask App locally outside of Docker, run this script `python app.py`
-2) To test Flask is running, go to following URL in your browser: http://127.0.0.1:5000
+2) To test Flask is running, go to following URL in your browser: http://127.0.0.1:5001
 3) To trigger the Q-learner, go to the URL printed on the console output
 """
 if __name__ == "__main__":
@@ -106,8 +106,8 @@ if __name__ == "__main__":
         # Q-Learner Method
         qlearner_url = url_for("run_qlearner", **config_dict)
         print("OBTAIN Q-LEAERNER RESPONSE AT THIS URL:")
-        print(f"http://127.0.0.1:5000{qlearner_url}")
+        print(f"http://127.0.0.1:5001{qlearner_url}")
         gridsearch_url = url_for("run_gridsearch", **config_dict)
         print("OBTAIN GRIDSEARCH RESPONSE AT THIS URL:")
-        print(f"http://127.0.0.1:5000{gridsearch_url}")
-        app.run(debug=True, host="0.0.0.0", port=5000)
+        print(f"http://127.0.0.1:5001{gridsearch_url}")
+        app.run(debug=True, host="0.0.0.0", port=5001)
