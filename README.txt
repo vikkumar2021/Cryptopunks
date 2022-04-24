@@ -74,4 +74,5 @@ Alternatively, if you need to delete the image run the following command:
 
 10. On your browser navigate to the following URL: http://localhost:8000/visualization/
 
+# Demo Video 
 A demonstration video for operating the website can be seen here: https://www.youtube.com/watch?v=1TjX0bNMYjM
