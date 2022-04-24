@@ -57,10 +57,6 @@ Alternatively, if you need to delete the image run the following command:
 
 6. Using the newly created cryptopunks-app Docker image, create and run a Docker container. By default Flask applications run on port 5000 so we expose that port.
 
-  `docker run -d -p 5000:5000 cryptopunks-app`
-
-For Mac users, AirPlay may already be using port 5000 on your computer. If this is the case, use port 5001 instead with this modified command:
-
   `docker run -d -p 5001:5000 cryptopunks-app`
 
 
@@ -68,7 +64,7 @@ For Mac users, AirPlay may already be using port 5000 on your computer. If this 
   `docker ps`
 
 
-8. Open your browser and navigate to the following URL to confirm Flask is running successfully: http://localhost:5000/ if you used port 5000 or http://localhost:5001/ if you used port 5001
+8. Open your browser and navigate to the following URL to confirm Flask is running successfully: http://localhost:5001/
 
 
 9. Next run a local python HTTP server on port 8000:
