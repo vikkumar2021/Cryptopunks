@@ -203,7 +203,7 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
   if (training_inputs.includes("Training Benchmark")) {
     line82 = d3.line()
       .x(d => zx(d.TradeDate))
-      .y(d => zy(+d.benchmark+ 500000));
+      .y(d => zy(+d.benchmark));
 
     path82 = svg.append("path")
       .attr("fill", "none")
@@ -222,7 +222,7 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
           svg.append("circle")
     	        	.attr("class","circle")
     		        .attr("cx",zx(datasettraining[index].TradeDate))
-    		        .attr("cy",zy(datasettraining[index].benchmark + 500000))
+    		        .attr("cy",zy(datasettraining[index].benchmark))
     		        .attr("r",5)
     		        .style("stroke","#00ff00")
     		        .style("fill","#00ff00")
@@ -230,7 +230,7 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
         svg.append("circle")
     	        	.attr("class","circle")
     		        .attr("cx",zx(datasettraining[index].TradeDate))
-    		        .attr("cy",zy(datasettraining[index].benchmark + 500000))
+    		        .attr("cy",zy(datasettraining[index].benchmark))
     		        .attr("r",5)
     		        .style("stroke","#ff0000")
     		        .style("fill","#ff0000")
@@ -349,7 +349,7 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
   if (testing_inputs.includes("Testing Benchmark")) {
     line10 = d3.line()
       .x(d => zx(d.TradeDate))
-      .y(d => zy(+d.benchmark + 500000));
+      .y(d => zy(+d.benchmark));
 
     path10 = svg.append("path")
       .attr("fill", "none")
@@ -368,7 +368,7 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
           svg.append("circle")
     	        	.attr("class","circle")
     		        .attr("cx",zx(datasetesting[index].TradeDate))
-    		        .attr("cy",zy(datasetesting[index].benchmark+ 500000))
+    		        .attr("cy",zy(datasetesting[index].benchmark))
     		        .attr("r",5)
     		        .style("stroke","#00ff00")
     		        .style("fill","#00ff00")
@@ -377,7 +377,7 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
         svg.append("circle")
     	        	.attr("class","circle")
     		        .attr("cx",zx(datasetesting[index].TradeDate))
-    		        .attr("cy",zy(datasetesting[index].benchmark+ 500000))
+    		        .attr("cy",zy(datasetesting[index].benchmark))
     		        .attr("r",5)
     		        .style("stroke","#ff0000")
     		        .style("fill","#ff0000")
