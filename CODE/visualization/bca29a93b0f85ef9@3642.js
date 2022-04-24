@@ -194,8 +194,8 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line8(datasettraining));
-    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "blue")
-    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Q Learner").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (3*width/3.5)).attr("cy",10).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", width - (3*width/3.5) + 10).attr("y", 10).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Q Learner").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line82 = d3.line()
@@ -211,8 +211,8 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line82(datasettraining));
-    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "orange")
-    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Benchmark").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (3*width/3.5)).attr("cy",30).attr("r", 6).style("fill", "orange")
+    const leg1_text = svg.append("text").attr("x", width - (3*width/3.5) + 10).attr("y", 30).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Benchmark").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   if (training_inputs.includes("Training Benchmark")) {
@@ -236,11 +236,11 @@ function _chart8(d3,width,height,x8,y8,training_inputs,datasettraining,include_s
     		        .style("fill","#ff0000")
       }
     }
-  const leg3_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",60).attr("r", 6).style("fill", "#00ff00")
-  const leg3_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Buy").style("font-size", "13px").attr("alignment-baseline","middle")
+  const leg3_shape = svg.append("circle").attr("cx",width - (3*width/3.5)).attr("cy",50).attr("r", 6).style("fill", "#00ff00")
+  const leg3_text = svg.append("text").attr("x", width - (3*width/3.5) + 10).attr("y", 50).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Buy").style("font-size", "13px").attr("alignment-baseline","middle")
   
-  const leg4_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",80).attr("r", 6).style("fill", "#ff0000")
-  const leg4_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 80).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sell").style("font-size", "13px").attr("alignment-baseline","middle")
+  const leg4_shape = svg.append("circle").attr("cx",width - (3*width/3.5)).attr("cy",70).attr("r", 6).style("fill", "#ff0000")
+  const leg4_text = svg.append("text").attr("x", width - (3*width/3.5) + 10).attr("y", 70).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sell").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
    //DYNAMIC TITLE (W or W/O SENTIMENT ANALYSIS
@@ -340,8 +340,8 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line9(datasetesting));
-    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",20).attr("r", 6).style("fill", "blue")
-    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 20).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Q Learner").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/3.5)).attr("cy",10).attr("r", 6).style("fill", "blue")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/3.5) + 10).attr("y", 10).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Q Learner").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   var line10 = d3.line()
@@ -357,8 +357,8 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
       .attr("stroke-width", 1)
       .attr("stroke-miterlimit", 1)
       .attr("d", line10(datasetesting));
-    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",40).attr("r", 6).style("fill", "orange")
-    const leg1_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 40).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Benchmark").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg1_shape = svg.append("circle").attr("cx",width - (1*width/3.5)).attr("cy",30).attr("r", 6).style("fill", "orange")
+    const leg1_text = svg.append("text").attr("x", width - (1*width/3.5) + 10).attr("y", 30).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Benchmark").style("font-size", "13px").attr("alignment-baseline","middle")
   }
 
   if (testing_inputs.includes("Testing Benchmark")) {
@@ -383,11 +383,11 @@ function _chart9(d3,width,height,x9,y9,testing_inputs,datasetesting,include_sent
     		        .style("fill","#ff0000")
       }
     }
-    const leg3_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",60).attr("r", 6).style("fill", "#00ff00")
-    const leg3_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 60).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Buy").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg3_shape = svg.append("circle").attr("cx",width - (1*width/3.5)).attr("cy",50).attr("r", 6).style("fill", "#00ff00")
+    const leg3_text = svg.append("text").attr("x", width - (1*width/3.5) + 10).attr("y", 50).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Buy").style("font-size", "13px").attr("alignment-baseline","middle")
 
-    const leg4_shape = svg.append("circle").attr("cx",width - (1*width/5)).attr("cy",80).attr("r", 6).style("fill", "#ff0000")
-    const leg4_text = svg.append("text").attr("x", width - (1*width/5) + 10).attr("y", 80).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sell").style("font-size", "13px").attr("alignment-baseline","middle")
+    const leg4_shape = svg.append("circle").attr("cx",width - (1*width/3.5)).attr("cy",70).attr("r", 6).style("fill", "#ff0000")
+    const leg4_text = svg.append("text").attr("x", width - (1*width/3.5) + 10).attr("y", 70).attr("font-family", function(d,i) {return i<5 ? "serif" : "sans-serif"; }).text("Sell").style("font-size", "13px").attr("alignment-baseline","middle")
   }
   
  //DYNAMIC TITLE (W or W/O SENTIMENT ANALYSIS
