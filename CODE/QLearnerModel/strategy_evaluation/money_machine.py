@@ -73,7 +73,6 @@ def main(config, dataframebtc):
     symbol = symbol
     sd = training_sd
     ed = training_ed
-    sv = sv
 
     SLlearner = StrategyLearner(
         num_states=combos, alpha=alpha, gamma=gamma, rar=rar, radr=radr
@@ -84,25 +83,18 @@ def main(config, dataframebtc):
     df1 = df_to_order(df=df1, symbol=symbol, sd=sd, ed=ed)
 
     dfgains1 = compute_portvals(df1, start_val=sv)
-
-    # print(sv/dataframebtc['Adj_Close'][0])
-    order = [
-        (
-            sd,
-            math.floor(sv / dataframebtc["Adj_Close"][dataframebtc["TradeDate"] == sd]),
-            "BUY",
-            symbol,
-        ),
-        (
-            ed,
-            math.floor(sv / dataframebtc["Adj_Close"][dataframebtc["TradeDate"] == sd]),
-            "SELL",
-            symbol,
-        ),
-    ]
+    
+    order = [(sd,float(sv / dataframebtc[dataframebtc["TradeDate"] == sd]["Adj_Close"].iloc[0]),"BUY",symbol),
+             (ed,float(sv / dataframebtc[dataframebtc["TradeDate"] == sd]["Adj_Close"].iloc[0]),"SELL",symbol)]
+    
 
     dfbench = pd.DataFrame(order, columns=["TradeDate", "Shares", "Order", "Symbol"])
     benchmark = compute_portvals(dfbench, start_val=sv)
+    #print(benchmark.head)
+    
+    #print(dfgains1.head)
+    #print(benchmark.head)
+    
     # print(benchmark.head)
 
     # dfgains1['Sum'] = ((dfgains1['Sum']  / dfgains1['Sum'].iloc[0]))
@@ -136,35 +128,24 @@ def main(config, dataframebtc):
     symbol = "BTC"
     sd2 = test_sd
     ed2 = test_ed
-    sv2 = sv
 
     df2 = SLlearner.testPolicy(binned_df, sd2, ed2, sv)
 
     df2 = df_to_order(df=df2, symbol=symbol, sd=sd2, ed=ed2)
 
     dfgains2 = compute_portvals(df2, start_val=sv)
+    
 
-    order2 = [
-        (
-            sd2,
-            math.floor(
-                sv / dataframebtc["Adj_Close"][dataframebtc["TradeDate"] == sd2]
-            ),
-            "BUY",
-            symbol,
-        ),
-        (
-            ed2,
-            math.floor(
-                sv / dataframebtc["Adj_Close"][dataframebtc["TradeDate"] == sd2]
-            ),
-            "SELL",
-            symbol,
-        ),
-    ]
+    order2 = [(sd2, float(sv / dataframebtc["Adj_Close"][dataframebtc["TradeDate"] == sd2].iloc[0]),"BUY", symbol),
+              (ed2, float(sv / dataframebtc["Adj_Close"][dataframebtc["TradeDate"] == sd2].iloc[0]),"SELL",symbol)]
+    
 
+    
     dfbench2 = pd.DataFrame(order2, columns=["TradeDate", "Shares", "Order", "Symbol"])
     benchmark2 = compute_portvals(dfbench2, start_val=sv)
+    #print(benchmark2.head)
+    #print(dfgains2.head)
+    #print(benchmark2.head)
 
     # dfgains2['Sum'] = ((dfgains2['Sum'] / dfgains2['Sum'].iloc[0]))
     # benchmark2['Sum'] = ((benchmark2['Sum'] / benchmark2['Sum'].iloc[0]))

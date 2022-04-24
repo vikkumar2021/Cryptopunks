@@ -82,12 +82,11 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
             sign = -1
 
         trades_df[symbol][d] = trades_df[symbol][d] + sign * amount
-
+        #print(trades_df[symbol][d])
+        
     cost_df = port_vals * trades_df
-    # print(cost_df.head)
-
+    
     trades_df["Cash"] = -1 * cost_df.sum(axis=1)
-    # print(trades_df.head)
 
     holdings_df = port_vals.copy()
     for col in trades_df.columns:
@@ -96,11 +95,13 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
     dates = holdings_df.index
     holdings_df = holdings_df.reset_index(drop=True).copy()
     trades_df2 = trades_df.reset_index(drop=True).copy()
-
+    
+    
+    
     for i in range(len(holdings_df)):
         if i == 0:
             holdings_df.loc[i] = trades_df2.loc[i]
-            holdings_df.loc[i]["Cash"] = start_val + trades_df2.loc[i]["Cash"]
+            holdings_df.loc[i]["Cash"] = start_val*1 + trades_df2.loc[i]["Cash"]
         else:
             holdings_df.loc[i] = holdings_df.loc[i - 1] + trades_df2.loc[i]
 
@@ -111,7 +112,8 @@ def compute_portvals(orders_df, start_val=100000, commission=0, impact=0):
     vals = port_vals * holdings_df
     # print(vals.head)
     vals_sum = pd.DataFrame(vals.sum(axis=1), columns=["Sum"])
-    # print(vals_sum.head)
+    
+    
     return vals_sum
 
 
