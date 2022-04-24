@@ -71,7 +71,7 @@ Alternatively, if you need to delete the image run the following command:
 
   `python -m http.server 8000`
 
-10. On your browser navigate to the following URL: http://localhost:8000/visualization/
+10. On your browser navigate to the following URL: http://localhost:8000/visualization/index.html
 
 
 # Demo Video
