@@ -5,14 +5,11 @@ import os
 import sys
 from datetime import datetime
 
-import numpy as np
 import pandas as pd
 
 from .dataframe_binning import categorize_pipeline as bdfcp
-from .ManualLearner import ManualLearner
-from .marketsimcode import compute_portvals, stats
+from .marketsimcode import compute_portvals
 from .StrategyLearner import StrategyLearner
-from .util import get_data, plot_data
 
 
 def author(self):
