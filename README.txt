@@ -68,11 +68,14 @@ Alternatively, if you need to delete the image run the following command:
 8. Open your browser and navigate to the following URL to confirm Flask is running successfully: http://localhost:5001/
 
 
-9. Next run a local python HTTP server on port 8000:
+9. Next run a local python HTTP server on port 8000. Ensure that you're running this command inside of the folder from Step 3 (Cryptopunks/CODE/):
 
   python -m http.server 8000
 
-10. On your browser navigate to the following URL: http://localhost:8000/visualization/
+
+10. On your browser navigate to the following URL: http://localhost:8000/visualization/index.html
+
 
 # Demo Video 
+
 A demonstration video for operating the website can be seen here: https://www.youtube.com/watch?v=1TjX0bNMYjM
